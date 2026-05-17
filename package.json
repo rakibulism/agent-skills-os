@@ -1,6 +1,6 @@
 {
   "name": "universal-agent-skills",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Framework-agnostic agent skill library. Drop-in skills for Claude Agent SDK, LangChain, OpenAI Assistants, CrewAI, AutoGen, and any AI agent runtime.",
   "type": "module",
   "main": "./src/index.js",
