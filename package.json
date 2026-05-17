@@ -42,12 +42,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rakibulism/universal-agent-skills.git"
+    "url": "git+https://github.com/rakibulism/agent-skills-os.git"
   },
   "bugs": {
-    "url": "https://github.com/rakibulism/universal-agent-skills/issues"
+    "url": "https://github.com/rakibulism/agent-skills-os/issues"
   },
-  "homepage": "https://github.com/rakibulism/universal-agent-skills#readme",
+  "homepage": "https://github.com/rakibulism/agent-skills-os#readme",
   "engines": {
     "node": ">=18"
   }
