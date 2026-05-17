@@ -1,0 +1,7 @@
+test/
+.git/
+.gitignore
+.gitattributes
+.npmignore
+*.log
+.DS_Store

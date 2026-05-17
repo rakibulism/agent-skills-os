@@ -1,0 +1,149 @@
+# universal-agent-skills
+
+Framework-agnostic agent skills for any AI agent runtime. Drop-in adapters for **Claude Agent SDK**, **OpenAI Assistants**, **LangChain**, **CrewAI**, **AutoGen**, and any system that takes a system prompt.
+
+Each skill is a markdown file with frontmatter and a careful, prompt-engineered body — load it, hand it to your agent as a system prompt or role, done.
+
+## Install
+
+```bash
+npm install universal-agent-skills
+```
+
+## Quick start
+
+```js
+import { forClaude, forOpenAI, forLangChain, listSkills } from "universal-agent-skills";
+
+// See what's available
+console.log(listSkills());
+// [
+//   { name: "code-reviewer",  description: "...", tags: ["code","review",...] },
+//   { name: "data-analyst",   description: "...", tags: [...] },
+//   ...
+// ]
+
+// Use with Claude Agent SDK / Anthropic Messages API
+import Anthropic from "@anthropic-ai/sdk";
+const anthropic = new Anthropic();
+const { system } = forClaude("code-reviewer");
+const msg = await anthropic.messages.create({
+  model: "claude-opus-4-7",
+  max_tokens: 4096,
+  system,
+  messages: [{ role: "user", content: "Review this diff:\n\n" + diff }],
+});
+
+// Use with OpenAI Assistants
+import OpenAI from "openai";
+const openai = new OpenAI();
+const assistant = await openai.beta.assistants.create({
+  model: "gpt-4o",
+  ...forOpenAI("researcher"),
+});
+
+// Use with LangChain
+import { PromptTemplate } from "@langchain/core/prompts";
+const tw = forLangChain("test-writer");
+const prompt = PromptTemplate.fromTemplate(tw.template);
+const formatted = await prompt.format({
+  target_code: "...",
+  framework: "vitest",
+  existing_tests: "",
+});
+```
+
+## Skills
+
+| Skill | What it does |
+|---|---|
+| `code-reviewer` | Reviews code for bugs, security, performance — prioritized findings with file:line + fixes |
+| `test-writer` | Generates unit/integration tests covering happy path, edges, errors |
+| `summarizer` | Faithful summaries at TLDR / short / medium / long lengths |
+| `researcher` | Decomposes a question, gathers cited sources, synthesizes a brief |
+| `refactorer` | Refactors with a behavior-equivalence argument; small safe steps |
+| `debugger` | Diagnoses errors with root cause, fix, and verification step |
+| `doc-writer` | Generates READMEs, API refs, JSDoc/docstrings |
+| `data-analyst` | Profiles, analyzes, and reports on tabular data with caveats |
+
+Every skill follows the same authoring principles: lead with the spine, prioritize findings, prefer concrete output formats, name what to avoid.
+
+## API
+
+```ts
+// Load
+loadAllSkills(): Skill[]
+getSkill(name: string): Skill
+listSkills(): SkillSummary[]
+asSystemPrompt(name: string): string
+
+// Framework adapters
+forClaude(name):     { system, metadata }
+forOpenAI(name):     { name, description, instructions }
+forLangChain(name):  { template, inputVariables }
+forCrewAI(name):     { role, goal, backstory }
+forAutoGen(name):    { name, system_message }
+forGeneric(name):    { name, description, version, tags, inputs, instructions }
+```
+
+## Use with Python frameworks (CrewAI, AutoGen)
+
+The package is ESM JS, but the markdown skills are framework-neutral. To consume from Python:
+
+```bash
+# After npm install, the markdown files are at:
+node_modules/universal-agent-skills/skills/<name>/SKILL.md
+```
+
+Read the file directly, strip frontmatter (`---...---`), use the body as your agent's `backstory` (CrewAI) or `system_message` (AutoGen).
+
+Or generate a JSON catalog from Node and hand it to Python:
+
+```bash
+node -e "import('universal-agent-skills').then(m => console.log(JSON.stringify(m.loadAllSkills(), null, 2)))" > skills.json
+```
+
+## Authoring your own skills
+
+A skill is a directory containing `SKILL.md`:
+
+```
+skills/
+  my-skill/
+    SKILL.md
+```
+
+`SKILL.md` frontmatter:
+
+```yaml
+---
+name: my-skill
+description: One sentence describing when to use this skill and what it produces.
+version: 0.1.0
+tags: [domain, capability]
+inputs:
+  - name: input_name
+    description: What this input is.
+    required: true
+---
+
+# Body
+
+The system-prompt content. Be specific about process, output format, and what to avoid.
+```
+
+Drop the directory into `skills/` and `loadAllSkills()` picks it up.
+
+## Design principles
+
+These skills were written to follow a few rules:
+
+- **Lead with intent.** The first paragraph tells the model when to apply the skill.
+- **Process before output.** How to think, not just what to emit.
+- **Specify output shape.** Models drift without a target format.
+- **Name failure modes.** "What to avoid" sections prevent common errors.
+- **Concrete over abstract.** Concrete examples beat abstract advice.
+
+## License
+
+MIT

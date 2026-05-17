@@ -1,0 +1,54 @@
+{
+  "name": "universal-agent-skills",
+  "version": "0.1.0",
+  "description": "Framework-agnostic agent skill library. Drop-in skills for Claude Agent SDK, LangChain, OpenAI Assistants, CrewAI, AutoGen, and any AI agent runtime.",
+  "type": "module",
+  "main": "./src/index.js",
+  "types": "./src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "import": "./src/index.js"
+    },
+    "./skills/*": "./skills/*"
+  },
+  "files": [
+    "src",
+    "skills",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node test/smoke.js"
+  },
+  "keywords": [
+    "ai",
+    "agent",
+    "agents",
+    "skills",
+    "llm",
+    "claude",
+    "claude-agent-sdk",
+    "langchain",
+    "openai",
+    "openai-assistants",
+    "crewai",
+    "autogen",
+    "prompt",
+    "prompt-engineering",
+    "system-prompt"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rakibulism/universal-agent-skills.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rakibulism/universal-agent-skills/issues"
+  },
+  "homepage": "https://github.com/rakibulism/universal-agent-skills#readme",
+  "engines": {
+    "node": ">=18"
+  }
+}
