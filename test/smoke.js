@@ -15,13 +15,18 @@ import {
 
 const EXPECTED = [
   "code-reviewer",
+  "component-designer",
   "data-analyst",
   "debugger",
+  "design-to-code",
+  "design-token-architect",
   "doc-writer",
+  "interaction-designer",
   "refactorer",
   "researcher",
   "summarizer",
   "test-writer",
+  "visual-polish-reviewer",
 ];
 
 const all = loadAllSkills();
@@ -38,7 +43,7 @@ for (const s of all) {
 }
 
 const summary = listSkills();
-assert.equal(summary.length, 8);
+assert.equal(summary.length, 13);
 assert.ok(summary.every((s) => s.name && s.description));
 
 const reviewer = getSkill("code-reviewer");

@@ -55,15 +55,32 @@ const formatted = await prompt.format({
 
 ## Skills
 
+### Engineering
+
 | Skill | What it does |
 |---|---|
 | `code-reviewer` | Reviews code for bugs, security, performance — prioritized findings with file:line + fixes |
 | `test-writer` | Generates unit/integration tests covering happy path, edges, errors |
-| `summarizer` | Faithful summaries at TLDR / short / medium / long lengths |
-| `researcher` | Decomposes a question, gathers cited sources, synthesizes a brief |
 | `refactorer` | Refactors with a behavior-equivalence argument; small safe steps |
 | `debugger` | Diagnoses errors with root cause, fix, and verification step |
 | `doc-writer` | Generates READMEs, API refs, JSDoc/docstrings |
+
+### Design & Design Engineering
+
+| Skill | What it does |
+|---|---|
+| `component-designer` | Specs a UI component — anatomy, states, variants, API, accessibility, edge cases |
+| `visual-polish-reviewer` | Reviews UI for alignment, spacing, typography, shadows — the details that separate fine from great |
+| `interaction-designer` | Designs micro-interactions with timing, easing, purpose; outputs animation code |
+| `design-token-architect` | Designs primitive/semantic/component token layers with theme support |
+| `design-to-code` | Translates Figma or design specs into accessible, responsive, token-driven component code |
+
+### Knowledge & Research
+
+| Skill | What it does |
+|---|---|
+| `summarizer` | Faithful summaries at TLDR / short / medium / long lengths |
+| `researcher` | Decomposes a question, gathers cited sources, synthesizes a brief |
 | `data-analyst` | Profiles, analyzes, and reports on tabular data with caveats |
 
 Every skill follows the same authoring principles: lead with the spine, prioritize findings, prefer concrete output formats, name what to avoid.
