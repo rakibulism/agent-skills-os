@@ -69,11 +69,19 @@ const formatted = await prompt.format({
 
 | Skill | What it does |
 |---|---|
+| `ux-ui-designer` | Designs and critiques end-to-end UX/UI — flows, IA, hierarchy, states, accessibility |
+| `product-designer` | Connects user problems to product decisions — framing, opportunity, metrics, MVP scope |
 | `component-designer` | Specs a UI component — anatomy, states, variants, API, accessibility, edge cases |
 | `visual-polish-reviewer` | Reviews UI for alignment, spacing, typography, shadows — the details that separate fine from great |
 | `interaction-designer` | Designs micro-interactions with timing, easing, purpose; outputs animation code |
 | `design-token-architect` | Designs primitive/semantic/component token layers with theme support |
 | `design-to-code` | Translates Figma or design specs into accessible, responsive, token-driven component code |
+
+### Creativity
+
+| Skill | What it does |
+|---|---|
+| `creative-artist` | Generates original concepts and creative work — pushes past clichés to bold, developed ideas |
 
 ### Knowledge & Research
 
@@ -81,9 +89,33 @@ const formatted = await prompt.format({
 |---|---|
 | `summarizer` | Faithful summaries at TLDR / short / medium / long lengths |
 | `researcher` | Decomposes a question, gathers cited sources, synthesizes a brief |
+| `academic-researcher` | Scholarly rigor — research questions, literature review, methodology, academic writing |
 | `data-analyst` | Profiles, analyzes, and reports on tabular data with caveats |
 
-Every skill follows the same authoring principles: lead with the spine, prioritize findings, prefer concrete output formats, name what to avoid.
+### Reasoning & Science
+
+| Skill | What it does |
+|---|---|
+| `scientist` | Empirical thinking — hypotheses, experiment design, confounds, evidence with uncertainty |
+| `mathematician` | Rigorous proof, problem-solving, modeling, and verification |
+| `philosopher` | Argument analysis, conceptual clarity, thought experiments, ethical reasoning |
+
+### Professions & Learning
+
+| Skill | What it does |
+|---|---|
+| `physician` | Clinical reasoning and health literacy — differentials, EBM, communication (educational, not medical advice) |
+| `student` | Learn anything faster — active recall, spaced repetition, Feynman technique, exam prep |
+
+### Startup & Venture
+
+| Skill | What it does |
+|---|---|
+| `startup-advisor` | Lean operating guidance — validation, product-market fit, GTM, startup metrics |
+| `venture-capitalist` | Investor lens — deal evaluation, market sizing, valuation/terms, portfolio strategy |
+| `founder-coach` | The human side — decisions, prioritization, leadership, fundraising story, resilience |
+
+Every skill follows the same authoring principles: lead with the spine, prioritize findings, prefer concrete output formats, name what to avoid. Larger skills also bundle a `references/` directory of deeper material the body points to.
 
 ## API
 
@@ -122,13 +154,18 @@ node -e "import('universal-agent-skills').then(m => console.log(JSON.stringify(m
 
 ## Authoring your own skills
 
-A skill is a directory containing `SKILL.md`:
+A skill is a directory containing `SKILL.md`, optionally with a `references/` directory of supporting docs:
 
 ```
 skills/
   my-skill/
     SKILL.md
+    references/        # optional deep-dive docs the SKILL.md body points to
+      topic-a.md
+      topic-b.md
 ```
+
+`loadAllSkills()` reads `SKILL.md` as the system prompt; `references/` files are progressive-disclosure material the agent (or a human) opens as needed.
 
 `SKILL.md` frontmatter:
 

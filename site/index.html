@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SKILLS — the universal agent skills library</title>
+  <meta name="description" content="Framework-agnostic agent skills for any AI runtime. Install once, then load them into Claude, OpenAI, LangChain, CrewAI, or AutoGen with a single function call." />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="SKILLS — universal-agent-skills" />
+  <meta property="og:description" content="Framework-agnostic agent skills for any AI runtime. One skill file, every framework." />
+  <meta property="og:url" content="https://github.com/rakibulism/agent-skills-os" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpolygon points='50,12 90,82 10,82' fill='%23fff'/%3E%3C/svg%3E" />
+</head>
+<body>
+  <!-- ===== STORM BACKGROUND ===== -->
+  <div class="sky" aria-hidden="true">
+    <span class="smoke smoke--1" data-depth="0.10"></span>
+    <span class="smoke smoke--2" data-depth="0.06"></span>
+    <span class="smoke smoke--3" data-depth="0.14"></span>
+    <span class="smoke smoke--4" data-depth="0.05"></span>
+    <span class="smoke smoke--5" data-depth="0.09"></span>
+    <span class="smoke smoke--6" data-depth="0.04"></span>
+    <div class="cursor-glow"></div>
+  </div>
+  <div class="fx-flash" aria-hidden="true"></div>
+  <svg class="fx-bolts" aria-hidden="true"><path class="bolt"></path><path class="bolt bolt--branch"></path></svg>
+
+  <div class="page">
+  <!-- ===== NAV ===== -->
+  <header class="nav">
+    <div class="container nav__inner">
+      <a class="nav__brand" href="#top">
+        <svg class="nav__tri" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12,3 22,20 2,20" fill="currentColor"/></svg>
+        <span class="nav__slash">/</span>
+        <span class="nav__name">skills</span>
+      </a>
+      <nav class="nav__links">
+        <a href="#leaderboard">Skills</a>
+        <a href="#frameworks">Frameworks</a>
+        <a href="#api">API</a>
+        <a href="#authoring">Build</a>
+        <a href="https://github.com/rakibulism/agent-skills-os" target="_blank" rel="noopener">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero" id="top">
+    <div class="container">
+      <div class="hero__top">
+        <div class="hero__brand">
+          <h1 class="wordmark" aria-label="SKILLS">
+            <svg class="wordmark__svg" viewBox="0 0 640 116" role="img" aria-label="SKILLS" preserveAspectRatio="xMinYMid meet">
+              <g font-family="'Press Start 2P', monospace" font-size="74" letter-spacing="0">
+                <text x="12" y="82" textLength="616" lengthAdjust="spacingAndGlyphs" transform="translate(10,10)" fill="#000000">SKILLS</text>
+                <text x="12" y="82" textLength="616" lengthAdjust="spacingAndGlyphs" transform="translate(8,8)" fill="#19191b">SKILLS</text>
+                <text x="12" y="82" textLength="616" lengthAdjust="spacingAndGlyphs" transform="translate(6,6)" fill="#000000">SKILLS</text>
+                <text x="12" y="82" textLength="616" lengthAdjust="spacingAndGlyphs" transform="translate(4,4)" fill="#2b2b2e">SKILLS</text>
+                <text x="12" y="82" textLength="616" lengthAdjust="spacingAndGlyphs" transform="translate(2,2)" fill="#000000">SKILLS</text>
+                <text x="12" y="82" textLength="616" lengthAdjust="spacingAndGlyphs" fill="#ededed" stroke="#000000" stroke-width="1">SKILLS</text>
+              </g>
+            </svg>
+          </h1>
+          <p class="wordmark__sub">THE UNIVERSAL AGENT SKILLS LIBRARY</p>
+        </div>
+        <p class="hero__lede">
+          Skills are reusable capabilities for AI agents. Install them with a single
+          command, then load them into any framework to enhance your agents with
+          carefully prompt-engineered procedural knowledge.
+        </p>
+      </div>
+
+      <div class="hero__mid">
+        <div class="hero__try">
+          <span class="label">TRY IT NOW</span>
+          <div class="install" data-copy>
+            <code><span class="prompt">$</span> npm install universal-agent-skills</code>
+            <button class="copy-btn icon-btn" aria-label="Copy install command" data-copy-text="npm install universal-agent-skills">
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="hero__agents">
+          <span class="label">AVAILABLE FOR THESE AGENTS</span>
+          <div class="agents">
+            <span class="agent" title="Claude Agent SDK" aria-label="Claude">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20M5 5l14 14M19 5 5 19"/></svg>
+            </span>
+            <span class="agent" title="OpenAI Assistants" aria-label="OpenAI">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l7 4v8l-7 4-7-4V7z"/><circle cx="12" cy="11" r="3"/></svg>
+            </span>
+            <span class="agent" title="LangChain" aria-label="LangChain">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="8" width="11" height="8" rx="4"/><rect x="10" y="8" width="11" height="8" rx="4"/></svg>
+            </span>
+            <span class="agent" title="CrewAI" aria-label="CrewAI">
+              <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="6" cy="9" r="2.6"/><circle cx="18" cy="9" r="2.6"/><circle cx="12" cy="15" r="2.6"/></svg>
+            </span>
+            <span class="agent" title="AutoGen" aria-label="AutoGen">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="8" width="16" height="11" rx="2"/><path d="M12 4v4"/><circle cx="9" cy="13.5" r="1" fill="currentColor"/><circle cx="15" cy="13.5" r="1" fill="currentColor"/></svg>
+            </span>
+            <span class="agent" title="Any system prompt runtime" aria-label="Any runtime">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1l2.6 7.4L22 11l-7.4 2.6L12 21l-2.6-7.4L2 11l7.4-2.6z"/></svg>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== LEADERBOARD ===== -->
+  <section class="section leaderboard" id="leaderboard">
+    <div class="container">
+      <span class="label">SKILLS LEADERBOARD</span>
+
+      <div class="search">
+        <svg class="search__icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input id="search" type="text" class="search__input" placeholder="Search skills." autocomplete="off" spellcheck="false" aria-label="Search skills" />
+        <kbd class="search__kbd">/</kbd>
+      </div>
+
+      <div class="lb-tabs" role="tablist">
+        <button class="lb-tab is-active" role="tab" data-cat="all">All <span class="lb-tab__n">(13)</span></button>
+        <button class="lb-tab" role="tab" data-cat="engineering">Engineering <span class="lb-tab__n">(5)</span></button>
+        <button class="lb-tab" role="tab" data-cat="design">Design <span class="lb-tab__n">(5)</span></button>
+        <button class="lb-tab" role="tab" data-cat="research">Research <span class="lb-tab__n">(3)</span></button>
+      </div>
+
+      <table class="lb-table">
+        <thead>
+          <tr>
+            <th class="lb-rank">#</th>
+            <th>SKILL</th>
+            <th class="lb-cat-col">CATEGORY</th>
+          </tr>
+        </thead>
+        <tbody id="lb-body">
+          <!-- Engineering -->
+          <tr class="lb-row" data-cat="engineering" data-search="code-reviewer code review quality security bugs performance findings file:line fixes">
+            <td class="lb-rank">1</td>
+            <td class="lb-skill">
+              <a href="https://github.com/rakibulism/agent-skills-os/tree/main/skills/code-reviewer" target="_blank" rel="noopener">
+                <span class="lb-name">code-reviewer</span> <span class="lb-repo">rakibulism/agent-skills-os</span>
+              </a>
+              <span class="lb-desc">Reviews code for bugs, security, and performance — prioritized findings with file:line citations and fixes.</span>
+            </td>
+            <td class="lb-cat-col"><span class="cat-badge eng">ENG</span></td>
+          </tr>
+          <tr class="lb-row" data-cat="engineering" data-search="test-writer testing tests unit integration coverage edge cases errors vitest jest">
+            <td class="lb-rank">2</td>
+            <td class="lb-skill">
+              <a href="https://github.com/rakibulism/agent-skills-os/tree/main/skills/test-writer" target="_blank" rel="noopener">
+                <span class="lb-name">test-writer</span> <span class="lb-repo">rakibulism/agent-skills-os</span>
+              </a>
+              <span class="lb-desc">Generates unit and integration tests covering the happy path, edge cases, and error conditions.</span>
+            </td>
+            <td class="lb-cat-col"><span class="cat-badge eng">ENG</span></td>
+          </tr>
+          <tr class="lb-row" data-cat="engineering" data-search="refactorer refactor cleanup restructure extract behavior equivalence structure">
+            <td class="lb-rank">3</td>
+            <td class="lb-skill">
+              <a href="https://github.com/rakibulism/agent-skills-os/tree/main/skills/refactorer" target="_blank" rel="noopener">
+                <span class="lb-name">refactorer</span> <span class="lb-repo">rakibulism/agent-skills-os</span>
+              </a>
+              <span class="lb-desc">Refactors in small, safe steps while preserving behavior — with a behavior-equivalence argument.</span>
+            </td>
+            <td class="lb-cat-col"><span class="cat-badge eng">ENG</span></td>
+          </tr>
+          <tr class="lb-row" data-cat="engineering" data-search="debugger debug errors stack trace logs diagnostics troubleshooting root cause fix crash">
+            <td class="lb-rank">4</td>
+            <td class="lb-skill">
+              <a href="https://github.com/rakibulism/agent-skills-os/tree/main/skills/debugger" target="_blank" rel="noopener">
+                <span class="lb-name">debugger</span> <span class="lb-repo">rakibulism/agent-skills-os</span>
+              </a>
+              <span class="lb-desc">Diagnoses errors with a root-cause hypothesis, a minimal verification step, and a concrete fix.</span>
+            </td>
+            <td class="lb-cat-col"><span class="cat-badge eng">ENG</span></td>
+          </tr>
+          <tr class="lb-row" data-cat="engineering" data-search="doc-writer documentation docs readme api reference jsdoc docstrings writing">
+            <td class="lb-rank">5</td>
+            <td class="lb-skill">
+              <a href="https://github.com/rakibulism/agent-skills-os/tree/main/skills/doc-writer" target="_blank" rel="noopener">
+                <span class="lb-name">doc-writer</span> <span class="lb-repo">rakibulism/agent-skills-os</span>
+              </a>
+              <span class="lb-desc">Generates READMEs, API references, and inline JSDoc/docstrings targeted at the actual reader.</span>
+            </td>
+            <td class="lb-cat-col"><span class="cat-badge eng">ENG</span></td>
+          </tr>
+
+          <!-- Design -->
+          <tr class="lb-row" data-cat="design" data-search="component-designer ui design components design-system accessibility anatomy states variants props api">
+            <td class="lb-rank">6</td>
+            <td class="lb-skill">
+              <a href="https://github.com/rakibulism/agent-skills-os/tree/main/skills/component-designer" target="_blank" rel="noopener">
+                <span class="lb-name">component-designer</span> <span class="lb-repo">rakibulism/agent-skills-os</span>
+              </a>
+              <span class="lb-desc">Specs a UI component end to end — anatomy, states, variants, props/API, accessibility, edge cases.</span>
+            </td>
+            <td class="lb-cat-col"><span class="cat-badge des">DES</span></td>
+          </tr>
+          <tr class="lb-row" data-cat="design" data-search="visual-polish-reviewer ui design polish css alignment spacing typography shadows design-engineering qa">
+            <td class="lb-rank">7</td>
+            <td class="lb-skill">
+              <a href="https://github.com/rakibulism/agent-skills-os/tree/main/skills/visual-polish-reviewer" target="_blank" rel="noopener">
+                <span class="lb-name">visual-polish-reviewer</span> <span class="lb-repo">rakibulism/agent-skills-os</span>
+              </a>
+              <span class="lb-desc">Reviews UI for alignment, spacing, typography, and shadows — the details that separate fine from great.</span>
+            </td>
+            <td class="lb-cat-col"><span class="cat-badge des">DES</span></td>
+          </tr>
+          <tr class="lb-row" data-cat="design" data-search="interaction-designer ui design animation motion micro-interactions timing easing transitions framer">
+            <td class="lb-rank">8</td>
+            <td class="lb-skill">
+              <a href="https://github.com/rakibulism/agent-skills-os/tree/main/skills/interaction-designer" target="_blank" rel="noopener">
+                <span class="lb-name">interaction-designer</span> <span class="lb-repo">rakibulism/agent-skills-os</span>
+              </a>
+              <span class="lb-desc">Designs micro-interactions with timing, easing, and purpose, and outputs the animation code.</span>
+            </td>
+            <td class="lb-cat-col"><span class="cat-badge des">DES</span></td>
+          </tr>
+          <tr class="lb-row" data-cat="design" data-search="design-token-architect design-system tokens theming css-variables dark mode primitive semantic component layers">
+            <td class="lb-rank">9</td>
+            <td class="lb-skill">
+              <a href="https://github.com/rakibulism/agent-skills-os/tree/main/skills/design-token-architect" target="_blank" rel="noopener">
+                <span class="lb-name">design-token-architect</span> <span class="lb-repo">rakibulism/agent-skills-os</span>
+              </a>
+              <span class="lb-desc">Designs primitive, semantic, and component token layers with theme and dark-mode support.</span>
+            </td>
+            <td class="lb-cat-col"><span class="cat-badge des">DES</span></td>
+          </tr>
+          <tr class="lb-row" data-cat="design" data-search="design-to-code design-engineering frontend react css implementation figma screenshot accessible responsive">
+            <td class="lb-rank">10</td>
+            <td class="lb-skill">
+              <a href="https://github.com/rakibulism/agent-skills-os/tree/main/skills/design-to-code" target="_blank" rel="noopener">
+                <span class="lb-name">design-to-code</span> <span class="lb-repo">rakibulism/agent-skills-os</span>
+              </a>
+              <span class="lb-desc">Translates a Figma spec, screenshot, or description into accessible, responsive, token-driven code.</span>
+            </td>
+            <td class="lb-cat-col"><span class="cat-badge des">DES</span></td>
+          </tr>
+
+          <!-- Research -->
+          <tr class="lb-row" data-cat="research" data-search="summarizer summarization comprehension text tldr summary condense key points meeting notes">
+            <td class="lb-rank">11</td>
+            <td class="lb-skill">
+              <a href="https://github.com/rakibulism/agent-skills-os/tree/main/skills/summarizer" target="_blank" rel="noopener">
+                <span class="lb-name">summarizer</span> <span class="lb-repo">rakibulism/agent-skills-os</span>
+              </a>
+              <span class="lb-desc">Faithful summaries at TLDR, short, medium, or long lengths — preserving key facts and action items.</span>
+            </td>
+            <td class="lb-cat-col"><span class="cat-badge res">RES</span></td>
+          </tr>
+          <tr class="lb-row" data-cat="research" data-search="researcher research web citations analysis sources brief synthesize investigate compare">
+            <td class="lb-rank">12</td>
+            <td class="lb-skill">
+              <a href="https://github.com/rakibulism/agent-skills-os/tree/main/skills/researcher" target="_blank" rel="noopener">
+                <span class="lb-name">researcher</span> <span class="lb-repo">rakibulism/agent-skills-os</span>
+              </a>
+              <span class="lb-desc">Decomposes a question, gathers cited sources, and synthesizes a brief that separates fact from claim.</span>
+            </td>
+            <td class="lb-cat-col"><span class="cat-badge res">RES</span></td>
+          </tr>
+          <tr class="lb-row" data-cat="research" data-search="data-analyst data analysis statistics insights csv json patterns outliers distributions tabular">
+            <td class="lb-rank">13</td>
+            <td class="lb-skill">
+              <a href="https://github.com/rakibulism/agent-skills-os/tree/main/skills/data-analyst" target="_blank" rel="noopener">
+                <span class="lb-name">data-analyst</span> <span class="lb-repo">rakibulism/agent-skills-os</span>
+              </a>
+              <span class="lb-desc">Profiles, analyzes, and reports on tabular data — patterns, outliers, distributions — with caveats.</span>
+            </td>
+            <td class="lb-cat-col"><span class="cat-badge res">RES</span></td>
+          </tr>
+          <tr id="lb-empty" class="lb-empty" hidden>
+            <td colspan="3">No skills match your search.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ===== HOW IT WORKS ===== -->
+  <section class="section how">
+    <div class="container">
+      <span class="label">HOW IT WORKS</span>
+      <h2 class="section__title">Three steps to ship</h2>
+      <div class="how__grid">
+        <div class="how__step">
+          <span class="how__num">01</span>
+          <h3>Pick a skill</h3>
+          <p>Choose from 13 ready-made skills, or author your own by dropping a <code>SKILL.md</code> into the skills directory.</p>
+        </div>
+        <div class="how__step">
+          <span class="how__num">02</span>
+          <h3>Call an adapter</h3>
+          <p>One function per framework returns exactly the object that runtime wants — system prompt, instructions, template, or backstory.</p>
+        </div>
+        <div class="how__step">
+          <span class="how__num">03</span>
+          <h3>Ship it</h3>
+          <p>Hand the result to your agent. No build step, no lock-in — the same skill works everywhere.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FRAMEWORKS ===== -->
+  <section class="section frameworks" id="frameworks">
+    <div class="container">
+      <span class="label">WORKS WITH YOUR STACK</span>
+      <h2 class="section__title">One skill, every framework</h2>
+
+      <div class="tabs">
+        <div class="tabs__bar" role="tablist">
+          <button class="tab is-active" role="tab" data-tab="claude">Claude</button>
+          <button class="tab" role="tab" data-tab="openai">OpenAI</button>
+          <button class="tab" role="tab" data-tab="langchain">LangChain</button>
+          <button class="tab" role="tab" data-tab="crewai">CrewAI</button>
+          <button class="tab" role="tab" data-tab="autogen">AutoGen</button>
+        </div>
+
+        <div class="tabs__panels">
+          <pre class="code-panel is-active" data-panel="claude"><button class="copy-btn copy-btn--code" data-copy-text='import Anthropic from "@anthropic-ai/sdk";
+import { forClaude } from "universal-agent-skills";
+
+const anthropic = new Anthropic();
+const { system } = forClaude("code-reviewer");
+
+const msg = await anthropic.messages.create({
+  model: "claude-opus-4-7",
+  max_tokens: 4096,
+  system,
+  messages: [{ role: "user", content: "Review this diff:\n\n" + diff }],
+});'>Copy</button><code><span class="k">import</span> Anthropic <span class="k">from</span> <span class="s">"@anthropic-ai/sdk"</span>;
+<span class="k">import</span> { forClaude } <span class="k">from</span> <span class="s">"universal-agent-skills"</span>;
+
+<span class="k">const</span> anthropic = <span class="k">new</span> <span class="fn">Anthropic</span>();
+<span class="k">const</span> { system } = <span class="fn">forClaude</span>(<span class="s">"code-reviewer"</span>);
+
+<span class="k">const</span> msg = <span class="k">await</span> anthropic.messages.<span class="fn">create</span>({
+  model: <span class="s">"claude-opus-4-7"</span>,
+  max_tokens: <span class="n">4096</span>,
+  system,
+  messages: [{ role: <span class="s">"user"</span>, content: <span class="s">"Review this diff:\n\n"</span> + diff }],
+});</code></pre>
+
+          <pre class="code-panel" data-panel="openai"><button class="copy-btn copy-btn--code" data-copy-text='import OpenAI from "openai";
+import { forOpenAI } from "universal-agent-skills";
+
+const openai = new OpenAI();
+const assistant = await openai.beta.assistants.create({
+  model: "gpt-4o",
+  ...forOpenAI("researcher"),
+});'>Copy</button><code><span class="k">import</span> OpenAI <span class="k">from</span> <span class="s">"openai"</span>;
+<span class="k">import</span> { forOpenAI } <span class="k">from</span> <span class="s">"universal-agent-skills"</span>;
+
+<span class="k">const</span> openai = <span class="k">new</span> <span class="fn">OpenAI</span>();
+<span class="k">const</span> assistant = <span class="k">await</span> openai.beta.assistants.<span class="fn">create</span>({
+  model: <span class="s">"gpt-4o"</span>,
+  ...<span class="fn">forOpenAI</span>(<span class="s">"researcher"</span>),
+});</code></pre>
+
+          <pre class="code-panel" data-panel="langchain"><button class="copy-btn copy-btn--code" data-copy-text='import { PromptTemplate } from "@langchain/core/prompts";
+import { forLangChain } from "universal-agent-skills";
+
+const tw = forLangChain("test-writer");
+const prompt = PromptTemplate.fromTemplate(tw.template);
+const formatted = await prompt.format({
+  target_code: "...",
+  framework: "vitest",
+  existing_tests: "",
+});'>Copy</button><code><span class="k">import</span> { PromptTemplate } <span class="k">from</span> <span class="s">"@langchain/core/prompts"</span>;
+<span class="k">import</span> { forLangChain } <span class="k">from</span> <span class="s">"universal-agent-skills"</span>;
+
+<span class="k">const</span> tw = <span class="fn">forLangChain</span>(<span class="s">"test-writer"</span>);
+<span class="k">const</span> prompt = PromptTemplate.<span class="fn">fromTemplate</span>(tw.template);
+<span class="k">const</span> formatted = <span class="k">await</span> prompt.<span class="fn">format</span>({
+  target_code: <span class="s">"..."</span>,
+  framework: <span class="s">"vitest"</span>,
+  existing_tests: <span class="s">""</span>,
+});</code></pre>
+
+          <pre class="code-panel" data-panel="crewai"><button class="copy-btn copy-btn--code" data-copy-text='# The markdown skills are framework-neutral.
+# After npm install, read the file directly:
+#   node_modules/universal-agent-skills/skills/<name>/SKILL.md
+# Strip the frontmatter and use the body as your agent backstory.
+
+from crewai import Agent
+
+agent = Agent(
+    role="Researcher",
+    goal="Produce a cited research brief",
+    backstory=open("node_modules/universal-agent-skills/skills/researcher/SKILL.md").read(),
+)'>Copy</button><code><span class="c"># The markdown skills are framework-neutral.</span>
+<span class="c"># After npm install, read the file directly:</span>
+<span class="c">#   node_modules/universal-agent-skills/skills/&lt;name&gt;/SKILL.md</span>
+<span class="c"># Strip the frontmatter and use the body as your backstory.</span>
+
+<span class="k">from</span> crewai <span class="k">import</span> Agent
+
+agent = <span class="fn">Agent</span>(
+    role=<span class="s">"Researcher"</span>,
+    goal=<span class="s">"Produce a cited research brief"</span>,
+    backstory=<span class="fn">open</span>(<span class="s">"…/skills/researcher/SKILL.md"</span>).<span class="fn">read</span>(),
+)</code></pre>
+
+          <pre class="code-panel" data-panel="autogen"><button class="copy-btn copy-btn--code" data-copy-text='# Generate a JSON catalog from Node, hand it to Python:
+#   node -e "import('universal-agent-skills').then(m => \
+#     console.log(JSON.stringify(m.loadAllSkills(), null, 2)))" > skills.json
+
+import json
+from autogen import AssistantAgent
+
+skills = {s["name"]: s for s in json.load(open("skills.json"))}
+
+agent = AssistantAgent(
+    name="debugger",
+    system_message=skills["debugger"]["instructions"],
+)'>Copy</button><code><span class="c"># Generate a JSON catalog from Node, hand it to Python:</span>
+<span class="c">#   node -e "import('universal-agent-skills').then(...)"</span>
+
+<span class="k">import</span> json
+<span class="k">from</span> autogen <span class="k">import</span> AssistantAgent
+
+skills = { s[<span class="s">"name"</span>]: s <span class="k">for</span> s <span class="k">in</span> json.<span class="fn">load</span>(<span class="fn">open</span>(<span class="s">"skills.json"</span>)) }
+
+agent = <span class="fn">AssistantAgent</span>(
+    name=<span class="s">"debugger"</span>,
+    system_message=skills[<span class="s">"debugger"</span>][<span class="s">"instructions"</span>],
+)</code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== API ===== -->
+  <section class="section api" id="api">
+    <div class="container">
+      <span class="label">MOVE LIST</span>
+      <h2 class="section__title">A small, predictable API</h2>
+
+      <div class="api__grid">
+        <div class="api__block">
+          <h3 class="api__heading">LOAD</h3>
+          <pre class="code-panel is-active"><code><span class="fn">loadAllSkills</span>()<span class="p">:</span> Skill[]
+<span class="fn">getSkill</span>(name)<span class="p">:</span> Skill
+<span class="fn">listSkills</span>()<span class="p">:</span> SkillSummary[]
+<span class="fn">asSystemPrompt</span>(name)<span class="p">:</span> string</code></pre>
+        </div>
+        <div class="api__block">
+          <h3 class="api__heading">FRAMEWORK ADAPTERS</h3>
+          <pre class="code-panel is-active"><code><span class="fn">forClaude</span>(name)<span class="p">:</span>    { system, metadata }
+<span class="fn">forOpenAI</span>(name)<span class="p">:</span>    { name, description, instructions }
+<span class="fn">forLangChain</span>(name)<span class="p">:</span> { template, inputVariables }
+<span class="fn">forCrewAI</span>(name)<span class="p">:</span>    { role, goal, backstory }
+<span class="fn">forAutoGen</span>(name)<span class="p">:</span>   { name, system_message }
+<span class="fn">forGeneric</span>(name)<span class="p">:</span>   { name, description, version, … }</code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== AUTHORING ===== -->
+  <section class="section authoring" id="authoring">
+    <div class="container authoring__inner">
+      <div class="authoring__copy">
+        <span class="label">BUILD YOUR OWN</span>
+        <h2 class="section__title">Author a skill</h2>
+        <p class="section__lead">A skill is a directory containing a single <code>SKILL.md</code>. Drop it into <code>skills/</code> and <code>loadAllSkills()</code> picks it up — no registration step.</p>
+        <ul class="principles">
+          <li><strong>Lead with intent.</strong> The first paragraph says when to apply the skill.</li>
+          <li><strong>Process before output.</strong> How to think, not just what to emit.</li>
+          <li><strong>Specify output shape.</strong> Models drift without a target format.</li>
+          <li><strong>Name failure modes.</strong> "What to avoid" prevents common errors.</li>
+          <li><strong>Concrete over abstract.</strong> Examples beat advice.</li>
+        </ul>
+      </div>
+      <div class="authoring__code">
+        <pre class="code-panel is-active"><code><span class="p">---</span>
+<span class="at">name</span>: my-skill
+<span class="at">description</span>: One sentence on when to use
+  this skill and what it produces.
+<span class="at">version</span>: 0.1.0
+<span class="at">tags</span>: [domain, capability]
+<span class="at">inputs</span>:
+  - name: input_name
+    description: What this input is.
+    required: true
+<span class="p">---</span>
+
+<span class="h"># Body</span>
+
+The system-prompt content. Be specific
+about process, output format, and what
+to avoid.</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CTA ===== -->
+  <section class="section cta">
+    <div class="container cta__inner">
+      <h2 class="cta__title">Give your agent a skill in one line.</h2>
+      <div class="install install--lg" data-copy>
+        <code><span class="prompt">$</span> npm install universal-agent-skills</code>
+        <button class="copy-btn icon-btn" aria-label="Copy install command" data-copy-text="npm install universal-agent-skills">
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+        </button>
+      </div>
+      <div class="cta__links">
+        <a class="btn btn--primary" href="https://github.com/rakibulism/agent-skills-os" target="_blank" rel="noopener">View on GitHub</a>
+        <a class="btn btn--ghost" href="https://www.npmjs.com/package/universal-agent-skills" target="_blank" rel="noopener">View on npm</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <span class="footer__brand">
+        <svg class="nav__tri" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12,3 22,20 2,20" fill="currentColor"/></svg>
+        skills
+      </span>
+      <span class="footer__meta">MIT License · framework-agnostic agent skills</span>
+      <nav class="footer__links">
+        <a href="https://github.com/rakibulism/agent-skills-os" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://www.npmjs.com/package/universal-agent-skills" target="_blank" rel="noopener">npm</a>
+        <a href="https://github.com/rakibulism/agent-skills-os/issues" target="_blank" rel="noopener">Issues</a>
+      </nav>
+    </div>
+  </footer>
+  </div><!-- /.page -->
+
+  <div class="toast" id="toast" role="status" aria-live="polite">Copied to clipboard</div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

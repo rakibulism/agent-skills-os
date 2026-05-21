@@ -14,18 +14,30 @@ import {
 } from "../src/index.js";
 
 const EXPECTED = [
+  "academic-researcher",
   "code-reviewer",
   "component-designer",
+  "creative-artist",
   "data-analyst",
   "debugger",
   "design-to-code",
   "design-token-architect",
   "doc-writer",
+  "founder-coach",
   "interaction-designer",
+  "mathematician",
+  "philosopher",
+  "physician",
+  "product-designer",
   "refactorer",
   "researcher",
+  "scientist",
+  "startup-advisor",
+  "student",
   "summarizer",
   "test-writer",
+  "ux-ui-designer",
+  "venture-capitalist",
   "visual-polish-reviewer",
 ];
 
@@ -33,7 +45,7 @@ const all = loadAllSkills();
 assert.deepEqual(
   all.map((s) => s.name),
   EXPECTED,
-  "all 8 skills load with the expected names"
+  "all skills load with the expected names"
 );
 
 for (const s of all) {
@@ -43,8 +55,29 @@ for (const s of all) {
 }
 
 const summary = listSkills();
-assert.equal(summary.length, 13);
+assert.equal(summary.length, EXPECTED.length);
 assert.ok(summary.every((s) => s.name && s.description));
+
+// Each new skill should declare at least one input and carry tags.
+for (const name of [
+  "ux-ui-designer",
+  "product-designer",
+  "creative-artist",
+  "scientist",
+  "academic-researcher",
+  "philosopher",
+  "mathematician",
+  "physician",
+  "student",
+  "startup-advisor",
+  "venture-capitalist",
+  "founder-coach",
+]) {
+  const s = getSkill(name);
+  assert.ok(s.inputs.length > 0, `${name} declares inputs`);
+  assert.ok(s.tags.length > 0, `${name} declares tags`);
+  assert.ok(s.instructions.length > 500, `${name} has substantive instructions`);
+}
 
 const reviewer = getSkill("code-reviewer");
 assert.equal(reviewer.name, "code-reviewer");
@@ -75,5 +108,10 @@ assert.equal(gen.name, "data-analyst");
 assert.ok(Array.isArray(gen.inputs) && gen.inputs.length > 0);
 
 assert.equal(adapters.claude, forClaude);
+
+// Spot-check a LangChain template for one of the new skills.
+const phil = forLangChain("philosopher");
+assert.ok(phil.inputVariables.includes("question"));
+assert.ok(phil.template.includes("{question}"));
 
 console.log("OK — all smoke checks passed (" + all.length + " skills loaded)");
