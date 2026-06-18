@@ -83,6 +83,16 @@ const formatted = await prompt.format({
 |---|---|
 | `creative-artist` | Generates original concepts and creative work — pushes past clichés to bold, developed ideas |
 
+### Video & Media
+
+| Skill | What it does |
+|---|---|
+| `video-editor` | Cuts footage into a finished edit — story structure, pacing, cut types (J/L, match, cut-on-action) |
+| `color-grading` | Corrects then grades video — scope-driven balance, log/LUT handling, look-building, shot matching |
+| `sound-design` | Layers and mixes dialogue/music/ambience/SFX to platform loudness targets (LUFS) |
+| `motion-graphics` | Designs titles, lower thirds, captions, and animated overlays — legibility, timing, safe areas |
+| `ffmpeg-operator` | Generates correct, least-destructive FFmpeg commands with every flag explained (+ recipe cookbook) |
+
 ### Knowledge & Research
 
 | Skill | What it does |

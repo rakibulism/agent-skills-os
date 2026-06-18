@@ -16,6 +16,7 @@ import {
 const EXPECTED = [
   "academic-researcher",
   "code-reviewer",
+  "color-grading",
   "component-designer",
   "creative-artist",
   "data-analyst",
@@ -23,21 +24,25 @@ const EXPECTED = [
   "design-to-code",
   "design-token-architect",
   "doc-writer",
+  "ffmpeg-operator",
   "founder-coach",
   "interaction-designer",
   "mathematician",
+  "motion-graphics",
   "philosopher",
   "physician",
   "product-designer",
   "refactorer",
   "researcher",
   "scientist",
+  "sound-design",
   "startup-advisor",
   "student",
   "summarizer",
   "test-writer",
   "ux-ui-designer",
   "venture-capitalist",
+  "video-editor",
   "visual-polish-reviewer",
 ];
 
@@ -72,6 +77,11 @@ for (const name of [
   "startup-advisor",
   "venture-capitalist",
   "founder-coach",
+  "video-editor",
+  "color-grading",
+  "sound-design",
+  "motion-graphics",
+  "ffmpeg-operator",
 ]) {
   const s = getSkill(name);
   assert.ok(s.inputs.length > 0, `${name} declares inputs`);
