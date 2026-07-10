@@ -19,7 +19,7 @@
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpolygon points='50,12 90,82 10,82' fill='%23fff'/%3E%3C/svg%3E" />
 </head>
 <body>
-  <!-- ===== STORM BACKGROUND ===== -->
+  <!-- ===== AMBIENT BACKDROP ===== -->
   <div class="sky" aria-hidden="true">
     <span class="smoke smoke--1" data-depth="0.10"></span>
     <span class="smoke smoke--2" data-depth="0.06"></span>
@@ -29,8 +29,6 @@
     <span class="smoke smoke--6" data-depth="0.04"></span>
     <div class="cursor-glow"></div>
   </div>
-  <div class="fx-flash" aria-hidden="true"></div>
-  <svg class="fx-bolts" aria-hidden="true"><path class="bolt"></path><path class="bolt bolt--branch"></path></svg>
 
   <div class="page">
   <!-- ===== NAV ===== -->
@@ -58,13 +56,20 @@
         <div class="hero__brand">
           <h1 class="wordmark" aria-label="SKILLS">
             <svg class="wordmark__svg" viewBox="0 0 640 116" role="img" aria-label="SKILLS" preserveAspectRatio="xMinYMid meet">
+              <defs>
+                <linearGradient id="skillsGrad" x1="0" y1="0" x2="1" y2="0.35">
+                  <stop offset="0" stop-color="#d96d98"/>
+                  <stop offset="0.42" stop-color="#d27aa2"/>
+                  <stop offset="0.72" stop-color="#aa79bf"/>
+                  <stop offset="1" stop-color="#8c69c3"/>
+                </linearGradient>
+              </defs>
               <g font-family="'Press Start 2P', monospace" font-size="74" letter-spacing="0">
-                <text x="12" y="82" textLength="616" lengthAdjust="spacingAndGlyphs" transform="translate(10,10)" fill="#000000">SKILLS</text>
-                <text x="12" y="82" textLength="616" lengthAdjust="spacingAndGlyphs" transform="translate(8,8)" fill="#19191b">SKILLS</text>
-                <text x="12" y="82" textLength="616" lengthAdjust="spacingAndGlyphs" transform="translate(6,6)" fill="#000000">SKILLS</text>
-                <text x="12" y="82" textLength="616" lengthAdjust="spacingAndGlyphs" transform="translate(4,4)" fill="#2b2b2e">SKILLS</text>
-                <text x="12" y="82" textLength="616" lengthAdjust="spacingAndGlyphs" transform="translate(2,2)" fill="#000000">SKILLS</text>
-                <text x="12" y="82" textLength="616" lengthAdjust="spacingAndGlyphs" fill="#ededed" stroke="#000000" stroke-width="1">SKILLS</text>
+                <text x="12" y="82" textLength="616" lengthAdjust="spacingAndGlyphs" transform="translate(7,7)" fill="#d7d7dc">SKILLS</text>
+                <text x="12" y="82" textLength="616" lengthAdjust="spacingAndGlyphs" transform="translate(5,5)" fill="#c7c7ce">SKILLS</text>
+                <text x="12" y="82" textLength="616" lengthAdjust="spacingAndGlyphs" transform="translate(3,3)" fill="#a9a9b2">SKILLS</text>
+                <text x="12" y="82" textLength="616" lengthAdjust="spacingAndGlyphs" fill="#393846">SKILLS</text>
+                <text x="12" y="82" textLength="616" lengthAdjust="spacingAndGlyphs" fill="url(#skillsGrad)" opacity="0.9">SKILLS</text>
               </g>
             </svg>
           </h1>
