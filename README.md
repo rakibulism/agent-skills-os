@@ -110,6 +110,17 @@ const formatted = await prompt.format({
 |---|---|
 | `creative-artist` | Generates original concepts and creative work — pushes past clichés to bold, developed ideas |
 
+### Creative & Interactive Web Engineering
+
+| Skill | What it does |
+|---|---|
+| `interactive-web-engineer` | Plans/reviews award-tier interactive sites — feeling → technique → frame budget → fallback |
+| `motion-design-engineer` | Physically-feeling motion — springs, momentum, flick/drag, rubber-banding, easing |
+| `webgl-creative-coder` | Three.js/R3F scenes, GLSL shaders, SDFs, noise, particle systems |
+| `frontend-performance-engineer` | Profiles jank/leaks, fixes Core Web Vitals, sets enforced asset/bundle budgets |
+| `animated-component-architect` | Structures animation-heavy component state — avoids re-render storms, types motion APIs |
+| `page-flip-builder` | Builds page-turn/flipbook effects from scratch — fold geometry, drag physics, virtualization |
+
 ### Video & Media
 
 | Skill | What it does |

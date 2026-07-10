@@ -16,6 +16,7 @@ import {
 const EXPECTED = [
   "academic-researcher",
   "accessibility-auditor",
+  "animated-component-architect",
   "brand-voice-reviewer",
   "campaign-planner",
   "code-reviewer",
@@ -33,10 +34,14 @@ const EXPECTED = [
   "email-sequence-writer",
   "ffmpeg-operator",
   "founder-coach",
+  "frontend-performance-engineer",
   "incident-commander",
   "interaction-designer",
+  "interactive-web-engineer",
   "mathematician",
+  "motion-design-engineer",
   "motion-graphics",
+  "page-flip-builder",
   "philosopher",
   "physician",
   "product-designer",
@@ -61,6 +66,7 @@ const EXPECTED = [
   "venture-capitalist",
   "video-editor",
   "visual-polish-reviewer",
+  "webgl-creative-coder",
 ];
 
 const all = loadAllSkills();
