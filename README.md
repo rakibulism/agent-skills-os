@@ -86,6 +86,7 @@ const formatted = await prompt.format({
 | `accessibility-auditor` | Audits against WCAG 2.1/2.2 AA — contrast, keyboard nav, semantics, touch targets |
 | `user-researcher` | Plans studies (interviews/usability tests/surveys) and synthesizes findings into themes |
 | `ux-copywriter` | Writes microcopy — errors, empty states, buttons, confirmation dialogs |
+| `ux-expert-rakibulism` | Reviews UI screens in "rakibulism" voice — direct, client-facing, promise-list-style feedback |
 
 ### Marketing
 

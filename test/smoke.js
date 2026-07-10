@@ -56,6 +56,7 @@ const EXPECTED = [
   "testing-strategist",
   "user-researcher",
   "ux-copywriter",
+  "ux-expert-rakibulism",
   "ux-ui-designer",
   "venture-capitalist",
   "video-editor",
