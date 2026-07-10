@@ -61,9 +61,15 @@ const formatted = await prompt.format({
 |---|---|
 | `code-reviewer` | Reviews code for bugs, security, performance — prioritized findings with file:line + fixes |
 | `test-writer` | Generates unit/integration tests covering happy path, edges, errors |
+| `testing-strategist` | Designs a test strategy — pyramid shape, risk mapping, what to explicitly not test |
 | `refactorer` | Refactors with a behavior-equivalence argument; small safe steps |
 | `debugger` | Diagnoses errors with root cause, fix, and verification step |
 | `doc-writer` | Generates READMEs, API refs, JSDoc/docstrings |
+| `system-architect` | Designs services/APIs/data models, or writes an ADR comparing options with trade-offs |
+| `tech-debt-auditor` | Categorizes and prioritizes tech debt into a risk-ranked refactoring backlog |
+| `deploy-checklist-writer` | Builds a pre-deployment checklist with rollback triggers, specific to the actual change |
+| `incident-commander` | Runs incident triage, status updates, and blameless postmortems |
+| `standup-reporter` | Turns commits/tickets/notes into a yesterday/today/blockers update |
 
 ### Design & Design Engineering
 
@@ -76,6 +82,26 @@ const formatted = await prompt.format({
 | `interaction-designer` | Designs micro-interactions with timing, easing, purpose; outputs animation code |
 | `design-token-architect` | Designs primitive/semantic/component token layers with theme support |
 | `design-to-code` | Translates Figma or design specs into accessible, responsive, token-driven component code |
+| `design-critic` | Structured design feedback on hierarchy, flow, and consistency, calibrated to design stage |
+| `accessibility-auditor` | Audits against WCAG 2.1/2.2 AA — contrast, keyboard nav, semantics, touch targets |
+| `user-researcher` | Plans studies (interviews/usability tests/surveys) and synthesizes findings into themes |
+| `ux-copywriter` | Writes microcopy — errors, empty states, buttons, confirmation dialogs |
+
+### Marketing
+
+| Skill | What it does |
+|---|---|
+| `campaign-planner` | Full campaign brief — objectives, audience, channels, content calendar, success metrics |
+| `brand-voice-reviewer` | Reviews copy against a brand's voice/style guide with before/after fixes |
+| `email-sequence-writer` | Designs multi-email sequences with timing, branching logic, and exit conditions |
+| `competitive-analyst` | Positioning/messaging comparison across competitors — gaps, threats, opportunities |
+| `seo-strategist` | SEO audit — on-page, technical, content gaps, keyword opportunities, prioritized plan |
+
+### Productivity
+
+| Skill | What it does |
+|---|---|
+| `task-manager` | Organizes rough notes/tickets into a prioritized, trackable task list |
 
 ### Creativity
 
