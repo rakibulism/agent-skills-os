@@ -47,7 +47,7 @@
   "bugs": {
     "url": "https://github.com/rakibulism/agent-skills-os/issues"
   },
-  "homepage": "https://github.com/rakibulism/agent-skills-os#readme",
+  "homepage": "https://agent-skills-os.vercel.app/",
   "engines": {
     "node": ">=18"
   }
