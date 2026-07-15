@@ -121,6 +121,55 @@ const formatted = await prompt.format({
 | `animated-component-architect` | Structures animation-heavy component state — avoids re-render storms, types motion APIs |
 | `page-flip-builder` | Builds page-turn/flipbook effects from scratch — fold geometry, drag physics, virtualization |
 
+### Design Engineer Curriculum
+
+A 9-track training system for building award-tier interactive web experiences. `design-engineer` is the top-level orchestrator; each `deN-*` skill is one rail of the curriculum, and the `wgl-*` skills are the Track 9 rendering/animation library layer under `webgl-motion-stack`.
+
+| Skill | What it does |
+|---|---|
+| `design-engineer` | Orchestrates elite design engineering — fuses visual taste with GPU-level performance across all tracks |
+| `de1-aesthetic-deconstruction` | Reverse-engineers premium interactions into exact timing, easing, shadow, and type values |
+| `de1-grid-spacing` | Geometric spacing scales, spacing-as-hierarchy, fluid `clamp()` layouts, deliberate grid-breaking |
+| `de1-micro-typography` | Size-responsive tracking/line-height curves, orphan/widow control, OpenType features |
+| `de1-optical-alignment` | Rules for nudging icons/shapes off mathematical center so they read as balanced |
+| `de1-perceptual-color` | Builds OKLCH/HCT palettes with uniform perceptual contrast across light/dark modes |
+| `de2-figma-to-code` | Structures Figma files with auto-layout, components, and variables as a direct DOM mirror |
+| `de2-interaction-storyboarding` | Cell-by-cell keyframe specs for animation — timing, easing, interruption behavior |
+| `de2-motion-prototyping` | Validates motion with After Effects/Spline/Rive before writing shader or animation code |
+| `de2-perspective-sketching` | 1/2/3-point perspective sketching to block out 3D scenes before building |
+| `de3-asset-pipeline` | Low-poly modeling, lighting bakes, GLTF/GLB compression to under 500kb |
+| `de3-glsl-shaders` | Vertex/fragment shader writing — SDFs, raymarching, procedural noise |
+| `de3-linear-algebra` | Vector/matrix math for graphics — dot/cross products, transforms, quaternions |
+| `de3-threejs-r3f` | Three.js/R3F scene architecture — cameras, lighting, materials, draw-call budgets |
+| `de4-bezier-splines` | Bezier/spline math — `cubic-bezier()` easing, Catmull-Rom paths, arc-length reparameterization |
+| `de4-collision-detection` | AABB/SAT collision tests, resolution, spatial-hash broad-phase for UI physics |
+| `de4-euler-integration` | Real-time physics loops with delta-time, dt clamping, frame-rate independence |
+| `de4-momentum-inertia` | Pointer velocity tracking, friction glide, snap-point projection, rubber-band overscroll |
+| `de4-spring-damper` | Custom spring-mass-damper solvers, damping presets, interruptible retargeting |
+| `de5-canvas-2d` | Production-quality Canvas 2D — high-DPI setup, offscreen pre-rendering, particle batching |
+| `de5-critical-rendering-path` | Diagnoses jank via JS→Style→Layout→Paint→Composite; eliminates layout thrashing |
+| `de5-gpu-compositing` | Promotes elements to GPU compositor layers with transform/will-change/opacity |
+| `de5-lowlevel-js` | Typed arrays, zero-allocation render loops, Web Workers, the canonical RAF ticker |
+| `de5-pointer-gestures` | Unified Pointer Events, capture, velocity tracking, multi-touch pinch/rotate math |
+| `de6-component-composition` | Isolated, accessible drop-in components — compound patterns, headless-core/styled-shell |
+| `de6-state-systems` | Interaction state without re-render storms — Zustand, XState, Signals, re-render audits |
+| `de6-token-pipeline` | Automates Figma-variable exports into Tailwind/CSS/SCSS/TS design token pipelines |
+| `de6-typescript` | Strict typing for animation/gesture code — discriminated unions, branded types, generics |
+| `de7-core-web-vitals` | Elite LCP/INP/CLS on animation-heavy sites — poster LCP, hydration, layout reservation |
+| `de7-profiling` | Chrome DevTools profiling — flame charts, Long Tasks, heap-snapshot leak hunting |
+| `de7-resource-budgets` | Concrete JS/3D/image/font budgets, lazy-loading, KTX2/AVIF asset strategy |
+| `de7-webgl-fallbacks` | Device-tiered quality, FPS-monitored degradation, WebGL context-loss recovery |
+| `de8-bundling` | Vite/Rollup/Webpack setup — three.js tree-shaking, code splitting, bundle analysis |
+| `de8-cicd` | GitHub Actions pipelines — perf budgets, Lighthouse CI, visual regression, auto deploys |
+| `de8-edge-deployment` | Static-first edge architecture — platform choice, CDN caching, preview deployments |
+| `de8-telemetry` | Production monitoring — Sentry, WebGL error capture, RUM Core Web Vitals, FPS sampling |
+| `webgl-motion-stack` | Chooses the rendering/animation library layer — GSAP, PixiJS, Theatre.js, batching |
+| `wgl-creative-vision` | Concepts a visual mechanism before code — feeling → mechanism → illusion over brute force |
+| `wgl-draw-call-batching` | Deep draw-call reduction — instancing, texture atlases, frustum culling, LOD |
+| `wgl-gsap-motion` | GSAP timelines, ScrollTrigger, custom easing, syncing to WebGL/Canvas render loops |
+| `wgl-pixijs-2d-engine` | PixiJS 2D WebGL engine — ParticleContainer, sprite batching, custom GLSL filters |
+| `wgl-theatrejs-editor` | Theatre.js scrubbable timeline editor bound to Three.js/R3F objects and uniforms |
+
 ### Video & Media
 
 | Skill | What it does |
