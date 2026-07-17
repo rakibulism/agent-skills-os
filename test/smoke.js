@@ -31,6 +31,7 @@ const ANCHOR_NAMES = [
   "webgl-creative-animator",
   "elite-website-ux-ui-designer",
   "premium-restraint-web-design",
+  "cinematic-editorial-web-design",
   "seo-strategist",
   "philosopher",
   "ux-expert-rakibulism",
@@ -200,6 +201,19 @@ assert.ok(
   restraintRelated.some((s) => s.name === "elite-website-ux-ui-designer") &&
     restraintRelated.some((s) => s.name === "design-engineer"),
   "premium-restraint-web-design's related skills include elite-website-ux-ui-designer and design-engineer"
+);
+
+// cinematic-editorial-web-design <-> premium-restraint-web-design (sibling taste profiles)
+assert.ok(
+  restraintRelated.some((s) => s.name === "cinematic-editorial-web-design"),
+  "premium-restraint-web-design's related skills include cinematic-editorial-web-design"
+);
+const cinematicRelated = getRelatedSkills("cinematic-editorial-web-design");
+assert.ok(
+  cinematicRelated.some((s) => s.name === "premium-restraint-web-design") &&
+    cinematicRelated.some((s) => s.name === "elite-website-ux-ui-designer") &&
+    cinematicRelated.some((s) => s.name === "design-engineer"),
+  "cinematic-editorial-web-design's related skills include premium-restraint-web-design, elite-website-ux-ui-designer, and design-engineer"
 );
 
 // Multi-tool export adapters: Cursor .mdc, AGENTS.md, and Stitch prompt.

@@ -10,7 +10,7 @@ inputs:
   - name: reference
     description: A specific reference site, screenshot, or brand to match the taste level of, if one exists (e.g. a competitor, a mood-board link, an existing brand). If none is given, ask rather than defaulting to a generic bright SaaS look.
     required: false
-related: [elite-website-ux-ui-designer, design-engineer]
+related: [elite-website-ux-ui-designer, design-engineer, cinematic-editorial-web-design]
 author: rakibulism
 author_url: https://x.com/rakibulism
 ---
@@ -61,3 +61,7 @@ Treat every decision derived this way as a **hard constraint**, not a suggestion
 ## Applying this
 
 Before generating a single component, write down the five-pillar token sheet (palette, type scale, radius/spacing scale, motion timing, icon library) as an explicit list the user can see and correct — this is the same "tokens before components" discipline the case study's own build order specifies, and it's what separates a genuinely restrained design from one that merely uses fewer colors by accident.
+
+## Related Skills — load automatically, don't wait to be asked by name
+
+If the brand needs to **borrow authority** (press coverage, institutional affiliation, verified real-person testimonials) rather than standing entirely on its own object/material quality — a service brand (clinic, firm, membership) rather than a physical hardware product — also load **`cinematic-editorial-web-design`**: it's the sibling taste profile for exactly that case, with a bi-modal black/white palette and a two-typeface sans+serif system instead of this skill's single-typeface, near-monochrome hardware register. Declared in frontmatter as `related: [elite-website-ux-ui-designer, design-engineer, cinematic-editorial-web-design]`.
