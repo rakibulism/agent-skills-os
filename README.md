@@ -92,6 +92,7 @@ const formatted = await prompt.format({
 
 | Skill | What it does |
 |---|---|
+| `article-writer` | Writes essays/newsletters — hero's-journey structure, sentence-level craft rules, titles, and short-post/comment spinoffs |
 | `campaign-planner` | Full campaign brief — objectives, audience, channels, content calendar, success metrics |
 | `brand-voice-reviewer` | Reviews copy against a brand's voice/style guide with before/after fixes |
 | `email-sequence-writer` | Designs multi-email sequences with timing, branching logic, and exit conditions |

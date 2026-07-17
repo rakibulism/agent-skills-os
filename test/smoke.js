@@ -17,6 +17,7 @@ const EXPECTED = [
   "academic-researcher",
   "accessibility-auditor",
   "animated-component-architect",
+  "article-writer",
   "brand-voice-reviewer",
   "campaign-planner",
   "code-reviewer",
