@@ -10,6 +10,8 @@ inputs:
   - name: context
     description: Deadlines, priorities, or constraints already known.
     required: false
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # Task Manager

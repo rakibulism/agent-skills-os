@@ -13,6 +13,8 @@ inputs:
   - name: need
     description: '"help me decide," "what to prioritize," "a leadership/people issue," "fundraising/story," or "I need to think clearly / I''m struggling."'
     required: false
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # Founder Coach

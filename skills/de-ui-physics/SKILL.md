@@ -1,6 +1,8 @@
 ---
 name: de-ui-physics
 description: Track 4 of the Design Engineer curriculum — Newtonian physics in UI code. Euler integration loops, spring-mass-damper solvers (Hooke's law), flick momentum and friction, collision detection (AABB, bounding spheres, SAT), and custom bezier/Hermite interpolation math. Use this skill whenever the user wants natural-feeling motion such as springy animations, draggable elements with momentum, flick-to-dismiss, rubber-banding, bouncy transitions, elements that collide or repel, custom easing curves, inertial scrolling, or asks why an animation "feels robotic/linear/cheap". Also trigger when implementing anything with Framer Motion springs, react-spring, GSAP inertia, or hand-rolled animation loops.
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # Track 4: The Physics Engine

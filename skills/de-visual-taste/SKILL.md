@@ -1,6 +1,8 @@
 ---
 name: de-visual-taste
 description: Track 1 of the Design Engineer curriculum — the designer's vision. Detailed rules for optical alignment, perceptual color (OKLCH/HCT), micro-typography, spacing scales and grid systems, and deconstructing premium interactions into exact timing curves, radii, gradients, and shadows. Use this skill whenever the user asks about visual polish, color palettes, dark mode color systems, typography settings, letter-spacing, spacing scales, layout grids, "why does this look off", visual critique of a UI, or wants to replicate the look/feel of a premium website. Also trigger any time Claude generates UI code or design specs where colors, type, spacing, or shadows are being chosen.
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # Track 1: The Designer's Vision

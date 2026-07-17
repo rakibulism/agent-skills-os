@@ -10,6 +10,8 @@ inputs:
   - name: constraints
     description: Existing test tooling, team size, or timeline constraints.
     required: false
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # Testing Strategist

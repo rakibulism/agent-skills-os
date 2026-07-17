@@ -13,6 +13,8 @@ inputs:
   - name: platform
     description: Web (CSS/JS), iOS, Android, React Native, etc.
     required: false
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # Interaction Designer

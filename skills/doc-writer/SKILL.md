@@ -13,6 +13,8 @@ inputs:
   - name: audience
     description: Who reads this — "library consumers", "internal team", "first-time users".
     required: false
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # Doc Writer

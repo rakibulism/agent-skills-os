@@ -16,6 +16,8 @@ inputs:
   - name: format
     description: Output format — "bullets", "prose", or "structured" (with sections). Default bullets.
     required: false
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # Summarizer

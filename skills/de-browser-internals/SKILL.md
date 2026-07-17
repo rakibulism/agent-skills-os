@@ -1,6 +1,8 @@
 ---
 name: de-browser-internals
 description: Track 5 of the Design Engineer curriculum — pure core engineering against browser internals. The critical rendering path, avoiding layout thrashing, GPU compositor layers (transform/opacity/will-change), high-DPI Canvas 2D rendering, unified pointer/touch/gesture event systems with velocity math, and low-level JS performance (typed arrays, Web Workers, requestAnimationFrame). Use this skill whenever the user asks about animation jank, layout thrashing, reflows, compositing, canvas rendering or particles, pointer/touch/pinch gesture handling, requestAnimationFrame loops, Web Workers, or writing high-performance vanilla JavaScript for visual work. Also trigger whenever Claude writes any animation loop, canvas code, or gesture handler.
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # Track 5: Pure Core Engineering

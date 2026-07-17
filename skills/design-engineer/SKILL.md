@@ -8,6 +8,8 @@ inputs:
     description: The interactive/creative web project being built, reviewed, or planned.
     required: true
 related: [webgl-creative-animator, elite-website-ux-ui-designer]
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # Design Engineer (Core Orchestrator)

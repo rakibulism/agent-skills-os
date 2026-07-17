@@ -13,6 +13,8 @@ inputs:
   - name: context
     description: Current level, time available, how you'll be assessed, and what's been hard so far.
     required: false
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # Student

@@ -13,6 +13,8 @@ inputs:
   - name: schema
     description: Optional column descriptions/types if not obvious.
     required: false
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # Data Analyst

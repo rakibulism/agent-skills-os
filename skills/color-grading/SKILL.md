@@ -13,6 +13,8 @@ inputs:
   - name: deliverable
     description: Where it ends up — Rec.709 web, HDR, broadcast, theatrical — which sets the target and limits.
     required: false
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # Color Grading

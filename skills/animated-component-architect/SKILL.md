@@ -10,6 +10,8 @@ inputs:
   - name: framework
     description: React, Vue, Svelte, or framework-agnostic.
     required: false
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # Animated Component Architect

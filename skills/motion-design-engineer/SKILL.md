@@ -10,6 +10,8 @@ inputs:
   - name: feeling
     description: The intended quality of motion, e.g. "light and quick", "heavy and deliberate", "bouncy and playful".
     required: false
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # Motion Design Engineer

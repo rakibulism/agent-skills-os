@@ -234,8 +234,12 @@ forAutoGen(name):      { name, system_message }
 forCursor(name):       { filename, content }             // Cursor .cursor/rules/*.mdc file
 forAgentsMd(name):     { filename, content }             // AGENTS.md section (Codex, OpenCode, Antigravity, Cursor, Windsurf, Copilot...)
 forStitchPrompt(name): { content }                       // plain paste-ready prompt, no file convention
-forGeneric(name):      { name, description, version, tags, inputs, related, instructions }
+forGeneric(name):      { name, description, version, tags, inputs, related, author, author_url, instructions }
 ```
+
+### Author attribution
+
+`Skill.author` / `Skill.author_url` are populated from a skill's own frontmatter (`author: rakibulism`, `author_url: https://x.com/rakibulism`) and are `null` when a skill doesn't declare them — including every third-party-authored and plugin-marketplace-sourced skill in this repo, whose real author is credited in their own frontmatter/metadata instead. Only add these fields to a skill you actually wrote; never overwrite another skill's existing attribution.
 
 ### Related skills — so an agent doesn't need every name typed up front
 
@@ -334,6 +338,8 @@ inputs:
     description: What this input is.
     required: true
 related: [other-skill-name]  # optional — see "Related skills" above
+author: your-name            # optional — only if you wrote this skill yourself
+author_url: https://...      # optional — link to your profile/site
 ---
 
 # Body

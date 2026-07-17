@@ -13,6 +13,8 @@ inputs:
   - name: competitors
     description: Known competitors ranking for the target terms, if any.
     required: false
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # SEO Strategist

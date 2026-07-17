@@ -13,6 +13,8 @@ inputs:
   - name: goal
     description: '"validate the idea," "find/measure PMF," "design an experiment," "pick a GTM motion," "fix the metrics," or "what to do next."'
     required: false
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # Startup Advisor

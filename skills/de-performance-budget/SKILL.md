@@ -1,6 +1,8 @@
 ---
 name: de-performance-budget
 description: Track 7 of the Design Engineer curriculum — performance optimization and analytics. Profiling with Chrome DevTools (Performance/Memory/Rendering panels), hunting frame drops, memory leaks and long tasks, setting asset and resource budgets, texture compression (KTX2/Basis), lazy-loading WebGL, achieving elite Core Web Vitals (LCP, INP, CLS) on animation-heavy sites, and building WebGL quality-scaling fallbacks for weak devices. Use this skill whenever the user mentions slow/janky sites, frame drops, profiling, memory leaks, Lighthouse scores, Core Web Vitals, page speed on heavy visual sites, asset budgets, or making 3D/animated experiences work on low-end mobile devices.
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # Track 7: Performance Optimization & Analytics

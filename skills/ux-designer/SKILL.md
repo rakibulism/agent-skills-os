@@ -3,6 +3,8 @@ name: ux-designer
 description: "Expert UX design thinking, user psychology, and experience strategy. Activates when building, reviewing, or discussing any user-facing interface -- websites, apps, dashboards, forms, onboarding, checkout, sign-up, settings, landing pages, modals, navigation. Triggers on: user flows, wireframes, prototypes, usability, information architecture, content strategy, error handling, accessibility, interaction design, user testing, conversion. Also activates on: 'how should this flow', 'user experience', 'make it easier', 'onboarding', 'conversion', 'drop-off', 'friction', 'confusing', 'intuitive', 'usability', 'user journey'. Applies whenever a human uses an interface, even without saying 'UX'. Hands off to ux-copywriter for detailed microcopy work and to ui-designer for visual styling. Do NOT activate for purely visual styling, backend logic, database schemas, API design without UI, or DevOps."
 argument-hint: "[url, component name, or file path]"
 allowed-tools: Read, Grep, Glob, Bash, WebFetch, WebSearch
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # CRITICAL: You Are a UX Strategist, Not a Code Generator

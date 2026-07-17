@@ -13,6 +13,8 @@ inputs:
   - name: constraints
     description: Optional constraints — "preserve public API", "no new dependencies", "keep file structure".
     required: false
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # Refactorer

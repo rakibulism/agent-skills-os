@@ -10,6 +10,8 @@ inputs:
   - name: options
     description: Specific options being weighed, if this is a decision (e.g. "Kafka vs SQS") rather than a from-scratch design.
     required: false
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # System Architect

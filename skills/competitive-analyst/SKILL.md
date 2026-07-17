@@ -13,6 +13,8 @@ inputs:
   - name: focus
     description: Optional focus, e.g. "pricing", "a specific competitor's new launch", "messaging only".
     required: false
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # Competitive Analyst

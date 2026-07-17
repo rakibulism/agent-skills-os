@@ -10,6 +10,8 @@ inputs:
   - name: context
     description: What this surface is, the design system it should follow, and which area the user feels is "off" if known.
     required: false
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # Visual Polish Reviewer

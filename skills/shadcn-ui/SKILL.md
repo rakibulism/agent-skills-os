@@ -1,6 +1,8 @@
 ---
 name: shadcn-ui
 description: shadcn/ui component patterns with Radix primitives and Tailwind styling. Use when building UI components, using CVA variants, implementing compound components, or styling with data-slot attributes. Triggers on shadcn, cva, cn(), data-slot, Radix, Button, Card, Dialog, VariantProps.
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # shadcn/ui Component Development

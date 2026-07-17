@@ -13,6 +13,8 @@ inputs:
   - name: goal
     description: 'What you need out of this — e.g. "decide if we build it," "scope the MVP," "define success metrics," "frame the problem for the team."'
     required: false
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # Product Designer

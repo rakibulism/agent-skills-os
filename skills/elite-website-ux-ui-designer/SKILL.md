@@ -11,6 +11,8 @@ inputs:
     description: Where this sits in the process — early concept, mid-build critique, pre-launch conversion audit, or post-launch retrospective — since the right framework differs by stage.
     required: false
 related: [design-engineer, ux-ui-designer]
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # Elite Website UX/UI Designer

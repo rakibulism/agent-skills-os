@@ -13,6 +13,8 @@ inputs:
   - name: context
     description: Where this comes up (a real decision, a text, a debate) and any commitments or constraints to respect.
     required: false
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # Philosopher

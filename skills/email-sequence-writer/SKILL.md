@@ -13,6 +13,8 @@ inputs:
   - name: length
     description: How many emails or how long the sequence should run.
     required: false
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # Email Sequence Writer

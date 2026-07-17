@@ -16,6 +16,8 @@ inputs:
   - name: environment
     description: Runtime, OS, version, recent changes — anything that changed when it started failing.
     required: false
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # Debugger

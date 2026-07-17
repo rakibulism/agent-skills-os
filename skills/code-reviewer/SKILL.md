@@ -13,6 +13,8 @@ inputs:
   - name: focus
     description: Optional focus area, e.g. "security", "performance", "readability".
     required: false
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # Code Reviewer

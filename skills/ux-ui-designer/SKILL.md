@@ -14,6 +14,8 @@ inputs:
     description: '"explore" (early divergent ideas), "design" (commit to a solution + spec), or "critique" (review existing work). Default infer from the brief.'
     required: false
 related: [elite-website-ux-ui-designer]
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # UX/UI Designer

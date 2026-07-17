@@ -13,6 +13,8 @@ inputs:
   - name: goal
     description: '"evaluate this deal," "write/critique a memo," "size the market," "reason about valuation/terms," or "think about portfolio/returns."'
     required: false
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # Venture Capitalist

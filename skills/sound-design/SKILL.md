@@ -13,6 +13,8 @@ inputs:
   - name: mood
     description: The feeling the sound should create — tense, warm, epic, intimate, energetic.
     required: false
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # Sound Design

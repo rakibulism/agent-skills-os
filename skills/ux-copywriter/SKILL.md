@@ -10,6 +10,8 @@ inputs:
   - name: constraints
     description: Character/space limits, tone requirements, or existing copy patterns to match.
     required: false
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # UX Copywriter

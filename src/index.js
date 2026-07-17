@@ -125,6 +125,8 @@ export function loadAllSkills() {
         tags: frontmatter.tags || [],
         inputs: frontmatter.inputs || [],
         related: frontmatter.related || [],
+        author: frontmatter.author || null,
+        author_url: frontmatter.author_url || null,
         instructions: body,
         path: skillPath,
       });
@@ -334,6 +336,8 @@ export function forGeneric(name) {
     tags: skill.tags,
     inputs: skill.inputs,
     related: skill.related,
+    author: skill.author,
+    author_url: skill.author_url,
     instructions: skill.instructions,
   };
 }

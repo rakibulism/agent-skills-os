@@ -13,6 +13,8 @@ inputs:
   - name: constraints
     description: Constraints — viewport sizes, accessibility level (WCAG AA / AAA), themes (light/dark), platforms.
     required: false
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # Component Designer

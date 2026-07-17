@@ -10,6 +10,8 @@ inputs:
   - name: environment
     description: Target environment, e.g. "production", "staging".
     required: false
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # Deploy Checklist Writer

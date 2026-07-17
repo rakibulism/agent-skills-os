@@ -13,6 +13,8 @@ inputs:
   - name: goal
     description: What the screen/flow is trying to accomplish.
     required: false
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # Design Critic

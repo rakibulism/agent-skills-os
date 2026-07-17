@@ -10,6 +10,8 @@ inputs:
   - name: constraints
     description: Asset budget, target devices, whether a WebGL fallback is required.
     required: false
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # WebGL Creative Coder

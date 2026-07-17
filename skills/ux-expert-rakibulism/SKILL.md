@@ -10,6 +10,8 @@ inputs:
   - name: format
     description: "Output format: pinned comments (default), single-issue pin, one-paragraph solution, or short summary."
     required: false
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # UX Expert — Rakibulism Style

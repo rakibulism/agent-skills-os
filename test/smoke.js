@@ -205,4 +205,38 @@ assert.equal(adapters.cursor, forCursor);
 assert.equal(adapters.agentsMd, forAgentsMd);
 assert.equal(adapters.stitch, forStitchPrompt);
 
+// Author attribution: present on rakibulism's own original work, absent
+// (null, not a fabricated value) on third-party-authored and
+// plugin-marketplace-sourced skills whose actual author is someone else.
+for (const s of all) {
+  assert.ok(
+    s.author === null || typeof s.author === "string",
+    `${s.name} author is null or a string`
+  );
+  assert.ok(
+    s.author_url === null || typeof s.author_url === "string",
+    `${s.name} author_url is null or a string`
+  );
+}
+
+const designEngineerAuthor = getSkill("design-engineer");
+assert.equal(designEngineerAuthor.author, "rakibulism");
+assert.equal(designEngineerAuthor.author_url, "https://x.com/rakibulism");
+
+// keyword-research's real author (aaron-he-zhu) is nested under its
+// frontmatter's `metadata:` key, which this package's frontmatter parser
+// doesn't unpack (only `inputs`-style list-of-objects are supported) — so
+// its top-level `author` reads as null here, not "aaron-he-zhu". Either way,
+// the important invariant holds: it must never read as "rakibulism".
+const thirdPartySkill = getSkill("keyword-research");
+assert.notEqual(
+  thirdPartySkill.author,
+  "rakibulism",
+  "a skill with its own real (if not fully parsed) third-party author is never relabeled as rakibulism's"
+);
+
+const genWithAuthor = forGeneric("design-engineer");
+assert.equal(genWithAuthor.author, "rakibulism");
+assert.equal(genWithAuthor.author_url, "https://x.com/rakibulism");
+
 console.log("OK — all smoke checks passed (" + all.length + " skills loaded)");

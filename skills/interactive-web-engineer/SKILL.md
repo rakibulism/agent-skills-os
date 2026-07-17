@@ -10,6 +10,8 @@ inputs:
   - name: constraints
     description: Target devices, performance budget, existing tech stack, timeline.
     required: false
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # Interactive Web Engineer

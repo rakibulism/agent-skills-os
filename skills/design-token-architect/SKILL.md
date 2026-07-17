@@ -13,6 +13,8 @@ inputs:
   - name: themes
     description: Themes to support — light, dark, high-contrast, brand variations.
     required: false
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # Design Token Architect

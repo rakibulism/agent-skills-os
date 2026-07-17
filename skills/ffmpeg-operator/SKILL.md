@@ -13,6 +13,8 @@ inputs:
   - name: target
     description: Desired output — container/codec, resolution, quality or size budget, platform.
     required: false
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # FFmpeg Operator

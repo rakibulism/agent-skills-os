@@ -13,6 +13,8 @@ inputs:
   - name: target_length
     description: Target word count. Default 800-2000 (aim ~1800) — override only if the idea genuinely needs less or more.
     required: false
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # Article Writer

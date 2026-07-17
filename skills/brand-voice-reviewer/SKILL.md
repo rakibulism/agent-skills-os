@@ -13,6 +13,8 @@ inputs:
   - name: channel
     description: Where this copy will run, e.g. "landing page", "cold email", "tweet" — affects acceptable length and formality.
     required: false
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # Brand Voice Reviewer

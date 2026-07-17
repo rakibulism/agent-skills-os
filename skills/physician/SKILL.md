@@ -13,6 +13,8 @@ inputs:
   - name: audience
     description: Clinician/student vs. layperson — controls terminology and detail.
     required: false
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # Physician

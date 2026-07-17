@@ -10,6 +10,8 @@ inputs:
   - name: context
     description: Known constraints — target devices, current stack, existing measurements if any.
     required: false
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # Frontend Performance Engineer

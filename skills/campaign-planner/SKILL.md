@@ -13,6 +13,8 @@ inputs:
   - name: constraints
     description: Budget, timeline, channels available, or team size constraints.
     required: false
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # Campaign Planner

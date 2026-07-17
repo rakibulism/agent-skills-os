@@ -10,6 +10,8 @@ inputs:
   - name: level
     description: Conformance target, e.g. "WCAG 2.1 AA" (default) or "WCAG 2.2 AAA".
     required: false
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # Accessibility Auditor

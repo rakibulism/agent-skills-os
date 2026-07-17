@@ -2,6 +2,8 @@
 name: swiftui-expert-skill
 description: Use when writing, reviewing, or refactoring SwiftUI code for iOS or macOS, including state management, view composition, performance, Liquid Glass adoption, or Instruments `.trace` capture/analysis for hangs, hitches, CPU hotspots, or
   excessive view updates.
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # SwiftUI Expert Skill

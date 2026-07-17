@@ -13,6 +13,8 @@ inputs:
   - name: task
     description: '"frame a research question," "literature review," "design a study/methodology," "structure a paper," "review/critique a paper," or "find the gap."'
     required: false
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # Academic Researcher

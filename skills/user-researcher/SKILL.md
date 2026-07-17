@@ -10,6 +10,8 @@ inputs:
   - name: stage
     description: "'planning' or 'synthesis' — changes the output entirely."
     required: false
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # User Researcher

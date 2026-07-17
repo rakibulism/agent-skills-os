@@ -13,6 +13,8 @@ inputs:
   - name: direction
     description: 'What kind of help — "generate many options," "develop one idea deeply," "make this bolder," "critique my draft," or "find an angle no one else would take."'
     required: false
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # Creative Artist

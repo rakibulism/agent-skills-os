@@ -13,6 +13,8 @@ inputs:
   - name: constraints
     description: Hard limits — runtime, platform aspect ratio, music bed, brand requirements.
     required: false
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # Video Editor

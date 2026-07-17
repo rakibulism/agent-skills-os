@@ -11,6 +11,8 @@ inputs:
     description: Current familiarity with GLSL/WebGL/Three.js — shapes how much foundational math to front-load vs. how fast to reach for the deep-dive reference file.
     required: false
 related: [design-engineer]
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # WebGL Creative Animator

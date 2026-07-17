@@ -10,6 +10,8 @@ inputs:
   - name: phase
     description: "What's needed: 'triage', 'status update', or 'postmortem'."
     required: false
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # Incident Commander

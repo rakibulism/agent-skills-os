@@ -13,6 +13,8 @@ inputs:
   - name: constraints
     description: Optional constraints — e.g. "only sources from 2024+", "only peer-reviewed", "exclude vendor blogs".
     required: false
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # Researcher

@@ -1,6 +1,8 @@
 ---
 name: x-design-captions
 description: Write X (Twitter) captions for design work — SaaS dashboards, websites, mobile app UI, logos, components, data viz. Use whenever the user is about to post a design to X and needs a caption, mentions "caption for", "posting this on X", "write a caption", or shares a design shot and asks what to say. Always asks which style (Provocation / Education / Proof) before writing, then returns exactly 5 options.
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # X Design Captions

@@ -13,6 +13,8 @@ inputs:
   - name: goal
     description: '"form a hypothesis," "design an experiment," "evaluate this evidence/claim," "explain a mechanism," or "figure out what caused X."'
     required: false
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # Scientist

@@ -11,6 +11,8 @@ export interface Skill {
   tags: string[];
   inputs: SkillInput[];
   related: string[];
+  author: string | null;
+  author_url: string | null;
   instructions: string;
   path: string;
 }
@@ -79,6 +81,8 @@ export interface GenericAdapter {
   tags: string[];
   inputs: SkillInput[];
   related: string[];
+  author: string | null;
+  author_url: string | null;
   instructions: string;
 }
 

@@ -13,6 +13,8 @@ inputs:
   - name: existing_tests
     description: One or two existing test files from the same project, to match style.
     required: false
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # Test Writer

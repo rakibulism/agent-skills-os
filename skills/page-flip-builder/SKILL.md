@@ -10,6 +10,8 @@ inputs:
   - name: rendering_target
     description: "Preferred rendering approach if known: DOM/CSS transforms, Canvas 2D, or WebGL."
     required: false
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # Page Flip Builder

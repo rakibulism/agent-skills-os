@@ -10,6 +10,8 @@ inputs:
   - name: format
     description: "Output style, e.g. 'yesterday/today/blockers' (default), 'async-written', or 'one-liner for a thread'."
     required: false
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # Standup Reporter

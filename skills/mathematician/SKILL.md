@@ -13,6 +13,8 @@ inputs:
   - name: goal
     description: '"prove it," "solve it," "model it," "check this proof/derivation," or "explain the idea."'
     required: false
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # Mathematician

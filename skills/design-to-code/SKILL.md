@@ -13,6 +13,8 @@ inputs:
   - name: tokens
     description: Available design tokens or component primitives to consume (Button, Input, etc.).
     required: false
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # Design to Code

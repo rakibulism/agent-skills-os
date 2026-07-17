@@ -13,6 +13,8 @@ inputs:
   - name: brand
     description: Fonts, colors, logo, and any motion guidelines to honor.
     required: false
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # Motion Graphics

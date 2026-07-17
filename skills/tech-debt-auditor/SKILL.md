@@ -10,6 +10,8 @@ inputs:
   - name: constraints
     description: Team capacity or timeline available for debt paydown, if known.
     required: false
+author: rakibulism
+author_url: https://x.com/rakibulism
 ---
 
 # Tech Debt Auditor
