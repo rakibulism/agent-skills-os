@@ -19,33 +19,33 @@ Operate as a **Design Engineer of legendary tier** — the bridge between human 
 1. **It must look intentional.** Every pixel, curve, color, and timing value is a decision, not a default.
 2. **It must run at 120 FPS** (8.33ms/frame budget), degrading gracefully to 60 on weak hardware. Jank is a visual bug.
 
-## The Rail Map — 9 Tracks, 41 reference files
+## The Rail Map — 9 Tracks, 49 reference files
 
-Load every reference file relevant to the task before writing code — treat `references/` as the depth this skill routes into, not optional further reading. Prefix = track number.
+Load every reference file relevant to the task before writing code — treat `references/` as the depth this skill routes into, not optional further reading. Prefix = track number. Each track also has one `quick-*` file — a condensed, single-page version of the whole track for a fast refresher; load the detailed rail files below it for anything beyond a quick check.
 
 **Track 1 — The Designer's Vision (taste):**
-[de1-optical-alignment](references/de1-optical-alignment.md) · [de1-perceptual-color](references/de1-perceptual-color.md) · [de1-micro-typography](references/de1-micro-typography.md) · [de1-grid-spacing](references/de1-grid-spacing.md) · [de1-aesthetic-deconstruction](references/de1-aesthetic-deconstruction.md)
+[de1-optical-alignment](references/de1-optical-alignment.md) · [de1-perceptual-color](references/de1-perceptual-color.md) · [de1-micro-typography](references/de1-micro-typography.md) · [de1-grid-spacing](references/de1-grid-spacing.md) · [de1-aesthetic-deconstruction](references/de1-aesthetic-deconstruction.md) — quick ref: [quick-track1-visual-taste](references/quick-track1-visual-taste.md)
 
 **Track 2 — The Artist's Hand (sketch & prototype):**
-[de2-perspective-sketching](references/de2-perspective-sketching.md) · [de2-interaction-storyboarding](references/de2-interaction-storyboarding.md) · [de2-figma-to-code](references/de2-figma-to-code.md) · [de2-motion-prototyping](references/de2-motion-prototyping.md)
+[de2-perspective-sketching](references/de2-perspective-sketching.md) · [de2-interaction-storyboarding](references/de2-interaction-storyboarding.md) · [de2-figma-to-code](references/de2-figma-to-code.md) · [de2-motion-prototyping](references/de2-motion-prototyping.md) — quick ref: [quick-track2-sketch-prototype](references/quick-track2-sketch-prototype.md)
 
 **Track 3 — 3D Engine & Matrix Math (WebGL/GPU):**
-[de3-linear-algebra](references/de3-linear-algebra.md) · [de3-glsl-shaders](references/de3-glsl-shaders.md) (incl. SDFs, raymarching, noise — see also the dedicated `webgl-creative-animator` skill for a deep-dive on creative shader/particle/fluid technique) · [de3-threejs-r3f](references/de3-threejs-r3f.md) · [de3-asset-pipeline](references/de3-asset-pipeline.md)
+[de3-linear-algebra](references/de3-linear-algebra.md) · [de3-glsl-shaders](references/de3-glsl-shaders.md) (incl. SDFs, raymarching, noise — see also the dedicated `webgl-creative-animator` skill for a deep-dive on creative shader/particle/fluid technique) · [de3-threejs-r3f](references/de3-threejs-r3f.md) · [de3-asset-pipeline](references/de3-asset-pipeline.md) — quick ref: [quick-track3-webgl-3d](references/quick-track3-webgl-3d.md)
 
 **Track 4 — The Physics Engine:**
-[de4-euler-integration](references/de4-euler-integration.md) · [de4-spring-damper](references/de4-spring-damper.md) · [de4-momentum-inertia](references/de4-momentum-inertia.md) · [de4-collision-detection](references/de4-collision-detection.md) · [de4-bezier-splines](references/de4-bezier-splines.md)
+[de4-euler-integration](references/de4-euler-integration.md) · [de4-spring-damper](references/de4-spring-damper.md) · [de4-momentum-inertia](references/de4-momentum-inertia.md) · [de4-collision-detection](references/de4-collision-detection.md) · [de4-bezier-splines](references/de4-bezier-splines.md) — quick ref: [quick-track4-ui-physics](references/quick-track4-ui-physics.md)
 
 **Track 5 — Pure Core Engineering (browser internals):**
-[de5-critical-rendering-path](references/de5-critical-rendering-path.md) · [de5-gpu-compositing](references/de5-gpu-compositing.md) · [de5-canvas-2d](references/de5-canvas-2d.md) · [de5-pointer-gestures](references/de5-pointer-gestures.md) · [de5-lowlevel-js](references/de5-lowlevel-js.md)
+[de5-critical-rendering-path](references/de5-critical-rendering-path.md) · [de5-gpu-compositing](references/de5-gpu-compositing.md) · [de5-canvas-2d](references/de5-canvas-2d.md) · [de5-pointer-gestures](references/de5-pointer-gestures.md) · [de5-lowlevel-js](references/de5-lowlevel-js.md) — quick ref: [quick-track5-browser-internals](references/quick-track5-browser-internals.md)
 
 **Track 6 — Component & System Architecture:**
-[de6-component-composition](references/de6-component-composition.md) · [de6-state-systems](references/de6-state-systems.md) · [de6-typescript](references/de6-typescript.md) · [de6-token-pipeline](references/de6-token-pipeline.md)
+[de6-component-composition](references/de6-component-composition.md) · [de6-state-systems](references/de6-state-systems.md) · [de6-typescript](references/de6-typescript.md) · [de6-token-pipeline](references/de6-token-pipeline.md) — quick ref: [quick-track6-component-architecture](references/quick-track6-component-architecture.md)
 
 **Track 7 — Performance & Analytics:**
-[de7-profiling](references/de7-profiling.md) · [de7-resource-budgets](references/de7-resource-budgets.md) · [de7-core-web-vitals](references/de7-core-web-vitals.md) · [de7-webgl-fallbacks](references/de7-webgl-fallbacks.md)
+[de7-profiling](references/de7-profiling.md) · [de7-resource-budgets](references/de7-resource-budgets.md) · [de7-core-web-vitals](references/de7-core-web-vitals.md) · [de7-webgl-fallbacks](references/de7-webgl-fallbacks.md) — quick ref: [quick-track7-performance-budget](references/quick-track7-performance-budget.md)
 
 **Track 8 — Deployment & Infrastructure:**
-[de8-bundling](references/de8-bundling.md) · [de8-edge-deployment](references/de8-edge-deployment.md) · [de8-cicd](references/de8-cicd.md) · [de8-telemetry](references/de8-telemetry.md)
+[de8-bundling](references/de8-bundling.md) · [de8-edge-deployment](references/de8-edge-deployment.md) · [de8-cicd](references/de8-cicd.md) · [de8-telemetry](references/de8-telemetry.md) — quick ref: [quick-track8-deploy-pipeline](references/quick-track8-deploy-pipeline.md)
 
 **Track 9 — The Animation & Rendering Library Stack:**
 [webgl-motion-stack](references/webgl-motion-stack.md) (start here — routes to the rest of this track) · [wgl-gsap-motion](references/wgl-gsap-motion.md) · [wgl-pixijs-2d-engine](references/wgl-pixijs-2d-engine.md) · [wgl-theatrejs-editor](references/wgl-theatrejs-editor.md) · [wgl-draw-call-batching](references/wgl-draw-call-batching.md) · [wgl-creative-vision](references/wgl-creative-vision.md)

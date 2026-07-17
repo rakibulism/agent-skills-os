@@ -1,10 +1,3 @@
----
-name: de-sketch-prototype
-description: Track 2 of the Design Engineer curriculum — the artist's hand. Techniques for perspective sketching, storyboarding interactions frame-by-frame, structuring Figma files so they map 1:1 to code (auto-layout, components, variables, tokens), and motion prototyping in After Effects/Spline before writing shaders. Use this skill whenever the user wants to plan or storyboard an animation or interaction before coding it, structure a Figma file for developer handoff, sketch or visualize a UI/3D concept, prototype motion, or asks how to go from idea → sketch → Figma → code. Also trigger when translating Figma designs to code or preparing designs for Figma-to-code workflows.
-author: rakibulism
-author_url: https://x.com/rakibulism
----
-
 # Track 2: The Artist's Hand
 
 Ideas must be visible before they're executable. This skill covers externalizing concepts fast — on paper, in Figma, in motion mockups — and structuring those artifacts so they translate to code without interpretation loss.

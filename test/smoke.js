@@ -37,7 +37,7 @@ const ANCHOR_NAMES = [
 
 const all = loadAllSkills();
 
-assert.ok(all.length >= 170, `expected at least 170 skills, got ${all.length}`);
+assert.ok(all.length >= 160, `expected at least 160 skills, got ${all.length}`);
 
 const names = all.map((s) => s.name);
 assert.deepEqual(names, [...names].sort(), "loadAllSkills() returns skills sorted by name");
@@ -47,11 +47,16 @@ for (const anchor of ANCHOR_NAMES) {
   assert.ok(names.includes(anchor), `expected anchor skill "${anchor}" to be present`);
 }
 
-// The design-engineer curriculum (de1-de8, webgl-motion-stack, wgl-*) was
-// folded into skills/design-engineer/references/ and must NOT resurface as
-// top-level skills — regression check for that restructure.
+// The design-engineer curriculum (de1-de8, webgl-motion-stack, wgl-*, and the
+// 8 condensed de-* track summaries) was folded into
+// skills/design-engineer/references/ and must NOT resurface as top-level
+// skills — regression check for that restructure.
 const shouldNotBeTopLevel = names.filter(
-  (n) => /^de[1-8]-/.test(n) || /^wgl-/.test(n) || n === "webgl-motion-stack"
+  (n) =>
+    /^de[1-8]-/.test(n) ||
+    /^wgl-/.test(n) ||
+    n === "webgl-motion-stack" ||
+    /^de-/.test(n)
 );
 assert.equal(
   shouldNotBeTopLevel.length,

@@ -1,10 +1,3 @@
----
-name: de-deploy-pipeline
-description: Track 8 of the Design Engineer curriculum — deployment, pipelines, and cloud infrastructure for creative web work. Advanced bundler setup (Vite/Rollup/Webpack) with tree-shaking, code splitting and asset optimization; global edge deployment (Cloudflare, Vercel, AWS edge); GitHub Actions CI/CD with performance budgets and visual regression testing; and production telemetry for WebGL crashes and frame drops (Sentry, LogRocket, RUM). Use this skill whenever the user is setting up builds or bundlers, deploying a site, configuring CI/CD or GitHub Actions, wanting visual regression tests or Lighthouse checks in CI, choosing hosting/CDN/edge platforms, or setting up error and performance monitoring in production.
-author: rakibulism
-author_url: https://x.com/rakibulism
----
-
 # Track 8: Deployment, Pipelines & Cloud Infrastructure
 
 A masterpiece that only runs on localhost doesn't exist. This skill covers shipping globally with pipelines that protect quality automatically.

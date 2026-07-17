@@ -1,10 +1,3 @@
----
-name: de-webgl-3d
-description: Track 3 of the Design Engineer curriculum — WebGL, GPU, and 3D math mastery. Linear algebra for graphics (vectors, dot/cross products, 3x3 and 4x4 matrices), writing GLSL vertex/fragment shaders, SDFs, raymarching, Perlin/Simplex/Worley noise, Three.js and React Three Fiber scene architecture, and the Blender-to-GLTF asset pipeline with payload optimization. Use this skill whenever the user mentions WebGL, Three.js, React Three Fiber, R3F, shaders, GLSL, fragment/vertex shaders, SDF, raymarching, noise effects, particles in 3D, GLTF/GLB models, Blender exports, 3D hero sections, liquid/blob/distortion effects, or any 3D-on-the-web work.
-author: rakibulism
-author_url: https://x.com/rakibulism
----
-
 # Track 3: The 3D Engine & Matrix Math
 
 Treat the screen as a GPU-accelerated coordinate space. This skill covers the math, the shader craft, the scene architecture, and the asset pipeline.

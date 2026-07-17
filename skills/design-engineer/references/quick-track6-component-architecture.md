@@ -1,10 +1,3 @@
----
-name: de-component-architecture
-description: Track 6 of the Design Engineer curriculum — modern component and system architecture. Composing isolated, accessible, drop-in components (React/Vue/Svelte), advanced state systems (Zustand, XState finite state machines, Signals) without wasteful re-renders, strict TypeScript for animation/interaction code, and automated Figma-variables-to-code design token pipelines (Style Dictionary → Tailwind/SCSS/JSON). Use this skill whenever the user is structuring a component library, wiring complex interactive state, typing animation APIs, setting up design tokens or theme systems, connecting Figma variables to code, or asks how to keep animation-heavy React apps from re-rendering themselves to death.
-author: rakibulism
-author_url: https://x.com/rakibulism
----
-
 # Track 6: Modern Component & System Architecture
 
 Mathematical brilliance wrapped in spaghetti is unshippable. This skill covers packaging interactive work as clean, typed, production-grade systems.
