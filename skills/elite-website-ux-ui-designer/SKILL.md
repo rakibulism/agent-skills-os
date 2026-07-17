@@ -10,7 +10,7 @@ inputs:
   - name: stage
     description: Where this sits in the process — early concept, mid-build critique, pre-launch conversion audit, or post-launch retrospective — since the right framework differs by stage.
     required: false
-related: [design-engineer, ux-ui-designer]
+related: [design-engineer, ux-ui-designer, premium-restraint-web-design]
 author: rakibulism
 author_url: https://x.com/rakibulism
 ---
@@ -65,4 +65,4 @@ Top designers treat AI as a strategic partner, not a threat: generation and iter
 
 ## Related Skills — load automatically, don't wait to be asked by name
 
-If the task moves from *design decision* to *implementation* — writing the actual animation code, choosing a rendering layer, hitting a frame-rate budget — also load **`design-engineer`**: that skill owns the code/performance side of everything this skill designs (a spring-vs-tween choice, a WebGL hero section, a component's actual CSS). This skill owns *why*; `design-engineer` owns *how, fast*. Declared in frontmatter as `related: [design-engineer, ux-ui-designer]`.
+If the task moves from *design decision* to *implementation* — writing the actual animation code, choosing a rendering layer, hitting a frame-rate budget — also load **`design-engineer`**: that skill owns the code/performance side of everything this skill designs (a spring-vs-tween choice, a WebGL hero section, a component's actual CSS). This skill owns *why*; `design-engineer` owns *how, fast*. If the positioning calls for a quiet, near-monochrome, premium/luxury-object register specifically (as opposed to the general-purpose frameworks in this skill), also load **`premium-restraint-web-design`** — it's a narrower, stricter taste profile with its own exact token values. Declared in frontmatter as `related: [design-engineer, ux-ui-designer, premium-restraint-web-design]`.

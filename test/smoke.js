@@ -30,6 +30,7 @@ const ANCHOR_NAMES = [
   "design-engineer",
   "webgl-creative-animator",
   "elite-website-ux-ui-designer",
+  "premium-restraint-web-design",
   "seo-strategist",
   "philosopher",
   "ux-expert-rakibulism",
@@ -187,6 +188,18 @@ const uxUiRelated = getRelatedSkills("ux-ui-designer");
 assert.ok(
   uxUiRelated.some((s) => s.name === "elite-website-ux-ui-designer"),
   "ux-ui-designer's related skills include elite-website-ux-ui-designer"
+);
+
+// premium-restraint-web-design <-> elite-website-ux-ui-designer
+assert.ok(
+  eliteRelated.some((s) => s.name === "premium-restraint-web-design"),
+  "elite-website-ux-ui-designer's related skills include premium-restraint-web-design"
+);
+const restraintRelated = getRelatedSkills("premium-restraint-web-design");
+assert.ok(
+  restraintRelated.some((s) => s.name === "elite-website-ux-ui-designer") &&
+    restraintRelated.some((s) => s.name === "design-engineer"),
+  "premium-restraint-web-design's related skills include elite-website-ux-ui-designer and design-engineer"
 );
 
 // Multi-tool export adapters: Cursor .mdc, AGENTS.md, and Stitch prompt.
