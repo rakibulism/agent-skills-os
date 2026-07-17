@@ -1,7 +1,7 @@
 {
   "name": "universal-agent-skills",
-  "version": "0.6.4",
-  "description": "Framework-agnostic agent skill library. Drop-in skills for Claude Agent SDK, LangChain, OpenAI Assistants, CrewAI, AutoGen, and any AI agent runtime.",
+  "version": "0.7.0",
+  "description": "Framework-agnostic agent skill library. Drop-in skills for Claude Agent SDK, LangChain, OpenAI Assistants, CrewAI, AutoGen, Cursor, AGENTS.md-compatible tools (Codex/OpenCode/Antigravity), and any AI agent runtime.",
   "type": "module",
   "main": "./src/index.js",
   "types": "./src/index.d.ts",
@@ -36,6 +36,11 @@
     "openai-assistants",
     "crewai",
     "autogen",
+    "cursor",
+    "agents-md",
+    "codex",
+    "opencode",
+    "antigravity",
     "prompt",
     "prompt-engineering",
     "system-prompt"
