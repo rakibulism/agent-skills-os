@@ -226,12 +226,15 @@ getRelatedSkills(name: string): RelatedSkillSummary[]
 asSystemPrompt(name: string): string
 
 // Framework adapters
-forClaude(name):     { system, metadata }              // metadata includes related_skills: string[]
-forOpenAI(name):     { name, description, instructions }
-forLangChain(name):  { template, inputVariables }
-forCrewAI(name):     { role, goal, backstory }
-forAutoGen(name):    { name, system_message }
-forGeneric(name):    { name, description, version, tags, inputs, related, instructions }
+forClaude(name):       { system, metadata }              // metadata includes related_skills: string[]
+forOpenAI(name):       { name, description, instructions }
+forLangChain(name):    { template, inputVariables }
+forCrewAI(name):       { role, goal, backstory }
+forAutoGen(name):      { name, system_message }
+forCursor(name):       { filename, content }             // Cursor .cursor/rules/*.mdc file
+forAgentsMd(name):     { filename, content }             // AGENTS.md section (Codex, OpenCode, Antigravity, Cursor, Windsurf, Copilot...)
+forStitchPrompt(name): { content }                       // plain paste-ready prompt, no file convention
+forGeneric(name):      { name, description, version, tags, inputs, related, instructions }
 ```
 
 ### Related skills — so an agent doesn't need every name typed up front
@@ -250,6 +253,41 @@ const related = getRelatedSkills("design-engineer");
 ```
 
 This is opt-in per skill — only add `related` where two skills are genuinely complementary (like `design-engineer`'s Track 3/9 rails and `webgl-creative-animator`'s deep shader/particle/fluid formulas), not as a blanket cross-link between every skill in a domain.
+
+## Using a skill in Cursor, Codex, OpenCode, Antigravity, or other IDE/agent tools
+
+Claude Agent SDK and Claude Code read `SKILL.md` natively — no export needed. Other tools have their own file conventions, so three more adapters generate ready-to-drop content for them:
+
+| Tool | Format | Adapter |
+|---|---|---|
+| Cursor | `.cursor/rules/<name>.mdc` (YAML frontmatter + body) | `forCursor(name)` |
+| OpenAI Codex, OpenCode, Google Antigravity, Windsurf, GitHub Copilot | `AGENTS.md` — the open, tool-agnostic standard all of these read | `forAgentsMd(name)` |
+| Stitch (or any prompt-only design tool with no rule-file concept) | plain-text prompt, paste directly | `forStitchPrompt(name)` |
+
+```js
+import { forCursor, forAgentsMd, forStitchPrompt } from "universal-agent-skills";
+
+const cursor = forCursor("elite-website-ux-ui-designer");
+// -> { filename: "elite-website-ux-ui-designer.mdc", content: "---\ndescription: ...\nalwaysApply: false\n---\n\n..." }
+// Write this to .cursor/rules/ in your project.
+
+const agentsMd = forAgentsMd("elite-website-ux-ui-designer");
+// -> { filename: "elite-website-ux-ui-designer.agents.md", content: "## elite-website-ux-ui-designer ...\n\n..." }
+// AGENTS.md conventionally holds every convention for a whole project, not just one skill —
+// append this section onto your project's existing AGENTS.md rather than replacing it wholesale.
+
+const stitch = forStitchPrompt("elite-website-ux-ui-designer");
+// -> { content: "..." } — copy-paste directly into Stitch's prompt box.
+```
+
+Or generate all three at once for a skill (or every skill) with the bundled script, which writes into `skills/<name>/exports/`:
+
+```bash
+node scripts/export-skill.js elite-website-ux-ui-designer
+node scripts/export-skill.js --all
+```
+
+**A skill with a `references/` folder loses those links when exported as a single file.** A skill's body commonly links to `references/*.md` for deep-dive material (see "Authoring your own skills" below) — those relative links only resolve if the `references/` folder is copied alongside the exported file at the same relative path. If you're dropping a Cursor `.mdc` or `AGENTS.md` section into a different project, copy the skill's `references/` folder too (or inline the reference content you need) rather than shipping just the single exported file.
 
 ## Use with Python frameworks (CrewAI, AutoGen)
 

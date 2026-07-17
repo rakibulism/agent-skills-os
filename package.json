@@ -15,11 +15,13 @@
   "files": [
     "src",
     "skills",
+    "scripts",
     "README.md",
     "LICENSE"
   ],
   "scripts": {
-    "test": "node test/smoke.js"
+    "test": "node test/smoke.js",
+    "export": "node scripts/export-skill.js"
   },
   "keywords": [
     "ai",

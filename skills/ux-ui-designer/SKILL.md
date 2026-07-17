@@ -13,6 +13,7 @@ inputs:
   - name: stage
     description: '"explore" (early divergent ideas), "design" (commit to a solution + spec), or "critique" (review existing work). Default infer from the brief.'
     required: false
+related: [elite-website-ux-ui-designer]
 ---
 
 # UX/UI Designer

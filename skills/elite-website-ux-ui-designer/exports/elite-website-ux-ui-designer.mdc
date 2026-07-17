@@ -1,0 +1,56 @@
+---
+description: "Become (or evaluate) an elite website UX/UI designer — the specific mindset, frameworks, and pixel-level standards that separate the top 1% from the rest, distilled into 14 reference files covering psychology, systems, visual craft, conversion, and deliberate practice. Use this skill whenever the user is designing, reviewing, or critiquing a website/landing-page/web-app UI; asks \"what makes a great UX/UI designer\"; needs a design-system, typography scale, grid, or color framework; is optimizing a page for conversion; is preparing a stakeholder pitch for a design change; or wants a structured practice regimen (deconstruction, storyboarding, personal challenges) to level up. Complements the design-engineer skill (which owns animation-as-code, GPU/rendering performance, and frontend architecture) by owning the design-decision layer — why a layout, palette, or copy choice is correct, not how to implement it in a render loop."
+alwaysApply: false
+---
+
+# Elite Website UX/UI Designer
+
+The best website UX/UI designers merge **user psychology, aesthetic mastery, and business strategy**. They don't just make a site look good — they design exactly how it functions to solve a real human problem, and they can defend every decision with evidence, not taste alone.
+
+## The three pillars, and where to go for each
+
+**1. Deep Psychological & Analytical Mindset** — understanding people and proving decisions with data, not assumption.
+**2. Flawless UI & Technical Execution** — the pixel-level craft: typography, grid, color, hierarchy, motion, accessibility.
+**3. Business Alignment & Communication** — connecting design to revenue and getting buy-in from developers and stakeholders.
+
+## Reference map — load what the task touches
+
+| If the task involves… | Load |
+|---|---|
+| Balancing user needs against developer/stakeholder constraints, a cross-functional dispute | [dual-empathy-and-stakeholder-alignment.md](references/dual-empathy-and-stakeholder-alignment.md) |
+| Justifying a design decision, A/B testing, avoiding HiPPO/aesthetic bias | [data-driven-objectivity.md](references/data-driven-objectivity.md) |
+| Navigation, menu structure, findability, "users get lost" | [information-architecture.md](references/information-architecture.md) |
+| A design system, component library, design tokens, scaling design across a team | [design-systems.md](references/design-systems.md) |
+| Choosing fonts, type scale, line-height, letter-spacing | [typography-grid-spacing.md](references/typography-grid-spacing.md) |
+| Grid columns, breakpoints, the 8-point spacing system | [typography-grid-spacing.md](references/typography-grid-spacing.md) |
+| Picking a color palette, the 60-30-10 rule, contrast/WCAG compliance | [color-theory.md](references/color-theory.md) |
+| "Where should the eye go," layout not reading as intentional, whitespace | [visual-hierarchy-and-whitespace.md](references/visual-hierarchy-and-whitespace.md) |
+| Figma prototyping, triggers/transitions, Smart Animate, tool choice (Figma/ProtoPie/Axure) | [interactive-prototyping.md](references/interactive-prototyping.md) |
+| WCAG, screen readers, keyboard nav, motor/vision constraints | [accessibility.md](references/accessibility.md) |
+| Making a design realistically codeable, talking to developers, HTML/CSS constraints | [development-empathy.md](references/development-empathy.md) |
+| Checkout conversion, CTAs, one clear goal per page, above-the-fold, retention/LTV | [conversion-and-revenue.md](references/conversion-and-revenue.md) |
+| Pitching a redesign to stakeholders, trust/credibility, consistency vs. breaking the grid | [storytelling-and-trust.md](references/storytelling-and-trust.md) |
+| Hover states, micro-interactions, scroll-reveal animation, timing/easing | [animation-and-microinteractions.md](references/animation-and-microinteractions.md) |
+| Leveling up as a designer, deconstructing reference sites, personal practice challenges | [deliberate-practice-and-inspiration.md](references/deliberate-practice-and-inspiration.md) |
+
+## AI adaptability — the meta-skill
+
+Top designers treat AI as a strategic partner, not a threat: generation and iteration (layout variants, copy options, code scaffolding) become the AI's job, freeing the designer's attention for judgment calls AI can't make — is this the *right* problem to solve, does this decision serve the user or just look clever, what will a stakeholder actually push back on. The shift is from manual pixel-pushing to high-level creative direction and governance. This skill and its references are written for exactly that division of labor: use them to generate and check craft-level decisions fast, and spend the saved time on the judgment calls above.
+
+## Operating doctrine
+
+**1. Every visual decision must be defensible.** "It looks better" is not a reason. "It reduces the decision funnel from 5 choices to 2, per Hick's Law" is. If you can't name the psychological or business mechanism, load [data-driven-objectivity.md](references/data-driven-objectivity.md) before deciding.
+
+**2. Design before code, but always with code constraints in view.** A design that isn't realistically codeable isn't finished — see [development-empathy.md](references/development-empathy.md).
+
+**3. One page, one primary goal.** Competing CTAs and competing visual weight both dilute conversion — see [conversion-and-revenue.md](references/conversion-and-revenue.md).
+
+**4. Consistency is the default; breaking it is a deliberate, isolated choice.** See [storytelling-and-trust.md](references/storytelling-and-trust.md)'s consistency-vs-grid-breaking framework — 80% of a layout follows the system, at most one element is "the maverick," and its scaling is explicit, not accidental.
+
+**5. Accessibility is not a pass at the end.** Contrast ratios, touch targets, and keyboard operability are decided at the same time as color and layout, not audited afterward — see [accessibility.md](references/accessibility.md).
+
+**6. Motion earns its place.** Every animation must have a named trigger, a rule, and feedback; unexplainable motion is noise — see [animation-and-microinteractions.md](references/animation-and-microinteractions.md).
+
+## Related Skills — load automatically, don't wait to be asked by name
+
+If the task moves from *design decision* to *implementation* — writing the actual animation code, choosing a rendering layer, hitting a frame-rate budget — also load **`design-engineer`**: that skill owns the code/performance side of everything this skill designs (a spring-vs-tween choice, a WebGL hero section, a component's actual CSS). This skill owns *why*; `design-engineer` owns *how, fast*. Declared in frontmatter as `related: [design-engineer, ux-ui-designer]`.

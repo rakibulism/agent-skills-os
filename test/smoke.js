@@ -10,6 +10,9 @@ import {
   forLangChain,
   forCrewAI,
   forAutoGen,
+  forCursor,
+  forAgentsMd,
+  forStitchPrompt,
   forGeneric,
   adapters,
 } from "../src/index.js";
@@ -26,6 +29,7 @@ const ANCHOR_NAMES = [
   "code-reviewer",
   "design-engineer",
   "webgl-creative-animator",
+  "elite-website-ux-ui-designer",
   "seo-strategist",
   "philosopher",
   "ux-expert-rakibulism",
@@ -160,5 +164,45 @@ assert.ok(
   genWithRelated.related.includes("webgl-creative-animator"),
   "forGeneric() surfaces the related field"
 );
+
+// design-engineer <-> elite-website-ux-ui-designer is the second proof-of-concept
+// pair for related-skills auto-discovery (design decisions vs. implementation).
+const deRelated2 = getRelatedSkills("design-engineer");
+assert.ok(
+  deRelated2.some((s) => s.name === "elite-website-ux-ui-designer"),
+  "design-engineer's related skills include elite-website-ux-ui-designer"
+);
+const eliteRelated = getRelatedSkills("elite-website-ux-ui-designer");
+assert.ok(
+  eliteRelated.some((s) => s.name === "design-engineer") &&
+    eliteRelated.some((s) => s.name === "ux-ui-designer"),
+  "elite-website-ux-ui-designer's related skills include design-engineer and ux-ui-designer"
+);
+const uxUiRelated = getRelatedSkills("ux-ui-designer");
+assert.ok(
+  uxUiRelated.some((s) => s.name === "elite-website-ux-ui-designer"),
+  "ux-ui-designer's related skills include elite-website-ux-ui-designer"
+);
+
+// Multi-tool export adapters: Cursor .mdc, AGENTS.md, and Stitch prompt.
+const cursor = forCursor("code-reviewer");
+assert.equal(cursor.filename, "code-reviewer.mdc");
+assert.ok(cursor.content.startsWith("---\ndescription:"), "Cursor export starts with YAML frontmatter");
+assert.ok(cursor.content.includes("alwaysApply: false"));
+assert.ok(cursor.content.includes(getSkill("code-reviewer").instructions));
+
+const agentsMd = forAgentsMd("code-reviewer");
+assert.equal(agentsMd.filename, "code-reviewer.agents.md");
+assert.ok(agentsMd.content.startsWith("## code-reviewer"));
+assert.ok(agentsMd.content.includes(getSkill("code-reviewer").instructions));
+
+const stitch = forStitchPrompt("elite-website-ux-ui-designer");
+assert.ok(stitch.content.includes(getSkill("elite-website-ux-ui-designer").description));
+assert.ok(stitch.content.includes(getSkill("elite-website-ux-ui-designer").instructions));
+assert.equal(Object.keys(stitch).length, 1, "Stitch adapter has no file convention, just content");
+
+assert.equal(adapters.cursor, forCursor);
+assert.equal(adapters.agentsMd, forAgentsMd);
+assert.equal(adapters.stitch, forStitchPrompt);
 
 console.log("OK — all smoke checks passed (" + all.length + " skills loaded)");

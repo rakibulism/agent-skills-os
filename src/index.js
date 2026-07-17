@@ -266,6 +266,62 @@ export function forAutoGen(name) {
 }
 
 /**
+ * Adapter: Cursor IDE rule file (.cursor/rules/<name>.mdc).
+ * Returns { filename, content } — `content` is a complete, ready-to-write
+ * .mdc file: YAML frontmatter (description + alwaysApply) followed by the
+ * skill's instructions as the rule body. Defaults to `alwaysApply: false` so
+ * Cursor treats it as an "Agent Requested" rule — the agent reads
+ * `description` and decides whether to pull it in, rather than it being
+ * injected into every request regardless of relevance.
+ */
+export function forCursor(name) {
+  const skill = getSkill(name);
+  const description = skill.description.replace(/\n/g, " ").trim();
+  const content = `---
+description: ${JSON.stringify(description)}
+alwaysApply: false
+---
+
+${skill.instructions}
+`;
+  return { filename: `${skill.name}.mdc`, content };
+}
+
+/**
+ * Adapter: AGENTS.md — the open, tool-agnostic instructions format read by
+ * OpenAI Codex, OpenCode, Google Antigravity (via its AGENTS.md support),
+ * Cursor, Windsurf, GitHub Copilot, and others. Returns { filename, content }
+ * shaped as a droppable section: a heading plus the skill's instructions,
+ * meant to be pasted into (or concatenated onto) a project's existing
+ * AGENTS.md rather than treated as a complete standalone file, since AGENTS.md
+ * conventionally holds every convention for a project, not just one skill.
+ */
+export function forAgentsMd(name) {
+  const skill = getSkill(name);
+  const content = `## ${skill.name} (via universal-agent-skills)
+
+${skill.description}
+
+${skill.instructions}
+`;
+  return { filename: `${skill.name}.agents.md`, content };
+}
+
+/**
+ * Adapter: Stitch (or any prompt-only, no-rule-file design tool). Returns
+ * { content } — a single plain-text prompt combining the skill's description
+ * and instructions, ready to paste directly into a prompt box. There is no
+ * file convention to target here (Stitch has no skill/rule-file concept), so
+ * unlike the other adapters this is meant to be copy-pasted, not written to
+ * disk under a specific path.
+ */
+export function forStitchPrompt(name) {
+  const skill = getSkill(name);
+  const content = `${skill.description}\n\n${skill.instructions}`;
+  return { content };
+}
+
+/**
  * Adapter: generic / framework-agnostic JSON. Useful for tool registries,
  * function-calling tool specs, or your own runtime.
  */
@@ -288,5 +344,8 @@ export const adapters = {
   langchain: forLangChain,
   crewai: forCrewAI,
   autogen: forAutoGen,
+  cursor: forCursor,
+  agentsMd: forAgentsMd,
+  stitch: forStitchPrompt,
   generic: forGeneric,
 };

@@ -58,6 +58,20 @@ export interface AutoGenAdapter {
   system_message: string;
 }
 
+export interface CursorAdapter {
+  filename: string;
+  content: string;
+}
+
+export interface AgentsMdAdapter {
+  filename: string;
+  content: string;
+}
+
+export interface StitchAdapter {
+  content: string;
+}
+
 export interface GenericAdapter {
   name: string;
   description: string;
@@ -79,6 +93,9 @@ export function forOpenAI(name: string): OpenAIAdapter;
 export function forLangChain(name: string): LangChainAdapter;
 export function forCrewAI(name: string): CrewAIAdapter;
 export function forAutoGen(name: string): AutoGenAdapter;
+export function forCursor(name: string): CursorAdapter;
+export function forAgentsMd(name: string): AgentsMdAdapter;
+export function forStitchPrompt(name: string): StitchAdapter;
 export function forGeneric(name: string): GenericAdapter;
 
 export const adapters: {
@@ -87,5 +104,8 @@ export const adapters: {
   langchain: typeof forLangChain;
   crewai: typeof forCrewAI;
   autogen: typeof forAutoGen;
+  cursor: typeof forCursor;
+  agentsMd: typeof forAgentsMd;
+  stitch: typeof forStitchPrompt;
   generic: typeof forGeneric;
 };
