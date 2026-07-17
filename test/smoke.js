@@ -3,6 +3,7 @@ import {
   loadAllSkills,
   getSkill,
   listSkills,
+  getRelatedSkills,
   asSystemPrompt,
   forClaude,
   forOpenAI,
@@ -13,120 +14,56 @@ import {
   adapters,
 } from "../src/index.js";
 
-const EXPECTED = [
+// A handful of anchor names that must always resolve, spanning the original
+// hand-authored set, the design-engineer curriculum (now folded into its
+// references/, not a top-level skill — de3-glsl-shaders etc. are deliberately
+// NOT in this list anymore), and later bulk additions. This intentionally
+// does NOT enumerate every skill — the full roster changes too often for an
+// exhaustive list to be worth maintaining; the count/uniqueness/shape checks
+// below cover the roster as a whole instead.
+const ANCHOR_NAMES = [
   "academic-researcher",
-  "accessibility-auditor",
-  "animated-component-architect",
-  "article-writer",
-  "brand-voice-reviewer",
-  "campaign-planner",
   "code-reviewer",
-  "color-grading",
-  "competitive-analyst",
-  "component-designer",
-  "creative-artist",
-  "data-analyst",
-  "de1-aesthetic-deconstruction",
-  "de1-grid-spacing",
-  "de1-micro-typography",
-  "de1-optical-alignment",
-  "de1-perceptual-color",
-  "de2-figma-to-code",
-  "de2-interaction-storyboarding",
-  "de2-motion-prototyping",
-  "de2-perspective-sketching",
-  "de3-asset-pipeline",
-  "de3-glsl-shaders",
-  "de3-linear-algebra",
-  "de3-threejs-r3f",
-  "de4-bezier-splines",
-  "de4-collision-detection",
-  "de4-euler-integration",
-  "de4-momentum-inertia",
-  "de4-spring-damper",
-  "de5-canvas-2d",
-  "de5-critical-rendering-path",
-  "de5-gpu-compositing",
-  "de5-lowlevel-js",
-  "de5-pointer-gestures",
-  "de6-component-composition",
-  "de6-state-systems",
-  "de6-token-pipeline",
-  "de6-typescript",
-  "de7-core-web-vitals",
-  "de7-profiling",
-  "de7-resource-budgets",
-  "de7-webgl-fallbacks",
-  "de8-bundling",
-  "de8-cicd",
-  "de8-edge-deployment",
-  "de8-telemetry",
-  "debugger",
-  "deploy-checklist-writer",
-  "design-critic",
   "design-engineer",
-  "design-to-code",
-  "design-token-architect",
-  "doc-writer",
-  "email-sequence-writer",
-  "ffmpeg-operator",
-  "founder-coach",
-  "frontend-performance-engineer",
-  "incident-commander",
-  "interaction-designer",
-  "interactive-web-engineer",
-  "mathematician",
-  "motion-design-engineer",
-  "motion-graphics",
-  "page-flip-builder",
-  "philosopher",
-  "physician",
-  "product-designer",
-  "refactorer",
-  "researcher",
-  "scientist",
+  "webgl-creative-animator",
   "seo-strategist",
-  "sound-design",
-  "standup-reporter",
-  "startup-advisor",
-  "student",
-  "summarizer",
-  "system-architect",
-  "task-manager",
-  "tech-debt-auditor",
-  "test-writer",
-  "testing-strategist",
-  "user-researcher",
-  "ux-copywriter",
+  "philosopher",
   "ux-expert-rakibulism",
-  "ux-ui-designer",
-  "venture-capitalist",
-  "video-editor",
-  "visual-polish-reviewer",
-  "webgl-creative-coder",
-  "webgl-motion-stack",
-  "wgl-creative-vision",
-  "wgl-draw-call-batching",
-  "wgl-gsap-motion",
-  "wgl-pixijs-2d-engine",
-  "wgl-theatrejs-editor",
 ];
 
 const all = loadAllSkills();
-assert.deepEqual(
-  all.map((s) => s.name),
-  EXPECTED,
-  "all skills load with the expected names"
+
+assert.ok(all.length >= 170, `expected at least 170 skills, got ${all.length}`);
+
+const names = all.map((s) => s.name);
+assert.deepEqual(names, [...names].sort(), "loadAllSkills() returns skills sorted by name");
+assert.equal(new Set(names).size, names.length, "no duplicate skill names");
+
+for (const anchor of ANCHOR_NAMES) {
+  assert.ok(names.includes(anchor), `expected anchor skill "${anchor}" to be present`);
+}
+
+// The design-engineer curriculum (de1-de8, webgl-motion-stack, wgl-*) was
+// folded into skills/design-engineer/references/ and must NOT resurface as
+// top-level skills — regression check for that restructure.
+const shouldNotBeTopLevel = names.filter(
+  (n) => /^de[1-8]-/.test(n) || /^wgl-/.test(n) || n === "webgl-motion-stack"
+);
+assert.equal(
+  shouldNotBeTopLevel.length,
+  0,
+  `design-engineer curriculum skills leaked back to top-level: ${shouldNotBeTopLevel.join(", ")}`
 );
 
 for (const s of all) {
   assert.ok(s.description, `${s.name} has a description`);
   assert.ok(s.instructions.length > 200, `${s.name} has substantive instructions`);
   assert.ok(Array.isArray(s.tags), `${s.name} tags is an array`);
+  assert.ok(Array.isArray(s.related), `${s.name} related is an array`);
 }
 
 const summary = listSkills();
-assert.equal(summary.length, EXPECTED.length);
+assert.equal(summary.length, all.length);
 assert.ok(summary.every((s) => s.name && s.description));
 
 // Each new skill should declare at least one input and carry tags.
@@ -189,5 +126,39 @@ assert.equal(adapters.claude, forClaude);
 const phil = forLangChain("philosopher");
 assert.ok(phil.inputVariables.includes("question"));
 assert.ok(phil.template.includes("{question}"));
+
+// Related-skills auto-discovery: a consumer loading design-engineer should
+// be able to find webgl-creative-animator (and vice versa) without the user
+// having typed its name, and getRelatedSkills should degrade gracefully for
+// a skill that declares no related links.
+const deRelated = getRelatedSkills("design-engineer");
+assert.ok(
+  deRelated.some((s) => s.name === "webgl-creative-animator"),
+  "design-engineer's related skills include webgl-creative-animator"
+);
+
+const wglRelated = getRelatedSkills("webgl-creative-animator");
+assert.ok(
+  wglRelated.some((s) => s.name === "design-engineer"),
+  "webgl-creative-animator's related skills include design-engineer"
+);
+
+assert.deepEqual(
+  getRelatedSkills("summarizer"),
+  [],
+  "a skill with no declared related links returns an empty array, not an error"
+);
+
+const claudeWithRelated = forClaude("design-engineer");
+assert.ok(
+  claudeWithRelated.metadata.related_skills.includes("webgl-creative-animator"),
+  "forClaude() surfaces related_skills in metadata"
+);
+
+const genWithRelated = forGeneric("design-engineer");
+assert.ok(
+  genWithRelated.related.includes("webgl-creative-animator"),
+  "forGeneric() surfaces the related field"
+);
 
 console.log("OK — all smoke checks passed (" + all.length + " skills loaded)");

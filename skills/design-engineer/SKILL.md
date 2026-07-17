@@ -1,12 +1,13 @@
 ---
 name: design-engineer
 description: The core orchestrator skill for elite design engineering — building award-tier interactive web experiences that fuse designer-level visual taste with GPU-level computational performance (120 FPS). Use this skill whenever the user asks to build, review, plan, or teach anything involving creative web development, interactive websites, WebGL/Three.js, animation-heavy UI, motion design in code, Awwwards-style sites, 3D hero sections, physics-based interactions, shader effects, or mentions "design engineer", "creative developer", or "cyborg design engineer". Also trigger when reviewing frontend code for visual quality AND performance simultaneously, or planning a training roadmap for a developer learning these skills. The full 9-track curriculum (rail-by-rail depth on taste, sketching, 3D/GPU math, physics, browser internals, architecture, performance, deployment, and the animation-library stack) lives in references/ — load the specific rail file(s) the task touches.
-version: 0.2.0
+version: 0.3.0
 tags: [design-engineering, orchestrator, webgl, animation, performance]
 inputs:
   - name: project
     description: The interactive/creative web project being built, reviewed, or planned.
     required: true
+related: [webgl-creative-animator]
 ---
 
 # Design Engineer (Core Orchestrator)
@@ -48,6 +49,16 @@ Load every reference file relevant to the task before writing code — treat `re
 [webgl-motion-stack](references/webgl-motion-stack.md) (start here — routes to the rest of this track) · [wgl-gsap-motion](references/wgl-gsap-motion.md) · [wgl-pixijs-2d-engine](references/wgl-pixijs-2d-engine.md) · [wgl-theatrejs-editor](references/wgl-theatrejs-editor.md) · [wgl-draw-call-batching](references/wgl-draw-call-batching.md) · [wgl-creative-vision](references/wgl-creative-vision.md)
 
 A "liquid blob hero that reacts to the cursor" touches `de1-aesthetic-deconstruction`, `de3-glsl-shaders`, `de4-spring-damper`, `de5-lowlevel-js`, `de7-webgl-fallbacks` — load them all. A "scroll-driven GSAP + Three.js site with a custom shader hero" touches `webgl-motion-stack`, `wgl-gsap-motion`, `de3-threejs-r3f`, `de3-glsl-shaders` — Track 9 first to decide the library stack, then the Track 3 rails for the 3D/shader implementation.
+
+## Related Skills — load automatically, don't wait to be asked by name
+
+Don't require the user to already know and type every skill name. If the request involves any of the following, load the paired skill without being asked separately:
+
+| If the request involves… | Also load |
+|---|---|
+| An original WebGL/shader animation, a Shadertoy-style effect, raymarched SDFs, GPGPU particle systems, procedural noise displacement, or fluid-sim visuals — anything asking "how do I *design* this effect" rather than "how do I wire up Three.js" | **`webgl-creative-animator`** — it holds the systems-thinking mental model and the exact formulas (SDF primitives, curl noise, Gerstner waves, Stable Fluids) that Track 3's `de3-glsl-shaders` reference assumes but doesn't re-derive |
+
+This declared in frontmatter as `related: [webgl-creative-animator]` — a consuming agent calling `getRelatedSkills('design-engineer')` gets this programmatically rather than needing to parse this table.
 
 ## Operating Doctrine
 

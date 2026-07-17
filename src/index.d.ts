@@ -10,6 +10,7 @@ export interface Skill {
   version: string;
   tags: string[];
   inputs: SkillInput[];
+  related: string[];
   instructions: string;
   path: string;
 }
@@ -20,9 +21,19 @@ export interface SkillSummary {
   tags: string[];
 }
 
+export interface RelatedSkillSummary {
+  name: string;
+  description: string;
+  tags: string[];
+}
+
 export interface ClaudeAdapter {
   system: string;
-  metadata: { skill_name: string; skill_version: string };
+  metadata: {
+    skill_name: string;
+    skill_version: string;
+    related_skills: string[];
+  };
 }
 
 export interface OpenAIAdapter {
@@ -53,12 +64,14 @@ export interface GenericAdapter {
   version: string;
   tags: string[];
   inputs: SkillInput[];
+  related: string[];
   instructions: string;
 }
 
 export function loadAllSkills(): Skill[];
 export function getSkill(name: string): Skill;
 export function listSkills(): SkillSummary[];
+export function getRelatedSkills(name: string): RelatedSkillSummary[];
 export function asSystemPrompt(name: string): string;
 
 export function forClaude(name: string): ClaudeAdapter;

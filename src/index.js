@@ -124,6 +124,7 @@ export function loadAllSkills() {
         version: frontmatter.version || "0.0.0",
         tags: frontmatter.tags || [],
         inputs: frontmatter.inputs || [],
+        related: frontmatter.related || [],
         instructions: body,
         path: skillPath,
       });
@@ -162,6 +163,28 @@ export function listSkills() {
 }
 
 /**
+ * Resolve the `related` skills declared in a skill's frontmatter into full
+ * Skill objects (name + description, not the full instructions body, to keep
+ * this cheap to call speculatively). Names that don't resolve to a real skill
+ * (a typo, or a skill renamed/removed since the link was written) are dropped
+ * rather than throwing — a stale related-link shouldn't break the caller.
+ *
+ * This exists so a consuming agent doesn't need the user to already know and
+ * type every skill name up front: load one skill, inspect `.related`, and
+ * decide whether the current task also calls for one of its complements
+ * (e.g. loading `design-engineer` for a WebGL hero section should surface
+ * `webgl-creative-animator` without the user having typed it separately).
+ */
+export function getRelatedSkills(name) {
+  const skill = getSkill(name);
+  const all = loadAllSkills();
+  return skill.related
+    .map((relatedName) => all.find((s) => s.name === relatedName))
+    .filter(Boolean)
+    .map((s) => ({ name: s.name, description: s.description, tags: s.tags }));
+}
+
+/**
  * Render a skill as a system prompt string. Framework-agnostic — works
  * anywhere you can pass a system / instructions string.
  */
@@ -181,6 +204,7 @@ export function forClaude(name) {
     metadata: {
       skill_name: skill.name,
       skill_version: skill.version,
+      related_skills: skill.related,
     },
   };
 }
@@ -253,6 +277,7 @@ export function forGeneric(name) {
     version: skill.version,
     tags: skill.tags,
     inputs: skill.inputs,
+    related: skill.related,
     instructions: skill.instructions,
   };
 }

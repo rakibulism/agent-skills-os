@@ -1,7 +1,7 @@
 ---
 name: webgl-creative-animator
 description: Become an elite creative WebGL thinker — the mental framework, mathematical grounding, and technique library behind world-class generative/interactive graphics (Awwwards-tier sites, Shadertoy demos, GPU art installations). Covers systems-based thinking over keyframe animation, the five signature technique families (raymarched SDFs, GPGPU particle simulation, vertex noise displacement, post-processing, fluid dynamics), the required tech stack (GLSL, Three.js/R3F, vanilla WebGL2), and a daily training regimen. Use whenever the user wants to design an original WebGL/shader animation, is stuck thinking in DOM/CSS-keyframe terms instead of GPU-system terms, wants to build a creative-coding portfolio, or asks "how do I get good at this" for shader/particle/fluid work. Complements the design-engineer skill's Track 3 (de3-glsl-shaders) and Track 9 (webgl-motion-stack/wgl-*) reference files by supplying the conceptual model and the specific formulas those references assume.
-version: 0.1.0
+version: 0.2.0
 tags: [design-engineering, webgl, glsl, shaders, creative-coding, graphics-math]
 inputs:
   - name: goal
@@ -10,6 +10,7 @@ inputs:
   - name: experience_level
     description: Current familiarity with GLSL/WebGL/Three.js — shapes how much foundational math to front-load vs. how fast to reach for the deep-dive reference file.
     required: false
+related: [design-engineer]
 ---
 
 # WebGL Creative Animator
@@ -62,3 +63,7 @@ Talent here is trained, not innate — see [references/daily-training.md](refere
 - **Don't run particle simulations on the CPU past a few thousand particles.** If the ask implies "millions" or "60fps with cursor interaction," it's a GPGPU/FBO problem from the start, not an optimization to bolt on later.
 - **Don't stack post-processing passes naively.** Each full-screen pass is a full resolution texture read/write; bloom + DoF + chromatic aberration + film grain as four independent `EffectComposer` passes will tank mobile framerate — see the reference for combining passes.
 - **Don't simulate real fluid dynamics when a curl-noise particle field would sell the same illusion for a fraction of the cost** — reserve the Navier–Stokes grid solver for effects that need actual advection of a dye/density field (ink, smoke with visible density gradients), not for "a flowy particle look."
+
+## Related Skills — load automatically, don't wait to be asked by name
+
+If the task is a *full project* rather than a single effect — a whole site, a component with performance/accessibility/deployment constraints, anything beyond "make this one visual" — also load **`design-engineer`**. That skill is the top-level orchestrator across all 9 curriculum tracks (taste, sketching, 3D math, physics, browser internals, architecture, performance, deployment, and the animation-library stack); this skill supplies the deep technique/formula layer its Track 3 (`de3-glsl-shaders`) and Track 9 (`webgl-motion-stack`) references assume but don't re-derive. Declared in frontmatter as `related: [design-engineer]` — call `getRelatedSkills('webgl-creative-animator')` to get this programmatically.

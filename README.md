@@ -222,16 +222,34 @@ Every skill follows the same authoring principles: lead with the spine, prioriti
 loadAllSkills(): Skill[]
 getSkill(name: string): Skill
 listSkills(): SkillSummary[]
+getRelatedSkills(name: string): RelatedSkillSummary[]
 asSystemPrompt(name: string): string
 
 // Framework adapters
-forClaude(name):     { system, metadata }
+forClaude(name):     { system, metadata }              // metadata includes related_skills: string[]
 forOpenAI(name):     { name, description, instructions }
 forLangChain(name):  { template, inputVariables }
 forCrewAI(name):     { role, goal, backstory }
 forAutoGen(name):    { name, system_message }
-forGeneric(name):    { name, description, version, tags, inputs, instructions }
+forGeneric(name):    { name, description, version, tags, inputs, related, instructions }
 ```
+
+### Related skills — so an agent doesn't need every name typed up front
+
+A skill can declare `related: [other-skill-name, ...]` in its frontmatter to point at complements it's commonly loaded alongside. `getRelatedSkills(name)` resolves those into full summaries (dropping any name that no longer resolves, rather than throwing), so a consuming agent can decide to pull in a companion skill automatically instead of requiring the user to already know and type its name:
+
+```js
+import { getSkill, getRelatedSkills } from "universal-agent-skills";
+
+const skill = getSkill("design-engineer");
+const related = getRelatedSkills("design-engineer");
+// -> [{ name: "webgl-creative-animator", description: "...", tags: [...] }]
+
+// e.g. in an agent loop: if the request looks like it needs a related skill too,
+// load it without waiting for the user to name it explicitly.
+```
+
+This is opt-in per skill — only add `related` where two skills are genuinely complementary (like `design-engineer`'s Track 3/9 rails and `webgl-creative-animator`'s deep shader/particle/fluid formulas), not as a blanket cross-link between every skill in a domain.
 
 ## Use with Python frameworks (CrewAI, AutoGen)
 
@@ -277,6 +295,7 @@ inputs:
   - name: input_name
     description: What this input is.
     required: true
+related: [other-skill-name]  # optional — see "Related skills" above
 ---
 
 # Body
