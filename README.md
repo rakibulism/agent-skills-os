@@ -98,6 +98,7 @@ const formatted = await prompt.format({
 | `email-sequence-writer` | Designs multi-email sequences with timing, branching logic, and exit conditions |
 | `competitive-analyst` | Positioning/messaging comparison across competitors — gaps, threats, opportunities |
 | `seo-strategist` | SEO audit — on-page, technical, content gaps, keyword opportunities, prioritized plan |
+| `technical-seo-audit` | Audits Google Search compliance — crawlability, indexability, canonical/duplicate URLs, sitemaps, Search Essentials, image SEO |
 
 ### Productivity
 
