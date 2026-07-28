@@ -70,6 +70,7 @@ const formatted = await prompt.format({
 | `deploy-checklist-writer` | Builds a pre-deployment checklist with rollback triggers, specific to the actual change |
 | `incident-commander` | Runs incident triage, status updates, and blameless postmortems |
 | `standup-reporter` | Turns commits/tickets/notes into a yesterday/today/blockers update |
+| `fix-github-issues` | Sweeps a GitHub Projects board or every repo an account owns for open issues, then investigates and fixes them |
 
 ### Design & Design Engineering
 
