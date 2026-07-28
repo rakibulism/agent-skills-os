@@ -1,7 +1,7 @@
 ---
 name: fix-github-issues
 description: Check GitHub Projects (v2) boards and/or every repo an account owns for open issues, then investigate and fix them in the real codebase. Use when the user asks to "check my issues", "check my project board", "check for open issues across my repos", "look into issue #N", or asks to review/fix issues on a GitHub project or repo they own.
-version: 0.1.0
+version: 0.1.1
 tags: [github, issues, project-management, git, engineering, triage]
 inputs:
   - name: account
