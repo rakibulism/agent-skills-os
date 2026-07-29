@@ -88,6 +88,7 @@ const formatted = await prompt.format({
 | `user-researcher` | Plans studies (interviews/usability tests/surveys) and synthesizes findings into themes |
 | `ux-copywriter` | Writes microcopy — errors, empty states, buttons, confirmation dialogs |
 | `ux-expert-rakibulism` | Reviews UI screens in "rakibulism" voice — direct, client-facing, promise-list-style feedback |
+| `ux-flow-completeness-auditor` | Audits *implemented* features for dead click targets, one-way CRUD, unmanaged relationships, and permission theatre |
 
 ### Marketing
 
