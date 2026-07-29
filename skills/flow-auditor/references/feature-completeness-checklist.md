@@ -1,28 +1,12 @@
----
-name: ux-flow-completeness-auditor
-description: Audits an implemented feature (real code, not a mockup) for the specific ways admin/SaaS UIs end up half-built — dead interactive elements, one-way CRUD, unmanageable relationships, permission theatre, and non-standard placement of well-established patterns. Use this skill after building or before shipping a feature with lists, entities, roles, or relationships (channels, teams, members, settings pages, admin panels) — when the user asks "check the flow," "did I miss anything," "is this feature complete," or reports that something in the UI "doesn't do anything" or "there's no way to." Also trigger proactively after implementing any create/list/detail flow, before declaring it done.
-version: 0.1.0
-tags: [ux, ui, completeness, audit, admin, saas, crud, permissions, code-review]
-inputs:
-  - name: feature
-    description: The feature or flow to audit — what it lets a user do, and a pointer to the relevant screens/components/code.
-    required: true
-  - name: roles
-    description: The distinct roles/permission levels that can see this feature, if any (e.g. owner/admin/member). Default to auditing as if only one role exists.
-    required: false
-  - name: entities
-    description: The data entities involved and how they relate (e.g. "channel has members", "task has assignee") — helps surface relationship-management gaps.
-    required: false
-related: [flow-auditor, flow-completeness-auditor, ux-ui-designer, design-critic, ux-expert-rakibulism]
-author: rakibulism
-author_url: https://x.com/rakibulism
+# Feature Completeness Checklist — full method
+
+This is the micro lens's full method, mirrored from the standalone [`ux-flow-completeness-auditor`](../../ux-flow-completeness-auditor/SKILL.md) skill. Load this file when `flow-auditor` has determined the micro lens applies.
+
 ---
 
-# UX Flow Completeness Auditor
+Most half-built features don't look half-built. They render fine, the happy path works, and nothing throws an error. What's missing only shows up when someone actually tries to use it: an avatar that doesn't do anything when clicked, a "create" screen with no matching "edit," a permission that's implemented as a greyed-out button instead of not being there at all. This lens catches that class of gap — in real, shipped code, not in a screenshot.
 
-Most half-built features don't look half-built. They render fine, the happy path works, and nothing throws an error. What's missing only shows up when someone actually tries to use it: an avatar that doesn't do anything when clicked, a "create" screen with no matching "edit," a permission that's implemented as a greyed-out button instead of not being there at all. This skill catches that class of gap — in real, shipped code, not in a screenshot.
-
-This is a **builder's checklist**, not a visual critique. Use `ux-ui-designer` or `design-critic` for hierarchy/spacing/visual feedback on a mockup. Use this skill once something is actually implemented and you need to know what's still missing before it ships.
+This is a **builder's checklist**, not a visual critique. Use `ux-ui-designer` or `design-critic` for hierarchy/spacing/visual feedback on a mockup. Use this lens once something is actually implemented and you need to know what's still missing before it ships.
 
 ## The core discipline
 
@@ -107,7 +91,7 @@ Don't audit only the state you happened to build first. For the feature under re
 
 ## What to avoid
 
-- Don't audit from the component source alone — click through the actual states. Several of the gaps this skill targets (dead click handlers, permission-check bugs, CSS-level disabling failures) are invisible from reading code and only show up live.
+- Don't audit from the component source alone — click through the actual states. Several of the gaps this lens targets (dead click handlers, permission-check bugs, CSS-level disabling failures) are invisible from reading code and only show up live.
 - Don't treat "the happy path works" as "the feature is done."
-- Don't recommend disabling a control as an acceptable substitute for hiding it, when auditing permission-gated UI — that's the specific anti-pattern this skill exists to catch.
+- Don't recommend disabling a control as an acceptable substitute for hiding it, when auditing permission-gated UI — that's the specific anti-pattern this lens exists to catch.
 - Don't invent a new UI location for a pattern that already has an established convention elsewhere in comparable products.

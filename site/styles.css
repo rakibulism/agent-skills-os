@@ -365,6 +365,12 @@ code { font-family: var(--mono); }
 .cat-badge.des { color: #a24bbf; border-color: #e6cef0; background: #f7ecfb; }
 .cat-badge.res { color: #1f9d55; border-color: #c9f5cf; background: #f0fff3; }
 .cat-badge.deng { color: #c2670c; border-color: #f6ddb8; background: #fdf1de; }
+.cat-badge.seo { color: #d1478a; border-color: #f6cde3; background: #fdeef6; }
+.cat-badge.figma { color: #e0521f; border-color: #fad0bc; background: #fef1e9; }
+.cat-badge.marketing { color: #b5871a; border-color: #f2e1ac; background: #fbf3dc; }
+.cat-badge.brand { color: #8c47c9; border-color: #e4cef7; background: #f6eefe; }
+.cat-badge.productivity { color: #158a7a; border-color: #b9ecdf; background: #e6faf3; }
+.cat-badge.general { color: #5b6472; border-color: #d4d9e0; background: #eef1f4; }
 .lb-empty td { text-align: center; color: var(--ink-3); font-family: var(--sans); padding: 40px 8px; }
 
 /* ===== HOW ===== */
