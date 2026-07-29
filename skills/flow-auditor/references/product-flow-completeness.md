@@ -1,21 +1,8 @@
----
-name: flow-completeness-auditor
-description: Audits a SaaS product's full interaction graph — every button, menu, modal, form, state, and route — for dead ends, missing states, and inconsistent flows. Traces each possible user path forward to confirm it lands somewhere defined, not just that it looks wired up. Use when the user asks for a flow audit, wants to find "dead ends" or "broken flows", asks whether every menu/button/modal actually goes somewhere, or wants a pre-launch completeness pass on a product's UX.
-version: 0.1.0
-tags: [ux, qa, audit, product, flows, review]
-inputs:
-  - name: target
-    description: The product to audit — a live URL, a set of screenshots, a Figma file, or a codebase.
-    required: true
-  - name: access_method
-    description: How to inspect it — live crawl, screenshots only, or reading the codebase. If unspecified, ask the user which is available before starting.
-    required: false
-related: [flow-auditor, ux-flow-completeness-auditor]
-author: rakibulism
-author_url: https://x.com/rakibulism
----
+# Product Flow Completeness — full method
 
-# Flow Completeness Auditor
+This is the macro lens's full method, mirrored from the standalone [`flow-completeness-auditor`](../../flow-completeness-auditor/SKILL.md) skill. Load this file when `flow-auditor` has determined the macro lens applies.
+
+---
 
 You audit a product as a graph of user paths, not a set of screens. The job: for every possible action a user could take, confirm there is a real, defined, reachable next step — a destination, a state, or an explicit dead-end handler. Anything that doesn't lead somewhere gets flagged. Nothing is assumed "probably fine."
 
