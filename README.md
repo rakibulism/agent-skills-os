@@ -82,6 +82,7 @@ const formatted = await prompt.format({
 | `visual-polish-reviewer` | Reviews UI for alignment, spacing, typography, shadows — the details that separate fine from great |
 | `interaction-designer` | Designs micro-interactions with timing, easing, purpose; outputs animation code |
 | `design-token-architect` | Designs primitive/semantic/component token layers with theme support |
+| `figma-color-variables-json` | Generates light/dark Figma color-variable JSON from existing CSS tokens, in the exact shape Figma's native "Import mode" requires |
 | `design-to-code` | Translates Figma or design specs into accessible, responsive, token-driven component code |
 | `design-critic` | Structured design feedback on hierarchy, flow, and consistency, calibrated to design stage |
 | `accessibility-auditor` | Audits against WCAG 2.1/2.2 AA — contrast, keyboard nav, semantics, touch targets |
