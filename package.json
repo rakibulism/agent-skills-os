@@ -20,7 +20,6 @@
     "LICENSE"
   ],
   "scripts": {
-    "test": "node test/smoke.js",
     "export": "node scripts/export-skill.js"
   },
   "keywords": [

@@ -109,7 +109,13 @@ let _cache = null;
  */
 export function loadAllSkills() {
   if (_cache) return _cache;
-  const entries = readdirSync(SKILLS_DIR);
+  let entries;
+  try {
+    entries = readdirSync(SKILLS_DIR);
+  } catch {
+    _cache = [];
+    return _cache;
+  }
   const skills = [];
   for (const entry of entries) {
     const dir = join(SKILLS_DIR, entry);

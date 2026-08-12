@@ -9,3 +9,6 @@ node_modules/
 
 # OS
 .DS_Store
+
+# local-only smoke test, not tracked in the public repo
+test/
