@@ -1,0 +1,512 @@
+/* ============================================================
+   SKILLS — universal-agent-skills landing page
+   Restyled to the Pokecut Admin design language:
+   light neutral surfaces, Inter, bordered "action" buttons with a
+   soft drop shadow, a pink→purple brand gradient used sparingly,
+   pill badges with an inset highlight, and 8/12/16px radii.
+   ============================================================ */
+
+:root {
+  /* ---- surfaces (pokecut) ---- */
+  --bg: #ededed;            /* app frame / body */
+  --surface-card: #ffffff;  /* white cards, panels, charts */
+  --surface-subtle: #f5f5f5;/* subtle grey panel */
+  --surface-active: #fafafa;/* button / stat surface */
+  --hover: #e6e6e6;
+
+  /* ---- text (pokecut) ---- */
+  --ink: #393846;           /* primary */
+  --ink-2: #5e5e5e;         /* nav-inactive / body */
+  --ink-3: #a3a4a9;         /* secondary / muted */
+  --ink-4: #c2c3c8;         /* faint */
+  --ink-black: #000000;     /* icon-active */
+
+  /* ---- borders (pokecut) ---- */
+  --line: #eaeceb;          /* subtle (cards) */
+  --line-2: #dbdbdb;        /* muted (badges) */
+  --stroke: #cfcfcf;        /* default (buttons) */
+
+  /* ---- brand gradient (pokecut export button / pro badge) ---- */
+  --grad: linear-gradient(101deg, #d96d98 0%, #d27aa2 38%, #aa79bf 71%, #8c69c3 100%);
+  --grad-soft: linear-gradient(101deg, rgba(217,109,152,0.16) 0%, rgba(140,105,195,0.16) 100%);
+
+  /* ---- code panel (reuses pokecut dark-mode card colors) ---- */
+  --code-bg: #16181d;
+  --code-line: #282d35;
+  --code-ink: #e9eaee;
+  --code-dim: #6f7681;
+  --code-k: #c9a6ff;
+  --code-s: #7fd6a1;
+  --code-fn: #6ea8ff;
+  --code-n: #f0b567;
+  --code-at: #6ea8ff;
+
+  /* ---- effects (pokecut) ---- */
+  --shadow-drop: 0px 8px 16px -4px rgba(222, 222, 222, 1);
+  --shadow-card: 0px 18px 30px -22px rgba(180, 180, 190, 0.9);
+  --inset-hi: inset 0 -4.5px 1px -4px rgba(255, 255, 255, 0.3);
+  --click-ring: inset 0 -4.5px 1px -4px rgba(255, 255, 255, 0.3),
+                inset 0 0 0 2px rgba(250, 250, 250, 1);
+
+  /* ---- radii (pokecut) ---- */
+  --r-sm: 6px;
+  --r-md: 8px;
+  --r-lg: 12px;
+  --r-xl: 16px;
+  --r-full: 9999px;
+
+  --maxw: 1180px;
+  --pixel: "Press Start 2P", monospace;
+  --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: 16px;
+  color: var(--ink);
+  background: var(--bg);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+a { color: inherit; text-decoration: none; }
+code { font-family: var(--mono); }
+::selection { background: #8c69c3; color: #fff; }
+
+.container { width: 100%; max-width: var(--maxw); margin: 0 auto; padding: 0 28px; }
+
+/* ===== AMBIENT BACKGROUND (soft brand blobs — GSAP parallax) ===== */
+.sky {
+  position: fixed; inset: 0; z-index: 0;
+  pointer-events: none; overflow: hidden; isolation: isolate;
+}
+.smoke {
+  position: absolute; border-radius: 50%;
+  filter: blur(90px); opacity: 0.5;
+  will-change: transform, opacity;
+}
+.smoke--1 { width: 42vw; height: 42vw; left: 4%;  top: 6%;  background: radial-gradient(circle, rgba(217,109,152,0.30), transparent 68%); }
+.smoke--2 { width: 34vw; height: 34vw; left: 58%; top: -6%; background: radial-gradient(circle, rgba(140,105,195,0.26), transparent 68%); }
+.smoke--3 { width: 48vw; height: 48vw; left: 30%; top: 36%; background: radial-gradient(circle, rgba(79,123,240,0.18),  transparent 70%); }
+.smoke--4 { width: 28vw; height: 28vw; left: 72%; top: 46%; background: radial-gradient(circle, rgba(210,122,162,0.24), transparent 66%); }
+.smoke--5 { width: 40vw; height: 40vw; left: -8%; top: 56%; background: radial-gradient(circle, rgba(170,121,191,0.22), transparent 70%); }
+.smoke--6 { width: 30vw; height: 30vw; left: 42%; top: 4%;  background: radial-gradient(circle, rgba(255,186,38,0.14),  transparent 65%); }
+.cursor-glow {
+  position: absolute; left: 0; top: 0; width: 560px; height: 560px;
+  border-radius: 50%; opacity: 0; will-change: transform, opacity;
+  background: radial-gradient(circle, rgba(170,121,191,0.14), rgba(217,109,152,0.05) 42%, transparent 62%);
+  filter: blur(10px);
+}
+.page { position: relative; z-index: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .sky { display: none; }
+}
+
+/* shared label (mono, uppercase, spaced) */
+.label {
+  display: block;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 20px;
+}
+
+.section__title {
+  font-family: var(--sans);
+  font-size: clamp(24px, 3vw, 34px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  margin: 0 0 36px;
+}
+.section__lead { font-size: 17px; color: var(--ink-2); max-width: 620px; margin: 0; }
+
+/* ===== NAV ===== */
+.nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(237, 237, 237, 0.78);
+  backdrop-filter: saturate(160%) blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+.nav__inner { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+.nav__brand { display: flex; align-items: center; gap: 9px; font-weight: 600; font-size: 16px; color: var(--ink); }
+.nav__tri { width: 20px; height: 20px; color: var(--ink); }
+.nav__slash { color: var(--ink-3); font-weight: 400; }
+.nav__name { color: var(--ink); }
+.nav__links { display: flex; align-items: center; gap: 28px; }
+.nav__links a { color: var(--ink-2); font-size: 15px; font-weight: 500; transition: color .15s; }
+.nav__links a:hover { color: var(--ink); }
+
+/* ===== HERO ===== */
+.hero { padding: 64px 0 72px; border-bottom: 1px solid var(--line); }
+.hero__top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 48px;
+  align-items: start;
+  margin-bottom: 56px;
+}
+
+/* blocky pixel wordmark — SVG scales seamlessly to its column */
+.wordmark {
+  margin: 0 0 22px;
+  width: 100%;
+  max-width: 560px;
+  line-height: 0;
+}
+.wordmark__svg { display: block; width: 100%; height: auto; }
+.wordmark__sub {
+  font-family: var(--mono);
+  font-size: clamp(12px, 1.6vw, 16px);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: var(--ink-2);
+  margin: 0;
+}
+.hero__lede {
+  font-size: clamp(20px, 2.4vw, 30px);
+  line-height: 1.32;
+  letter-spacing: -0.01em;
+  color: var(--ink-2);
+  font-weight: 400;
+  margin: 6px 0 0;
+}
+
+.hero__mid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 48px;
+  align-items: start;
+}
+
+/* install / terminal box — a white pokecut card */
+.install {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  background: var(--surface-card);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-card);
+  padding: 14px 12px 14px 18px;
+  font-family: var(--mono);
+  font-size: 15px;
+  color: var(--ink);
+  max-width: 520px;
+}
+.install code { color: var(--ink); }
+.install .prompt { color: #8c69c3; margin-right: 8px; user-select: none; font-weight: 700; }
+.install--lg { font-size: 16px; margin: 0 auto; }
+
+/* ---- buttons ---- */
+
+/* icon button — square, borderless (pokecut .icon-btn) */
+.icon-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px; padding: 0; flex-shrink: 0;
+  background: var(--surface-active); color: var(--ink);
+  border: 1px solid var(--stroke); border-radius: var(--r-md);
+  box-shadow: var(--inset-hi);
+  cursor: pointer; transition: color .15s, border-color .15s, background .15s;
+}
+.icon-btn:hover { background: var(--hover); border-color: var(--line-2); }
+.icon-btn:focus-visible { outline: 2px solid var(--stroke); outline-offset: 2px; }
+.icon-btn.is-copied { color: #fff; border-color: transparent; background-image: var(--grad); }
+
+/* small pill copy button (pokecut .action--pill) */
+.copy-btn {
+  font-family: var(--mono); font-size: 13px; font-weight: 500;
+  color: #7f7f7f;
+  background: var(--surface-subtle);
+  border: 1px solid var(--stroke);
+  border-radius: var(--r-sm);
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: color .15s, border-color .15s, background .15s;
+}
+.copy-btn:hover { color: var(--ink); background: var(--hover); }
+.copy-btn.is-copied { color: #fff; background-image: var(--grad); border-color: transparent; }
+
+/* the pokecut "action" button family */
+.btn {
+  position: relative;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  font-family: var(--sans); font-weight: 500; font-size: 15px;
+  padding: 11px 18px; border-radius: var(--r-md);
+  border: 1px solid var(--stroke);
+  background: var(--surface-active); color: var(--ink);
+  box-shadow: var(--shadow-drop);
+  cursor: pointer; overflow: hidden;
+  transition: background .15s ease, border-color .15s ease, box-shadow .15s ease, color .15s ease, transform .12s ease;
+}
+.btn:hover { background: var(--hover); border-color: var(--line-2); transform: translateY(-1px); }
+
+/* primary — brand gradient (pokecut .action--export) */
+.btn--primary {
+  border-color: transparent; color: #fff;
+  background-image: var(--grad);
+  box-shadow: var(--inset-hi), var(--shadow-drop);
+  text-shadow: 0px 0.5px 0.5px rgba(0, 0, 0, 0.35);
+}
+.btn--primary:hover { border-color: transparent; filter: brightness(1.04); }
+
+/* ghost — bordered white (pokecut default .action) */
+.btn--ghost { background: var(--surface-active); color: var(--ink); }
+
+/* agents row */
+.agents { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; height: 100%; }
+.agent {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 52px; height: 52px;
+  color: var(--ink-2);
+  background: var(--surface-card);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-card);
+  transition: color .15s, border-color .15s, transform .15s, box-shadow .15s;
+  cursor: default;
+}
+.agent svg { width: 26px; height: 26px; display: block; }
+.agent:hover { color: #8c69c3; border-color: var(--line-2); transform: translateY(-2px); }
+
+/* ===== SECTION SHELL ===== */
+.section { padding: 80px 0; border-bottom: 1px solid var(--line); }
+
+/* ===== LEADERBOARD ===== */
+.leaderboard .label { margin-bottom: 18px; }
+.search {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--surface-card);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-card);
+  padding: 12px 14px;
+  margin-bottom: 10px;
+}
+.search__icon { color: var(--ink-3); flex: none; }
+.search__input {
+  flex: 1; min-width: 0;
+  background: transparent; border: none; outline: none;
+  color: var(--ink); font-family: var(--mono); font-size: 16px;
+}
+.search__input::placeholder { color: var(--ink-3); }
+.search__kbd {
+  font-family: var(--mono); font-size: 13px; color: var(--ink-3);
+  background: var(--surface-subtle);
+  border: 1px solid var(--line-2); border-radius: var(--r-sm);
+  padding: 2px 9px; flex: none;
+}
+
+.lb-tabs { display: flex; gap: 10px; padding: 6px 0 0; margin-bottom: 12px; flex-wrap: wrap; }
+.lb-tab {
+  font-family: var(--sans); font-size: 14px; font-weight: 500; color: var(--ink-2);
+  background: var(--surface-active); border: 1px solid var(--stroke);
+  border-radius: var(--r-sm); box-shadow: var(--inset-hi);
+  padding: 7px 12px; cursor: pointer;
+  transition: color .15s, background .15s, border-color .15s;
+}
+.lb-tab:hover { color: var(--ink); background: var(--hover); }
+.lb-tab.is-active { color: #fff; background-image: var(--grad); border-color: transparent; text-shadow: 0 0.5px 0.5px rgba(0,0,0,.35); }
+.lb-tab__n { opacity: 0.7; }
+
+/* leaderboard as a white pokecut card */
+.lb-table {
+  width: 100%; border-collapse: collapse; font-family: var(--sans);
+  background: var(--surface-card);
+  border: 1px solid var(--line);
+  border-radius: var(--r-xl);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+.lb-table thead th {
+  text-align: left;
+  font-family: var(--mono);
+  font-size: 12px; font-weight: 600; letter-spacing: 0.1em;
+  color: var(--ink-3);
+  padding: 16px; border-bottom: 1px solid var(--line);
+  background: var(--surface-subtle);
+}
+.lb-rank { width: 56px; }
+.lb-cat-col { text-align: right; width: 130px; }
+
+.lb-row { border-bottom: 1px solid var(--line); transition: background .12s; }
+.lb-row:last-child { border-bottom: none; }
+.lb-row:hover { background: var(--surface-subtle); }
+.lb-row td { padding: 16px; vertical-align: top; }
+.lb-row .lb-rank { color: var(--ink-3); font-family: var(--mono); font-size: 14px; padding-top: 18px; }
+
+.lb-skill a { display: inline-flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.lb-name { font-family: var(--sans); font-weight: 600; font-size: 16px; color: var(--ink); }
+.lb-row:hover .lb-name { color: #8c69c3; }
+.lb-repo { font-family: var(--mono); font-size: 13px; color: var(--ink-3); }
+.lb-desc { display: block; font-family: var(--sans); font-size: 14px; color: var(--ink-2); margin-top: 5px; max-width: 640px; }
+
+/* category badges — pokecut outlined pill with inset highlight */
+.cat-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
+  color: var(--ink-2);
+  background: var(--surface-active);
+  border: 1px solid var(--line-2); border-radius: var(--r-full);
+  box-shadow: var(--inset-hi);
+  padding: 5px 11px;
+}
+.cat-badge.eng { color: #2f6fdb; border-color: #c1daff; background: #e3eeff; }
+.cat-badge.des { color: #a24bbf; border-color: #e6cef0; background: #f7ecfb; }
+.cat-badge.res { color: #1f9d55; border-color: #c9f5cf; background: #f0fff3; }
+.cat-badge.deng { color: #c2670c; border-color: #f6ddb8; background: #fdf1de; }
+.cat-badge.seo { color: #d1478a; border-color: #f6cde3; background: #fdeef6; }
+.cat-badge.figma { color: #e0521f; border-color: #fad0bc; background: #fef1e9; }
+.cat-badge.marketing { color: #b5871a; border-color: #f2e1ac; background: #fbf3dc; }
+.cat-badge.brand { color: #8c47c9; border-color: #e4cef7; background: #f6eefe; }
+.cat-badge.productivity { color: #158a7a; border-color: #b9ecdf; background: #e6faf3; }
+.cat-badge.general { color: #5b6472; border-color: #d4d9e0; background: #eef1f4; }
+.lb-empty td { text-align: center; color: var(--ink-3); font-family: var(--sans); padding: 40px 8px; }
+
+/* ===== HOW ===== */
+.how__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.how__step {
+  background: var(--surface-card);
+  border: 1px solid var(--line);
+  border-radius: var(--r-xl);
+  box-shadow: var(--shadow-card);
+  padding: 26px 24px;
+  transition: border-color .15s, transform .15s, box-shadow .15s;
+}
+.how__step:hover { transform: translateY(-2px); border-color: var(--line-2); }
+.how__num {
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 13px; font-weight: 700; color: #fff;
+  width: 34px; height: 34px; border-radius: var(--r-md);
+  background-image: var(--grad); box-shadow: var(--inset-hi);
+  margin-bottom: 16px;
+}
+.how__step h3 { font-size: 18px; font-weight: 600; color: var(--ink); margin: 0 0 10px; }
+.how__step p { margin: 0; font-size: 15px; color: var(--ink-2); }
+code.inline, .how__step code, .authoring__copy code, .section__lead code {
+  font-family: var(--mono); font-size: 0.86em; color: var(--ink);
+  background: var(--surface-subtle); border: 1px solid var(--line-2);
+  border-radius: var(--r-sm); padding: 1px 6px;
+}
+
+/* ===== TABS / CODE ===== */
+.tabs { max-width: 880px; }
+.tabs__bar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+.tab {
+  font-family: var(--sans); font-size: 14px; font-weight: 500; color: var(--ink-2);
+  background: var(--surface-active); border: 1px solid var(--stroke); border-radius: var(--r-md);
+  box-shadow: var(--inset-hi);
+  padding: 8px 16px; cursor: pointer; transition: color .15s, background .15s, border-color .15s;
+}
+.tab:hover { color: var(--ink); background: var(--hover); }
+.tab.is-active { color: #fff; background-image: var(--grad); border-color: transparent; text-shadow: 0 0.5px 0.5px rgba(0,0,0,.35); }
+
+.tabs__panels { position: relative; }
+.code-panel {
+  position: relative; display: none; margin: 0;
+  background: var(--code-bg); color: var(--code-ink);
+  border: 1px solid var(--code-line); border-radius: var(--r-lg);
+  box-shadow: var(--shadow-card);
+  padding: 22px; overflow-x: auto;
+  font-family: var(--mono); font-size: 14px; line-height: 1.7;
+}
+.code-panel.is-active { display: block; }
+.code-panel code { color: var(--code-ink); white-space: pre; }
+.code-panel .k  { color: var(--code-k); font-weight: 600; }
+.code-panel .s  { color: var(--code-s); }
+.code-panel .fn { color: var(--code-fn); font-weight: 600; }
+.code-panel .n  { color: var(--code-n); }
+.code-panel .c  { color: var(--code-dim); font-style: italic; }
+.code-panel .p  { color: var(--code-dim); }
+.code-panel .at { color: var(--code-at); }
+.code-panel .h  { color: var(--code-fn); font-weight: 600; }
+.copy-btn--code {
+  position: absolute; top: 12px; right: 12px; z-index: 2;
+  background: rgba(255,255,255,0.08); color: #cfd2da; border-color: rgba(255,255,255,0.14);
+  box-shadow: none;
+}
+.copy-btn--code:hover { background: rgba(255,255,255,0.16); color: #fff; }
+
+/* ===== API ===== */
+.api__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 960px; }
+.api__heading { font-family: var(--mono); font-size: 12px; font-weight: 600; letter-spacing: 0.1em; color: var(--ink-3); margin: 0 0 14px; }
+.api .code-panel { font-size: 13.5px; }
+
+/* ===== AUTHORING ===== */
+.authoring__inner { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+.principles { list-style: none; padding: 0; margin: 22px 0 0; }
+.principles li { position: relative; padding-left: 26px; margin-bottom: 13px; font-size: 15px; color: var(--ink-2); }
+.principles li::before { content: "→"; position: absolute; left: 0; top: 0; color: #8c69c3; font-weight: 700; }
+.principles strong { color: var(--ink); font-weight: 600; }
+.authoring__code .code-panel { font-size: 13.5px; }
+
+/* ===== CTA ===== */
+.cta {
+  text-align: center;
+}
+.cta__inner {
+  display: flex; flex-direction: column; align-items: center;
+  background: var(--surface-card);
+  border: 1px solid var(--line);
+  border-radius: var(--r-xl);
+  box-shadow: var(--shadow-card);
+  padding: 56px 32px;
+}
+.cta__title { font-size: clamp(24px, 3vw, 36px); font-weight: 700; letter-spacing: -0.02em; color: var(--ink); margin: 0 0 28px; }
+.cta__links { display: flex; gap: 14px; justify-content: center; margin-top: 28px; flex-wrap: wrap; }
+
+/* ===== FOOTER ===== */
+.footer { padding: 36px 0; }
+.footer__inner { display: flex; align-items: center; justify-content: space-between; gap: 18px; flex-wrap: wrap; }
+.footer__brand { display: inline-flex; align-items: center; gap: 9px; font-weight: 600; font-size: 15px; color: var(--ink); }
+.footer__brand .nav__tri { width: 18px; height: 18px; }
+.footer__meta { color: var(--ink-3); font-size: 14px; }
+.footer__links { display: flex; gap: 22px; }
+.footer__links a { color: var(--ink-2); font-size: 14px; font-weight: 500; transition: color .15s; }
+.footer__links a:hover { color: var(--ink); }
+
+/* ===== TOAST ===== */
+.toast {
+  position: fixed; bottom: 28px; left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--ink); color: #fff;
+  font-family: var(--mono); font-size: 13px; font-weight: 500;
+  padding: 11px 18px; border-radius: var(--r-md);
+  box-shadow: 0 8px 30px rgba(57, 56, 70, 0.35);
+  opacity: 0; pointer-events: none;
+  transition: opacity .2s, transform .2s; z-index: 10000;
+}
+.toast.is-visible { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 900px) {
+  .hero__top, .hero__mid { grid-template-columns: 1fr; gap: 32px; }
+  .how__grid { grid-template-columns: 1fr; }
+  .api__grid { grid-template-columns: 1fr; }
+  .authoring__inner { grid-template-columns: 1fr; gap: 30px; }
+}
+@media (max-width: 620px) {
+  .nav__links { gap: 16px; }
+  .nav__links a:not(:last-child) { display: none; }
+  .hero { padding: 44px 0 52px; }
+  .wordmark { max-width: 100%; }
+  .lb-desc { display: none; }
+  .lb-cat-col { width: 60px; }
+  .lb-repo { display: none; }
+  .cta__inner { padding: 40px 22px; }
+  .footer__inner { flex-direction: column; text-align: center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { scroll-behavior: auto !important; transition: none !important; }
+}

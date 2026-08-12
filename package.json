@@ -1,0 +1,61 @@
+{
+  "name": "universal-agent-skills",
+  "version": "1.0.0",
+  "description": "Framework-agnostic agent skill loader, shipping the ux-expert-rakibulism skill. Drop-in for Claude Agent SDK, LangChain, OpenAI Assistants, CrewAI, AutoGen, Cursor, AGENTS.md-compatible tools (Codex/OpenCode/Antigravity), and any AI agent runtime.",
+  "type": "module",
+  "main": "./src/index.js",
+  "types": "./src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "import": "./src/index.js"
+    },
+    "./skills/*": "./skills/*"
+  },
+  "files": [
+    "src",
+    "skills",
+    "scripts",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node test/smoke.js",
+    "export": "node scripts/export-skill.js"
+  },
+  "keywords": [
+    "ai",
+    "agent",
+    "agents",
+    "skills",
+    "llm",
+    "claude",
+    "claude-agent-sdk",
+    "langchain",
+    "openai",
+    "openai-assistants",
+    "crewai",
+    "autogen",
+    "cursor",
+    "agents-md",
+    "codex",
+    "opencode",
+    "antigravity",
+    "prompt",
+    "prompt-engineering",
+    "system-prompt"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rakibulism/agent-skills-os.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rakibulism/agent-skills-os/issues"
+  },
+  "homepage": "https://agent-skills-os.vercel.app/",
+  "engines": {
+    "node": ">=18"
+  }
+}
