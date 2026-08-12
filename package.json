@@ -1,6 +1,6 @@
 {
   "name": "universal-agent-skills",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "Framework-agnostic agent skill loader, shipping the ux-expert-rakibulism skill. Drop-in for Claude Agent SDK, LangChain, OpenAI Assistants, CrewAI, AutoGen, Cursor, AGENTS.md-compatible tools (Codex/OpenCode/Antigravity), and any AI agent runtime.",
   "type": "module",
   "main": "./src/index.js",
