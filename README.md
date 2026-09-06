@@ -207,3 +207,8 @@ These skills were written to follow a few rules:
 ## License
 
 MIT
+
+---
+
+Built by [Rakibul Islam](https://rakibulism.space) — design engineer, co-founder of Panze LLC.
+More work and writing at [rakibulism.space](https://rakibulism.space).
