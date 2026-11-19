@@ -11,7 +11,6 @@ export function GET() {
     version: s.version,
     tags: s.tags,
     category: s.category,
-    demo: s.demo,
     // The instructions, without frontmatter, trimmed: enough for the model to judge relevance.
     excerpt: s.raw.replace(/^---\n[\s\S]*?\n---\n?/, '').trim().slice(0, 1200),
   }));

@@ -24,26 +24,14 @@ export type Skill = {
   /** The whole SKILL.md, as written. */
   raw: string;
   hasReferences: boolean;
-  /** An example from site/demo-skills: shown on the site, never in the npm package. */
-  demo: boolean;
   sourceUrl: string;
   editUrl: string;
 };
 
 /** What the browser needs for search: no file bodies. */
-export type SkillSummary = Pick<Skill, 'slug' | 'name' | 'description' | 'version' | 'tags' | 'category' | 'demo'>;
+export type SkillSummary = Pick<Skill, 'slug' | 'name' | 'description' | 'version' | 'tags' | 'category'>;
 
 const SKILLS_DIR = join(process.cwd(), '..', 'skills');
-const DEMO_DIR = join(process.cwd(), 'demo-skills');
-
-/**
- * Demo skills fill the site out for previews. On by default, off in Vercel production;
- * SKILLS_DEMO=1 or SKILLS_DEMO=0 overrides either way.
- */
-export const DEMO_ENABLED = process.env.SKILLS_DEMO
-  ? process.env.SKILLS_DEMO === '1'
-  : process.env.VERCEL_ENV !== 'production';
-
 const CATEGORY_BY_TAG: Record<string, string> = {
   design: 'Design', ui: 'Design', ux: 'Design', accessibility: 'Design',
   engineering: 'Engineering', testing: 'Engineering', 'code-review': 'Engineering',
@@ -85,14 +73,13 @@ function parse(raw: string) {
   return { fm, inputs: inputs.map((i) => ({ name: i.name, description: i.description ?? '', required: !!i.required })) };
 }
 
-function readDir(dir: string, demo: boolean): Skill[] {
+function readDir(dir: string): Skill[] {
   let dirs: string[] = [];
   try {
     dirs = readdirSync(dir, { withFileTypes: true }).filter((d) => d.isDirectory()).map((d) => d.name);
   } catch {
     return [];
   }
-  const repoPath = demo ? 'site/demo-skills' : 'skills';
   return dirs.flatMap((slug): Skill[] => {
     let raw: string;
     try {
@@ -113,15 +100,14 @@ function readDir(dir: string, demo: boolean): Skill[] {
       version: fm.version ?? '',
       tags,
       category: tags.map((t) => CATEGORY_BY_TAG[t]).find(Boolean) ?? 'General',
-      author: demo ? null : fm.author || null,
-      authorUrl: demo ? null : fm.author_url || null,
+      author: fm.author || null,
+      authorUrl: fm.author_url || null,
       related: list(fm.related),
       inputs,
       raw: raw.replace(/\r\n/g, '\n').trimEnd(),
       hasReferences,
-      demo,
-      sourceUrl: `${SITE.repo}/tree/main/${repoPath}/${slug}`,
-      editUrl: `${SITE.repo}/edit/main/${repoPath}/${slug}/SKILL.md`,
+      sourceUrl: `${SITE.repo}/tree/main/skills/${slug}`,
+      editUrl: `${SITE.repo}/edit/main/skills/${slug}/SKILL.md`,
     }];
   });
 }
@@ -130,11 +116,7 @@ let cache: Skill[] | null = null;
 
 export function getSkills(): Skill[] {
   if (cache) return cache;
-  const real = readDir(SKILLS_DIR, false);
-  const taken = new Set(real.map((s) => s.slug));
-  const demos = DEMO_ENABLED ? readDir(DEMO_DIR, true).filter((s) => !taken.has(s.slug)) : [];
-  // Real skills first, then demos; each alphabetical.
-  cache = [...real.sort((a, b) => a.name.localeCompare(b.name)), ...demos.sort((a, b) => a.name.localeCompare(b.name))];
+  cache = readDir(SKILLS_DIR).sort((a, b) => a.name.localeCompare(b.name));
   return cache;
 }
 
@@ -143,5 +125,5 @@ export function getSkill(slug: string): Skill | undefined {
 }
 
 export function toSummary(s: Skill): SkillSummary {
-  return { slug: s.slug, name: s.name, description: s.description, version: s.version, tags: s.tags, category: s.category, demo: s.demo };
+  return { slug: s.slug, name: s.name, description: s.description, version: s.version, tags: s.tags, category: s.category };
 }

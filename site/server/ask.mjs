@@ -57,7 +57,7 @@ export function rank(skills, query, limit = 6) {
 
 function systemPrompt(skills, total) {
   const catalog = skills
-    .map((s) => `- slug: ${s.slug}${s.demo ? ' (demo example, not in the npm package)' : ''}\n  description: ${s.description}\n  category: ${s.category}; tags: ${(s.tags ?? []).join(', ')}\n  excerpt: ${(s.excerpt ?? '').replace(/\s+/g, ' ').slice(0, 600)}`)
+    .map((s) => `- slug: ${s.slug}\n  description: ${s.description}\n  category: ${s.category}; tags: ${(s.tags ?? []).join(', ')}\n  excerpt: ${(s.excerpt ?? '').replace(/\s+/g, ' ').slice(0, 600)}`)
     .join('\n');
   return `You are the assistant on the Agent Skills OS website, a library of AI agent skills published as the npm package "universal-agent-skills".
 
@@ -82,7 +82,7 @@ Card is one of:
 Rules:
 - "answer": at most 70 words, plain sentences, no Markdown, no code, no commands. The cards carry the commands and code; refer to them ("the card below").
 - Say only what the facts above, the skill descriptions and the cards support. Never invent functions, options or features a skill or the package doesn't have; when unsure, describe what the card shows.
-- Only name skills from the list above. If you recommend a demo example, say it's a demo. If none fits, say so plainly and suggest requesting or contributing one.
+- Only name skills from the list above. If none fits, say so plainly and suggest requesting or contributing one.
 - Add an install card whenever the user asks how to install or get started; use the package manager they mention, else npm.
 - Add a usage card when they ask how to use a skill with a framework, even if that skill's instructions are still a placeholder: the loading code is the same for every skill. "python" covers CrewAI and AutoGen; "files" covers Cursor and AGENTS.md tools.
 - At most 3 cards and 3 followups. Followups are short questions the user might ask next, under 8 words each.

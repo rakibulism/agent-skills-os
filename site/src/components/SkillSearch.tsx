@@ -51,8 +51,7 @@ function search(skills: SkillSummary[], query: string, category: string): Scored
     }
     if (matched >= need) out.push({ skill, score: score + matched * 10 });
   }
-  // Best match first; on ties, real skills before demos, then by name.
-  return out.sort((a, b) => b.score - a.score || Number(a.skill.demo) - Number(b.skill.demo) || a.skill.name.localeCompare(b.skill.name));
+  return out.sort((a, b) => b.score - a.score || a.skill.name.localeCompare(b.skill.name));
 }
 
 /** Wraps every query token found in `text` in <mark>. */
@@ -358,7 +357,6 @@ export function SkillSearch({
                   <span {...stylex.props(s.rowHead)}>
                     <span {...stylex.props(s.name)}><Highlight text={skill.name} query={query} /></span>
                     <span {...stylex.props(s.tag)}>{skill.category}</span>
-                    {skill.demo && <span {...stylex.props(s.demo)}>Demo</span>}
                     {skill.version && <span {...stylex.props(s.ver)}>v{skill.version}</span>}
                   </span>
                   <span {...stylex.props(s.desc)}><Highlight text={skill.description} query={query} /></span>
@@ -704,17 +702,7 @@ const s = stylex.create({
     borderRadius: radii.pill,
   },
   ver: { fontFamily: fonts.mono, fontSize: 12, color: colors.ink3 },
-  demo: {
-    fontSize: 11,
-    fontWeight: 500,
-    paddingBlock: 1,
-    paddingInline: 7,
-    color: colors.accentInk,
-    borderWidth: 1,
-    borderStyle: 'dashed',
-    borderColor: colors.accent,
-    borderRadius: radii.pill,
-  },
+
   more: {
     display: 'flex',
     flexWrap: 'wrap',

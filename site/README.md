@@ -33,7 +33,6 @@ The search box also answers questions. Questions go to `/api/ask`, a Vercel Func
 
 - `next build` writes static HTML, CSS and JS to `out/`. Vercel builds it with the root `vercel.json`.
 - Skills are read from `../skills/*/SKILL.md` at build time, so search and the skill pages always match the package.
-- `demo-skills/` holds 50 example skills that fill the site out for previews. They show a Demo badge, are on by default and in Vercel preview deployments, and are left out of production builds (`VERCEL_ENV=production`). `SKILLS_DEMO=1` or `SKILLS_DEMO=0` forces either way. They're never part of the npm package.
 - `/contribute` lists GitHub contributors fetched at build time; if GitHub is unreachable it links to the contributors graph instead.
 - Icons come from Hugeicons through `src/components/Icon.tsx`, named by meaning.
 - The adapter demo runs browser copies of the adapters (`src/lib/adapters.ts`). `npm run check:adapters` compares them with the real ones in `../src/index.js`.

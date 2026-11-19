@@ -28,7 +28,7 @@ function Card({ card, skills }: { card: AskCard; skills: SkillSummary[] }) {
     return (
       <Link href={`/skills/${sk.slug}`} {...stylex.props(s.skill)}>
         <span {...stylex.props(s.skillMain)}>
-          <span {...stylex.props(s.skillName)}>{sk.name}{sk.demo && <span {...stylex.props(s.demo)}>Demo</span>}</span>
+          <span {...stylex.props(s.skillName)}>{sk.name}</span>
           <span {...stylex.props(s.skillDesc)}>{sk.description}</span>
         </span>
         <Icon name="next" size={18} style={{ color: colors.ink3 }} />
@@ -226,7 +226,6 @@ const s = stylex.create({
   skillMain: { display: 'grid', gap: 2, minWidth: 0, flexGrow: 1 },
   skillName: { fontFamily: fonts.mono, fontSize: 15, fontWeight: 500 },
   skillDesc: { fontSize: 14, color: colors.ink2 },
-  demo: { marginLeft: 8, fontFamily: fonts.sans, fontSize: 11, fontWeight: 500, color: colors.accentInk },
   followups: { display: 'flex', flexWrap: 'wrap', gap: 8 },
   chip: {
     display: 'inline-flex',
