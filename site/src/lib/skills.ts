@@ -24,14 +24,17 @@ export type Skill = {
   /** The whole SKILL.md, as written. */
   raw: string;
   hasReferences: boolean;
+  /** TEST BRANCH ONLY: an example from site/demo-skills, never in the npm package. */
+  demo: boolean;
   sourceUrl: string;
   editUrl: string;
 };
 
 /** What the browser needs for search: no file bodies. */
-export type SkillSummary = Pick<Skill, 'slug' | 'name' | 'description' | 'version' | 'tags' | 'category'>;
+export type SkillSummary = Pick<Skill, 'slug' | 'name' | 'description' | 'version' | 'tags' | 'category' | 'demo'>;
 
 const SKILLS_DIR = join(process.cwd(), '..', 'skills');
+const DEMO_DIR = join(process.cwd(), 'demo-skills');
 const CATEGORY_BY_TAG: Record<string, string> = {
   design: 'Design', ui: 'Design', ux: 'Design', accessibility: 'Design',
   engineering: 'Engineering', testing: 'Engineering', 'code-review': 'Engineering',
@@ -73,7 +76,7 @@ function parse(raw: string) {
   return { fm, inputs: inputs.map((i) => ({ name: i.name, description: i.description ?? '', required: !!i.required })) };
 }
 
-function readDir(dir: string): Skill[] {
+function readDir(dir: string, demo = false): Skill[] {
   let dirs: string[] = [];
   try {
     dirs = readdirSync(dir, { withFileTypes: true }).filter((d) => d.isDirectory()).map((d) => d.name);
@@ -99,13 +102,15 @@ function readDir(dir: string): Skill[] {
       description: fm.description ?? '',
       version: fm.version ?? '',
       tags,
-      category: tags.map((t) => CATEGORY_BY_TAG[t]).find(Boolean) ?? 'General',
+      // An explicit `category:` wins; otherwise infer one from the tags.
+      category: fm.category || tags.map((t) => CATEGORY_BY_TAG[t]).find(Boolean) || 'General',
       author: fm.author || null,
       authorUrl: fm.author_url || null,
       related: list(fm.related),
       inputs,
       raw: raw.replace(/\r\n/g, '\n').trimEnd(),
       hasReferences,
+      demo,
       sourceUrl: `${SITE.repo}/tree/main/skills/${slug}`,
       editUrl: `${SITE.repo}/edit/main/skills/${slug}/SKILL.md`,
     }];
@@ -116,7 +121,12 @@ let cache: Skill[] | null = null;
 
 export function getSkills(): Skill[] {
   if (cache) return cache;
-  cache = readDir(SKILLS_DIR).sort((a, b) => a.name.localeCompare(b.name));
+  const real = readDir(SKILLS_DIR);
+  const taken = new Set(real.map((s) => s.slug));
+  // TEST BRANCH ONLY: demo skills fill the catalog for testing; never in production builds.
+  const demoOn = process.env.SKILLS_DEMO ? process.env.SKILLS_DEMO === '1' : process.env.VERCEL_ENV !== 'production';
+  const demos = demoOn ? readDir(DEMO_DIR, true).filter((s) => !taken.has(s.slug)) : [];
+  cache = [...real, ...demos].sort((a, b) => a.name.localeCompare(b.name));
   return cache;
 }
 
@@ -125,5 +135,5 @@ export function getSkill(slug: string): Skill | undefined {
 }
 
 export function toSummary(s: Skill): SkillSummary {
-  return { slug: s.slug, name: s.name, description: s.description, version: s.version, tags: s.tags, category: s.category };
+  return { slug: s.slug, name: s.name, description: s.description, version: s.version, tags: s.tags, category: s.category, demo: s.demo };
 }

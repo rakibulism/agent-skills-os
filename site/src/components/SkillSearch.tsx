@@ -182,8 +182,17 @@ export function SkillSearch({
     const byCat = new Map<string, SkillSummary[]>();
     for (const sk of skills) byCat.set(sk.category, [...(byCat.get(sk.category) ?? []), sk]);
     const out = new Map<string, { code: string; num: string }>();
-    for (const [cat, list] of byCat) {
-      const code = cat.replace(/[^A-Za-z]/g, '').slice(0, 3).toUpperCase();
+    const used = new Set<string>();
+    const codeFor = (cat: string) => {
+      const w = cat.replace(/[^A-Za-z]/g, '').toUpperCase();
+      const consonants = w.slice(1).replace(/[AEIOU]/g, '');
+      const candidates = [w.slice(0, 3), w[0] + consonants.slice(0, 2), w[0] + consonants.slice(1, 3), w[0] + w.slice(-2)];
+      const code = candidates.find((c) => c.length === 3 && !used.has(c)) ?? w.slice(0, 2) + String(used.size % 10);
+      used.add(code);
+      return code;
+    };
+    for (const [cat, list] of [...byCat].sort((a, b) => a[0].localeCompare(b[0]))) {
+      const code = codeFor(cat);
       [...list].sort((a, b) => a.name.localeCompare(b.name)).forEach((sk, i) => out.set(sk.slug, { code, num: String(i + 1).padStart(3, '0') }));
     }
     return out;
@@ -378,6 +387,7 @@ export function SkillSearch({
                   <span {...stylex.props(s.meta)}>
                     <span {...stylex.props(s.metaCall)}>{callNo.get(skill.slug)?.code}.{callNo.get(skill.slug)?.num} · </span>
                     {skill.category}
+                    {skill.demo && <> · <span {...stylex.props(s.demoMark)}>demo</span></>}
                     {skill.version && <> · v{skill.version}</>}
                     {skill.tags.length > 0 && <> · {skill.tags.map((t) => `#${t}`).join(' ')}</>}
                   </span>
@@ -740,6 +750,7 @@ const s = stylex.create({
   rowMain: { display: 'grid', gap: 6, minWidth: 0 },
   name: { fontFamily: fonts.mono, fontSize: { default: 16, '@media (min-width: 720px)': 18 }, fontWeight: 500, color: colors.ink },
   meta: { fontFamily: fonts.mono, fontSize: 12, color: colors.ink3, overflowWrap: 'anywhere' },
+  demoMark: { color: colors.accentInk },
   metaCall: { display: { default: 'inline', '@media (min-width: 720px)': 'none' }, color: colors.accentInk, fontWeight: 600 },
 
   more: {
