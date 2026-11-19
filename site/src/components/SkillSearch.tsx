@@ -176,6 +176,19 @@ export function SkillSearch({
 
   const results = useMemo(() => search(skills, query, category), [skills, query, category]);
 
+  // Library-style call numbers: category code + position in that category, e.g. DES.001.
+  // Built from the full list so a skill keeps its number whatever the filter.
+  const callNo = useMemo(() => {
+    const byCat = new Map<string, SkillSummary[]>();
+    for (const sk of skills) byCat.set(sk.category, [...(byCat.get(sk.category) ?? []), sk]);
+    const out = new Map<string, { code: string; num: string }>();
+    for (const [cat, list] of byCat) {
+      const code = cat.replace(/[^A-Za-z]/g, '').slice(0, 3).toUpperCase();
+      [...list].sort((a, b) => a.name.localeCompare(b.name)).forEach((sk, i) => out.set(sk.slug, { code, num: String(i + 1).padStart(3, '0') }));
+    }
+    return out;
+  }, [skills]);
+
   // Show a page of results at a time; a new search starts from the top again.
   const PAGE = 12;
   const [shown, setShown] = useState(PAGE);
@@ -241,7 +254,7 @@ export function SkillSearch({
     if (e.key === 'Escape') inputRef.current?.focus();
   }
 
-  const countLabel = `${results.length} ${results.length === 1 ? 'skill' : 'skills'}`;
+  const countLabel = `${results.length} ${results.length === 1 ? 'entry' : 'entries'}`;
 
   return (
     <div>
@@ -318,8 +331,8 @@ export function SkillSearch({
         {ai && <AiAnswer state={ai} skills={skills} onAsk={(q) => { setQuery(q); runAsk(q); }} onClose={closeAi} />}
       </div>
 
-      <section ref={panelRef} aria-label="Skills" {...stylex.props(s.panel)}>
-      <div {...stylex.props(s.panelHead)}>
+      <section ref={panelRef} aria-label="Skills catalog" {...stylex.props(s.catalog)}>
+      {/* Category filters as index tabs on the catalog drawer. */}
       <div role="group" aria-label="Filter by category" {...stylex.props(s.chips)}>
         {[['all', skills.length] as const, ...categories].map(([cat, n]) => {
           const on = category === cat;
@@ -332,8 +345,10 @@ export function SkillSearch({
         })}
       </div>
 
+      <div {...stylex.props(s.panel)}>
+      <div {...stylex.props(s.panelHead)}>
       <p id="skill-count" aria-live="polite" {...stylex.props(s.count)}>
-        {query || category !== 'all' ? `${countLabel} found` : countLabel}
+        <span><span {...stylex.props(s.countLabel)}>Catalog</span> · {query || category !== 'all' ? `${countLabel} found` : countLabel}</span>
         <span {...stylex.props(s.hint)}>Enter opens the top match · ⌘Enter asks AI</span>
       </p>
       </div>
@@ -353,15 +368,21 @@ export function SkillSearch({
           {visible.map(({ skill }) => (
             <li key={skill.slug} {...stylex.props(s.item)}>
               <Link href={`/skills/${skill.slug}`} data-result {...stylex.props(s.row)}>
-                <span {...stylex.props(s.rowMain)}>
-                  <span {...stylex.props(s.rowHead)}>
-                    <span {...stylex.props(s.name)}><Highlight text={skill.name} query={query} /></span>
-                    <span {...stylex.props(s.tag)}>{skill.category}</span>
-                    {skill.version && <span {...stylex.props(s.ver)}>v{skill.version}</span>}
-                  </span>
-                  <span {...stylex.props(s.desc)}><Highlight text={skill.description} query={query} /></span>
+                <span aria-hidden {...stylex.props(s.call)}>
+                  <span {...stylex.props(s.callCode)}>{callNo.get(skill.slug)?.code}</span>
+                  <span {...stylex.props(s.callNum)}>.{callNo.get(skill.slug)?.num}</span>
                 </span>
-                <span {...stylex.props(s.chev)}><Icon name="next" size={18} /></span>
+                <span {...stylex.props(s.rowMain)}>
+                  <span {...stylex.props(s.name)}><Highlight text={skill.name} query={query} /></span>
+                  <span {...stylex.props(s.desc)}><Highlight text={skill.description} query={query} /></span>
+                  <span {...stylex.props(s.meta)}>
+                    <span {...stylex.props(s.metaCall)}>{callNo.get(skill.slug)?.code}.{callNo.get(skill.slug)?.num} · </span>
+                    {skill.category}
+                    {skill.version && <> · v{skill.version}</>}
+                    {skill.tags.length > 0 && <> · {skill.tags.map((t) => `#${t}`).join(' ')}</>}
+                  </span>
+                </span>
+                <span {...stylex.props(s.chev)}><Icon name="next" size={20} /></span>
               </Link>
             </li>
           ))}
@@ -406,6 +427,7 @@ export function SkillSearch({
           <span {...stylex.props(s.moreCount)}>Showing {visible.length} of {results.length}</span>
         </div>
       )}
+      </div>
       </section>
     </div>
   );
@@ -606,80 +628,97 @@ const s = stylex.create({
       ':focus-within': `0 18px 40px -12px rgba(0,0,0,0.38), 0 0 0 4px ${colors.selection}`,
     },
   },
+  catalog: { marginTop: { default: 36, '@media (min-width: 720px)': 48 }, textAlign: 'left' },
   panel: {
-    marginTop: { default: 36, '@media (min-width: 720px)': 48 },
-    textAlign: 'left',
+    position: 'relative',
     backgroundColor: colors.surface,
     borderWidth: 1,
     borderStyle: 'solid',
-    borderColor: colors.line,
-    borderRadius: 16,
+    borderColor: colors.line2,
+    borderRadius: 14,
+    borderTopLeftRadius: { default: 0, '@media (min-width: 720px)': 14 },
     boxShadow: colors.shadow,
     overflow: 'hidden',
   },
   panelHead: {
-    display: 'grid',
-    gap: 18,
-    paddingTop: { default: 18, '@media (min-width: 720px)': 22 },
+    paddingTop: 16,
     paddingInline: { default: 16, '@media (min-width: 720px)': 22 },
-    backgroundColor: colors.sunk,
-    borderBottomWidth: 1,
+    borderBottomWidth: 2,
     borderBottomStyle: 'solid',
-    borderBottomColor: colors.line,
+    borderBottomColor: colors.ink,
+    marginInline: { default: 16, '@media (min-width: 720px)': 22 },
+    paddingLeft: 0,
+    paddingRight: 0,
   },
-  panelBody: { paddingInline: { default: 16, '@media (min-width: 720px)': 22 }, paddingBlock: 6 },
+  panelBody: { paddingInline: { default: 16, '@media (min-width: 720px)': 22 }, paddingBlock: 4 },
+  // Index tabs: they sit on the drawer's top edge and the active one joins it.
   chips: {
+    position: 'relative',
+    zIndex: 1,
     display: 'flex',
-    flexWrap: { default: 'nowrap', '@media (min-width: 720px)': 'wrap' },
-    columnGap: 8,
-    rowGap: 10,
+    alignItems: 'flex-end',
+    gap: 4,
+    marginBottom: -1,
+    paddingLeft: { default: 0, '@media (min-width: 720px)': 18 },
     overflowX: 'auto',
     scrollbarWidth: 'none',
-    marginInline: { default: -16, '@media (min-width: 720px)': 0 },
-    paddingInline: { default: 16, '@media (min-width: 720px)': 0 },
   },
   chip: {
     flexShrink: 0,
     display: 'inline-flex',
     alignItems: 'center',
     gap: 8,
-    minHeight: 34,
-    paddingInline: 12,
-    fontSize: 14,
+    height: 34,
+    paddingInline: 14,
+    fontFamily: fonts.mono,
+    fontSize: 12,
     fontWeight: 500,
-    color: { default: colors.ink2, ':hover': colors.ink },
-    backgroundColor: { default: 'transparent', ':hover': colors.sunk },
+    letterSpacing: '0.06em',
+    textTransform: 'uppercase',
+    color: { default: colors.ink3, ':hover': colors.ink },
+    backgroundColor: { default: colors.sunk, ':hover': colors.line },
     borderWidth: 1,
     borderStyle: 'solid',
     borderColor: colors.line2,
-    borderRadius: radii.pill,
-    transitionProperty: 'color, background-color, border-color',
+    borderBottomColor: 'transparent',
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8,
+    transitionProperty: 'color, background-color, height',
     transitionDuration: motion.fast,
   },
-  chipOn: { color: colors.bg, backgroundColor: { default: colors.ink, ':hover': colors.ink }, borderColor: colors.ink },
-  chipN: { fontFamily: fonts.mono, fontSize: 12, color: colors.ink3, fontVariantNumeric: 'tabular-nums' },
-  chipNOn: { color: 'inherit', opacity: 0.7 },
+  chipOn: {
+    height: 40,
+    color: colors.ink,
+    backgroundColor: { default: colors.surface, ':hover': colors.surface },
+    borderTopWidth: 3,
+    borderTopColor: colors.accent,
+    borderBottomColor: colors.surface,
+  },
+  chipN: { fontSize: 11, color: colors.ink3, fontVariantNumeric: 'tabular-nums' },
+  chipNOn: { color: colors.accentInk },
   count: {
     display: 'flex',
     justifyContent: 'space-between',
     gap: 16,
-    paddingBottom: 14,
+    paddingBottom: 12,
     fontFamily: fonts.mono,
     fontSize: 12,
     color: colors.ink3,
   },
+  countLabel: { fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: colors.ink },
   hint: { display: { default: 'none', [HOVER]: 'inline' } },
   list: { display: 'grid', textAlign: 'left' },
   item: {
     borderBottomWidth: 1,
-    borderBottomStyle: 'solid',
-    borderBottomColor: { default: colors.line, ':last-child': 'transparent' },
+    borderBottomStyle: 'dashed',
+    borderBottomColor: { default: colors.line2, ':last-child': 'transparent' },
   },
   row: {
-    display: 'flex',
+    display: 'grid',
+    gridTemplateColumns: { default: 'minmax(0, 1fr) auto', '@media (min-width: 720px)': '84px minmax(0, 1fr) auto' },
     alignItems: 'center',
-    gap: 16,
-    paddingBlock: 18,
+    columnGap: { default: 12, '@media (min-width: 720px)': 20 },
+    paddingBlock: { default: 18, '@media (min-width: 720px)': 22 },
     paddingInline: 12,
     marginInline: -12,
     borderRadius: radii.md,
@@ -687,21 +726,21 @@ const s = stylex.create({
     transitionProperty: 'background-color',
     transitionDuration: motion.fast,
   },
-  rowMain: { display: 'grid', gap: 6, minWidth: 0, flexGrow: 1 },
-  rowHead: { display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 8 },
-  name: { fontFamily: fonts.mono, fontSize: 16, fontWeight: 500, color: colors.ink },
-  tag: {
-    fontSize: 12,
-    paddingBlock: 1,
-    paddingInline: 8,
-    color: colors.ink2,
-    backgroundColor: colors.sunk,
-    borderWidth: 1,
-    borderStyle: 'solid',
-    borderColor: colors.line,
-    borderRadius: radii.pill,
+  // The call number, like the label on a book's spine.
+  call: {
+    display: { default: 'none', '@media (min-width: 720px)': 'grid' },
+    alignSelf: 'start',
+    justifyItems: 'start',
+    paddingTop: 3,
+    fontFamily: fonts.mono,
+    lineHeight: 1.25,
   },
-  ver: { fontFamily: fonts.mono, fontSize: 12, color: colors.ink3 },
+  callCode: { fontSize: 15, fontWeight: 600, letterSpacing: '0.04em', color: colors.accentInk },
+  callNum: { fontSize: 12, color: colors.ink3, fontVariantNumeric: 'tabular-nums' },
+  rowMain: { display: 'grid', gap: 6, minWidth: 0 },
+  name: { fontFamily: fonts.mono, fontSize: { default: 16, '@media (min-width: 720px)': 18 }, fontWeight: 500, color: colors.ink },
+  meta: { fontFamily: fonts.mono, fontSize: 12, color: colors.ink3, overflowWrap: 'anywhere' },
+  metaCall: { display: { default: 'inline', '@media (min-width: 720px)': 'none' }, color: colors.accentInk, fontWeight: 600 },
 
   more: {
     display: 'flex',
@@ -718,7 +757,13 @@ const s = stylex.create({
   },
   moreCount: { width: '100%', textAlign: 'center', fontFamily: fonts.mono, fontSize: 12, color: colors.ink3 },
   desc: { fontSize: 15, lineHeight: 1.5, color: colors.ink2 },
-  chev: { color: colors.ink3, display: 'inline-flex' },
+  chev: {
+    display: 'inline-flex',
+    color: { default: colors.ink3, ':is(a:hover *)': colors.accentInk },
+    transform: { default: 'none', ':is(a:hover *)': 'translateX(3px)' },
+    transitionProperty: 'color, transform',
+    transitionDuration: motion.fast,
+  },
   mark: { color: 'inherit', backgroundColor: colors.selection, borderRadius: 3, paddingInline: 1 },
   empty: {
     display: 'grid',
