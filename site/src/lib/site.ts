@@ -5,7 +5,7 @@ export const SITE = {
     'An open library of agent skills. Search for one, then load it into Claude, OpenAI, LangChain, CrewAI, AutoGen, Cursor or any AGENTS.md tool with one function call.',
   shortDescription:
     'An open library of agent skills. Find one, load it into Claude, OpenAI, LangChain, Cursor and more.',
-  url: 'https://agent-skills-os.vercel.app',
+  url: 'https://skills.rakibulism.space',
   pkg: 'universal-agent-skills',
   install: 'npm install universal-agent-skills',
   repo: 'https://github.com/rakibulism/agent-skills-os',
@@ -19,12 +19,22 @@ export const SITE = {
   author: 'Rakibul Islam',
   authorUrl: 'https://rakibulism.space',
   twitter: '@rakibulism',
+  email: '40rakib70@gmail.com',
+  address: { street: 'Sonadanga R/A', city: 'Khulna', country: 'Bangladesh', countryCode: 'BD' },
+  cli: 'agent-skills',
 } as const;
 
 export const PAGES = [
   { href: '/', label: 'Skills' },
   { href: '/docs', label: 'Docs' },
   { href: '/contribute', label: 'Contribute' },
+] as const;
+
+/** Pages about the project itself, linked from the footer. */
+export const TRUST_PAGES = [
+  { href: '/about', label: 'About' },
+  { href: '/contact', label: 'Contact' },
+  { href: '/privacy', label: 'Privacy' },
 ] as const;
 
 /** Sections on the docs page. */

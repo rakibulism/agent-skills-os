@@ -9,14 +9,15 @@
   },
   "scripts": {
     "dev": "node scripts/dev.mjs",
-    "build": "next build",
-    "preview": "next build && node scripts/serve.mjs",
+    "build": "next build && node scripts/agent-files.mjs",
+    "preview": "npm run build && node scripts/serve.mjs",
     "serve": "node scripts/serve.mjs",
     "typecheck": "tsc --noEmit",
-    "check": "tsc --noEmit && node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/check-adapters.mjs && next build",
+    "check": "tsc --noEmit && node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/check-adapters.mjs && npm run build && npm test",
     "check:adapters": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/check-adapters.mjs",
     "dev:fake": "ASK_FAKE=1 node scripts/dev.mjs",
-    "serve:fake": "ASK_FAKE=1 node scripts/serve.mjs"
+    "serve:fake": "ASK_FAKE=1 node scripts/serve.mjs",
+    "test": "node --test \"tests/*.test.mjs\""
   },
   "dependencies": {
     "@hugeicons/core-free-icons": "^4.4.0",

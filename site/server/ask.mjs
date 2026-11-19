@@ -4,8 +4,10 @@
 // answers in a fixed JSON shape that picks cards by id. The site renders every command and
 // code block from its own data, so the model can explain and choose but never invent a command.
 
+import { json, jsonError } from './http.mjs';
+
 const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions';
-const SITE_URL = 'https://agent-skills-os.vercel.app';
+const SITE_URL = 'https://skills.rakibulism.space';
 const MAX_QUESTION = 300;
 const MANAGERS = ['npm', 'pnpm', 'yarn', 'bun'];
 const FRAMEWORKS = ['claude', 'openai', 'langchain', 'python', 'files'];
@@ -26,7 +28,7 @@ function rateLimited(ip) {
 }
 
 let indexCache = null;
-async function loadIndex(url) {
+export async function loadIndex(url) {
   if (indexCache && Date.now() - indexCache.at < 5 * 60_000) return indexCache.skills;
   const res = await fetch(url, { signal: AbortSignal.timeout(5000) });
   if (!res.ok) throw new Error(`search index ${res.status}`);
@@ -211,8 +213,6 @@ async function callOpenRouter(apiKey, messages, modelOverride) {
     : { status: 502, error: 'The AI is unavailable right now.' };
 }
 
-const json = (body, status = 200, headers = {}) =>
-  new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store', ...headers } });
 
 /**
  * @param {Request} request
@@ -220,26 +220,26 @@ const json = (body, status = 200, headers = {}) =>
  *   `complete` replaces the OpenRouter call (used by tests).
  */
 export async function handleAsk(request, opts = {}) {
-  if (request.method !== 'POST') return json({ error: 'Use POST.' }, 405, { Allow: 'POST' });
+  if (request.method !== 'POST') return jsonError(405, 'method_not_allowed', 'Use POST.', 'Send POST /api/ask with a JSON body like {"question": "Which skill reviews accessibility?"}.', { Allow: 'POST' });
 
   const apiKey = opts.apiKey ?? process.env.OPENROUTER_API_KEY;
-  if (!apiKey && !opts.complete) return json({ error: 'Ask AI is not set up yet.' }, 503);
+  if (!apiKey && !opts.complete) return jsonError(503, 'not_configured', 'Ask AI is not set up yet.', 'Search with GET /api/skills?q=... instead.');
 
   const ip = (request.headers.get('x-forwarded-for') ?? '').split(',')[0].trim() || 'local';
-  if (rateLimited(ip)) return json({ error: 'Too many questions. Try again in a minute.' }, 429, { 'Retry-After': '60' });
+  if (rateLimited(ip)) return jsonError(429, 'rate_limited', 'Too many questions. Try again in a minute.', 'Wait 60 seconds, or search with GET /api/skills?q=... which has no AI limit.', { 'Retry-After': '60' });
 
   let question = '';
   try {
     question = String((await request.json())?.question ?? '').trim();
   } catch {}
-  if (!question) return json({ error: 'Ask a question first.' }, 400);
+  if (!question) return jsonError(400, 'missing_question', 'Ask a question first.', 'Send a JSON body with a non-empty "question" string (300 characters at most).');
   if (question.length > MAX_QUESTION) question = question.slice(0, MAX_QUESTION);
 
   let skills;
   try {
     skills = await loadIndex(opts.indexUrl ?? process.env.SKILLS_INDEX_URL ?? new URL('/search-index.json', request.url).href);
   } catch {
-    return json({ error: 'The skills index is unavailable.' }, 503);
+    return jsonError(503, 'index_unavailable', 'The skills index is unavailable.', 'Try again shortly.');
   }
   const relevant = rank(skills, question);
   const messages = [
@@ -253,14 +253,14 @@ export async function handleAsk(request, opts = {}) {
       raw = await opts.complete(messages);
     } else {
       const out = await callOpenRouter(apiKey, messages, opts.model);
-      if (out.error) return json({ error: out.error }, out.status);
+      if (out.error) return jsonError(out.status, out.status === 429 ? 'ai_busy' : 'ai_unavailable', out.error, 'Try again shortly, or search with GET /api/skills?q=...', out.status === 429 ? { 'Retry-After': '30' } : {});
       raw = out.content;
     }
   } catch {
-    return json({ error: 'The AI took too long to answer.' }, 504);
+    return jsonError(504, 'ai_timeout', 'The AI took too long to answer.', 'Try again, or ask a shorter question.');
   }
 
   const answer = clean(String(raw), relevant);
-  if (!answer.answer && !answer.cards.length) return json({ error: 'The AI returned an empty answer.' }, 502);
+  if (!answer.answer && !answer.cards.length) return jsonError(502, 'empty_answer', 'The AI returned an empty answer.', 'Try rephrasing the question.');
   return json(answer);
 }

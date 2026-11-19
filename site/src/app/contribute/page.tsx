@@ -2,67 +2,22 @@ import * as stylex from '@stylexjs/stylex';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { CodePane } from '@/components/CodePane';
-import { Icon, type IconName } from '@/components/Icon';
+import { Icon } from '@/components/Icon';
 import { PageHead, Section } from '@/components/Section';
 import { getContributors } from '@/lib/contributors';
 import { SITE } from '@/lib/site';
-import { RULES, TEMPLATE_FILE } from '@/lib/snippets';
+import { Inline } from '@/components/Inline';
+import { ACCEPT, STEPS } from '@/content/contribute';
+import { pageMetadata } from '@/lib/doc';
+import { RULES } from '@/lib/snippets';
 import { ui } from '@/styles/shared';
 import { colors, fonts, radii } from '@/styles/tokens.stylex';
 
-export const metadata: Metadata = {
-  title: 'Contribute',
-  description: 'Add a skill to the library: fork the repo, write one SKILL.md, check it loads, and open a pull request.',
-  alternates: { canonical: '/contribute' },
-};
-
-type Step = { icon: IconName; title: string; text: React.ReactNode; file: string; lang: 'sh' | 'md'; code: string; what: string };
-
-const STEPS: Step[] = [
-  {
-    icon: 'fork',
-    title: 'Fork and clone',
-    text: <>Fork the repository on GitHub, then clone your fork and start a branch for your skill.</>,
-    file: 'terminal', lang: 'sh', what: 'Commands',
-    code: `git clone https://github.com/<you>/agent-skills-os.git
-cd agent-skills-os
-git checkout -b add-my-skill`,
-  },
-  {
-    icon: 'file',
-    title: 'Write the skill',
-    text: <>Create <code {...stylex.props(ui.inlineCode)}>skills/&lt;name&gt;/SKILL.md</code>. The folder name is the skill&apos;s name. Frontmatter first, then the instructions.</>,
-    file: 'skills/my-skill/SKILL.md', lang: 'md', what: 'Template',
-    code: TEMPLATE_FILE,
-  },
-  {
-    icon: 'terminal',
-    title: 'Check it loads',
-    text: <>Load it through the package and look at what comes back. Optionally write the Cursor, AGENTS.md and Stitch versions too.</>,
-    file: 'terminal', lang: 'sh', what: 'Commands',
-    code: `node -e "import('./src/index.js').then(m => console.log(m.getSkill('my-skill')))"
-
-# Optional: Cursor, AGENTS.md and Stitch exports
-node scripts/export-skill.js my-skill`,
-  },
-  {
-    icon: 'pullRequest',
-    title: 'Open a pull request',
-    text: <>Push your branch and open a pull request against <code {...stylex.props(ui.inlineCode)}>main</code>. Say what the skill is for and show one example of it working.</>,
-    file: 'terminal', lang: 'sh', what: 'Commands',
-    code: `git add skills/my-skill
-git commit -m "Add my-skill"
-git push -u origin add-my-skill
-gh pr create --fill   # or open the PR on github.com`,
-  },
-];
-
-const ACCEPT = [
-  'One clear job per skill, named for what it does.',
-  'Your own writing. Add author and author_url only to a skill you wrote.',
-  'No secrets, keys or private data in the skill or its references.',
-  'Instructions a model can follow: a process, an output shape, and what to avoid.',
-];
+export const metadata: Metadata = pageMetadata(
+  '/contribute',
+  'Contribute',
+  'Add a skill to the library: fork the repo, write one SKILL.md, check it loads, and open a pull request.',
+);
 
 export default async function Contribute() {
   const contributors = await getContributors();
@@ -95,7 +50,7 @@ export default async function Contribute() {
                 <span {...stylex.props(s.stepIcon)}><Icon name={step.icon} size={20} /></span>
                 <p {...stylex.props(s.stepNum)}>Step {i + 1}</p>
                 <h3 {...stylex.props(s.stepTitle)}>{step.title}</h3>
-                <p {...stylex.props(s.stepBody)}>{step.text}</p>
+                <p {...stylex.props(s.stepBody)}><Inline text={step.text} /></p>
               </div>
               <CodePane file={step.file} code={step.code} lang={step.lang} what={step.what} />
             </li>

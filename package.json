@@ -5,6 +5,9 @@
   "type": "module",
   "main": "./src/index.js",
   "types": "./src/index.d.ts",
+  "bin": {
+    "agent-skills": "./bin/agent-skills.js"
+  },
   "exports": {
     ".": {
       "types": "./src/index.d.ts",
@@ -16,6 +19,7 @@
     "src",
     "skills",
     "scripts",
+    "bin",
     "README.md",
     "LICENSE"
   ],
@@ -23,7 +27,8 @@
     "export": "node scripts/export-skill.js",
     "site:dev": "npm run dev --prefix site",
     "site:build": "npm run build --prefix site",
-    "site:preview": "npm run preview --prefix site"
+    "site:preview": "npm run preview --prefix site",
+    "test": "node --test \"test/*.test.js\""
   },
   "keywords": [
     "ai",
@@ -56,7 +61,7 @@
   "bugs": {
     "url": "https://github.com/rakibulism/agent-skills-os/issues"
   },
-  "homepage": "https://agent-skills-os.vercel.app/",
+  "homepage": "https://skills.rakibulism.space/",
   "engines": {
     "node": ">=18"
   }

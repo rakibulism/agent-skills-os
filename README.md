@@ -103,6 +103,19 @@ const related = getRelatedSkills("super-ui");
 
 This is opt-in per skill — only add `related` where two skills are genuinely complementary, not as a blanket cross-link between every skill in a domain.
 
+## Command line
+
+The package ships an `agent-skills` command that works offline from the bundled skills:
+
+```bash
+npx universal-agent-skills list                       # every skill
+npx universal-agent-skills search ui --json           # machine-readable search
+npx universal-agent-skills show super-ui              # print the SKILL.md
+npx universal-agent-skills export super-ui --format cursor --out .cursor/rules
+```
+
+Full reference: https://skills.rakibulism.space/docs/cli. There's also a public HTTP API (`GET https://skills.rakibulism.space/api/skills?q=`), described at https://skills.rakibulism.space/docs/api and in [OpenAPI](https://skills.rakibulism.space/openapi.json).
+
 ## Using a skill in Cursor, Codex, OpenCode, Antigravity, or other IDE/agent tools
 
 Claude Agent SDK and Claude Code read `SKILL.md` natively — no export needed. Other tools have their own file conventions, so three more adapters generate ready-to-drop content for them:

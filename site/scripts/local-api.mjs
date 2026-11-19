@@ -3,6 +3,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { handleAsk, rank } from '../server/ask.mjs';
+import { handleGetSkill, handleListSkills } from '../server/skills-api.mjs';
 
 export function loadEnv() {
   const file = fileURLToPath(new URL('../.env.local', import.meta.url));
@@ -32,23 +33,41 @@ async function fakeComplete(messages) {
   });
 }
 
-export async function nodeToAsk(req, res, { indexUrl, cors } = {}) {
-  const headers = { ...(cors ? { 'Access-Control-Allow-Origin': cors, 'Access-Control-Allow-Headers': 'Content-Type', 'Access-Control-Allow-Methods': 'POST, OPTIONS' } : {}) };
-  if (req.method === 'OPTIONS') { res.writeHead(204, headers).end(); return; }
+/** A Node request as a Web Request. */
+export async function toRequest(req) {
   const chunks = [];
   for await (const c of req) chunks.push(c);
-  const url = `http://${req.headers.host}${req.url}`;
-  const request = new Request(url, {
+  return new Request(`http://${req.headers.host}${req.url}`, {
     method: req.method,
     headers: Object.fromEntries(Object.entries(req.headers).filter(([, v]) => typeof v === 'string')),
     body: ['GET', 'HEAD'].includes(req.method) ? undefined : Buffer.concat(chunks),
   });
+}
+
+/** Writes a Web Response to a Node response. */
+export async function send(res, response, extraHeaders = {}) {
+  res.writeHead(response.status, { ...Object.fromEntries(response.headers), ...extraHeaders });
+  res.end(Buffer.from(await response.arrayBuffer()));
+}
+
+/** The API functions in ../../api/, by path. Returns null for paths that aren't an API route. */
+export function apiHandler(pathname, { indexUrl } = {}) {
+  const path = pathname.replace(/\/+$/, '');
+  if (path === '/api/ask') return (request) => handleAsk(request, { indexUrl, complete: process.env.ASK_FAKE === '1' ? fakeComplete : undefined });
+  if (path === '/api/skills') return (request) => handleListSkills(request, { indexUrl });
+  if (/^\/api\/skills\/[^/]+$/.test(path)) return (request) => handleGetSkill(request, { indexUrl });
+  return null;
+}
+
+export async function nodeToAsk(req, res, { indexUrl, cors } = {}) {
+  const headers = { ...(cors ? { 'Access-Control-Allow-Origin': cors, 'Access-Control-Allow-Headers': 'Content-Type', 'Access-Control-Allow-Methods': 'POST, OPTIONS' } : {}) };
+  if (req.method === 'OPTIONS') { res.writeHead(204, headers).end(); return; }
+  const request = await toRequest(req);
   const response = await handleAsk(request, {
     indexUrl,
     complete: process.env.ASK_FAKE === '1' ? fakeComplete : undefined,
   });
-  res.writeHead(response.status, { ...Object.fromEntries(response.headers), ...headers });
-  res.end(Buffer.from(await response.arrayBuffer()));
+  await send(res, response, headers);
 }
 
 export { rank };
