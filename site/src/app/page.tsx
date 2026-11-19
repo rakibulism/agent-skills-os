@@ -39,8 +39,9 @@ export default function Home() {
           <HeroLibrary skills={skills}>
             <h1 id="hero-title" {...stylex.props(s.h1)}>Universal agent skills</h1>
             <p {...stylex.props(s.lede)}>
-              An open library of agent skills, one Markdown file each. Ready for Claude, OpenAI, LangChain, CrewAI,
-              AutoGen, Cursor and every AGENTS.md tool.
+              An open library of agent skills, one Markdown file each.{' '}
+              {/* The framework list only fits two lines on wider screens. */}
+              <span {...stylex.props(s.ledeMore)}>Ready for Claude, OpenAI, LangChain, CrewAI, AutoGen, Cursor and every AGENTS.md tool.</span>
             </p>
           </HeroLibrary>
           <div {...stylex.props(s.install)}>
@@ -102,12 +103,14 @@ const s = stylex.create({
     whiteSpace: 'nowrap',
   },
   lede: {
-    maxWidth: '46ch',
-    fontSize: { default: 17, [MD]: 19 },
-    lineHeight: 1.5,
+    maxWidth: 620,
+    fontSize: { default: 15, [MD]: 16 },
+    lineHeight: 1.55,
     color: colors.ink2,
     textWrap: 'balance',
   },
+  ledeMore: { display: { default: 'none', '@media (min-width: 600px)': 'inline' } },
+
   install: { marginTop: { default: 40, [MD]: 56 } },
 
   start: {
