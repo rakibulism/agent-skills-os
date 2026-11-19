@@ -18,13 +18,13 @@ import { forClaude, forOpenAI, forLangChain, listSkills } from "universal-agent-
 // See what's available
 console.log(listSkills());
 // [
-//   { name: "ux-expert-rakibulism", description: "...", tags: ["design","ux","review",...] },
+//   { name: "super-ui", description: "...", tags: ["design","ui"] },
 // ]
 
 // Use with Claude Agent SDK / Anthropic Messages API
 import Anthropic from "@anthropic-ai/sdk";
 const anthropic = new Anthropic();
-const { system } = forClaude("ux-expert-rakibulism");
+const { system } = forClaude("super-ui");
 const msg = await anthropic.messages.create({
   model: "claude-opus-4-7",
   max_tokens: 4096,
@@ -37,12 +37,12 @@ import OpenAI from "openai";
 const openai = new OpenAI();
 const assistant = await openai.beta.assistants.create({
   model: "gpt-4o",
-  ...forOpenAI("ux-expert-rakibulism"),
+  ...forOpenAI("super-ui"),
 });
 
 // Use with LangChain
 import { PromptTemplate } from "@langchain/core/prompts";
-const skill = forLangChain("ux-expert-rakibulism");
+const skill = forLangChain("super-ui");
 const prompt = PromptTemplate.fromTemplate(skill.template);
 const formatted = await prompt.format({
   design: "...",
@@ -56,7 +56,6 @@ const formatted = await prompt.format({
 
 | Skill | What it does |
 |---|---|
-| `ux-expert-rakibulism` | Reviews UI screens in "rakibulism" voice — direct, client-facing, promise-list-style feedback |
 | `super-ui` | Placeholder — not written yet |
 
 Every skill follows the same authoring principles: lead with the spine, prioritize findings, prefer concrete output formats, name what to avoid. Larger skills also bundle a `references/` directory of deeper material the body points to.
@@ -94,9 +93,9 @@ A skill can declare `related: [other-skill-name, ...]` in its frontmatter to poi
 ```js
 import { getSkill, getRelatedSkills } from "universal-agent-skills";
 
-const skill = getSkill("ux-expert-rakibulism");
-const related = getRelatedSkills("ux-expert-rakibulism");
-// -> [] unless a future skill declares `related: [ux-expert-rakibulism]` or vice versa
+const skill = getSkill("super-ui");
+const related = getRelatedSkills("super-ui");
+// -> [] unless a future skill declares `related: [super-ui]` or vice versa
 
 // e.g. in an agent loop: if the request looks like it needs a related skill too,
 // load it without waiting for the user to name it explicitly.
@@ -117,23 +116,23 @@ Claude Agent SDK and Claude Code read `SKILL.md` natively — no export needed. 
 ```js
 import { forCursor, forAgentsMd, forStitchPrompt } from "universal-agent-skills";
 
-const cursor = forCursor("ux-expert-rakibulism");
-// -> { filename: "ux-expert-rakibulism.mdc", content: "---\ndescription: ...\nalwaysApply: false\n---\n\n..." }
+const cursor = forCursor("super-ui");
+// -> { filename: "super-ui.mdc", content: "---\ndescription: ...\nalwaysApply: false\n---\n\n..." }
 // Write this to .cursor/rules/ in your project.
 
-const agentsMd = forAgentsMd("ux-expert-rakibulism");
-// -> { filename: "ux-expert-rakibulism.agents.md", content: "## ux-expert-rakibulism ...\n\n..." }
+const agentsMd = forAgentsMd("super-ui");
+// -> { filename: "super-ui.agents.md", content: "## super-ui ...\n\n..." }
 // AGENTS.md conventionally holds every convention for a whole project, not just one skill —
 // append this section onto your project's existing AGENTS.md rather than replacing it wholesale.
 
-const stitch = forStitchPrompt("ux-expert-rakibulism");
+const stitch = forStitchPrompt("super-ui");
 // -> { content: "..." } — copy-paste directly into Stitch's prompt box.
 ```
 
 Or generate all three at once for a skill (or every skill) with the bundled script, which writes into `skills/<name>/exports/`:
 
 ```bash
-node scripts/export-skill.js ux-expert-rakibulism
+node scripts/export-skill.js super-ui
 node scripts/export-skill.js --all
 ```
 

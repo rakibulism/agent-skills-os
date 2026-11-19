@@ -155,13 +155,13 @@
         </thead>
         <tbody id="lb-body">
           <!-- Design -->
-          <tr class="lb-row" data-cat="design" data-search="ux-expert-rakibulism design ux review voice personal-style review ui screens dashboards modals tables and flows as a ux expert speaking in rakibulism  rakibuls curated professional communication style for client-facing design feedback use this skill whenever the user uploads a ui screenshot or design and asks to find ux issues review a screen critique a design comment on a file or give client-facing feedback also trigger when the user says review this find issues comment on this tell it like me rakibulism or wants feedback written as designer-to-client comments that will be fixed later in a design pass">
+          <tr class="lb-row" data-cat="design" data-search="super-ui design ui placeholder for the super-ui skill not written yet replace this with when to use the skill and what it produces">
             <td class="lb-rank">1</td>
             <td class="lb-skill">
-              <a href="https://github.com/rakibulism/agent-skills-os/tree/main/skills/ux-expert-rakibulism" target="_blank" rel="noopener">
-                <span class="lb-name">ux-expert-rakibulism</span> <span class="lb-repo">rakibulism/agent-skills-os</span>
+              <a href="https://github.com/rakibulism/agent-skills-os/tree/main/skills/super-ui" target="_blank" rel="noopener">
+                <span class="lb-name">super-ui</span> <span class="lb-repo">rakibulism/agent-skills-os</span>
               </a>
-              <span class="lb-desc">Review UI screens, dashboards, modals, tables, and flows as a UX expert speaking in &quot;rakibulism&quot; — Rakibul's curated professional communication style for cli...</span>
+              <span class="lb-desc">Placeholder for the super-ui skill. Not written yet; replace this with when to use the skill and what it produces.</span>
             </td>
             <td class="lb-cat-col"><span class="cat-badge des">DES</span></td>
           </tr>
@@ -183,7 +183,7 @@
         <div class="how__step">
           <span class="how__num">01</span>
           <h3>Pick a skill</h3>
-          <p>Use the bundled <code>ux-expert-rakibulism</code> skill, or author your own by dropping a <code>SKILL.md</code> into the skills directory.</p>
+          <p>Use the bundled <code>super-ui</code> skill, or author your own by dropping a <code>SKILL.md</code> into the skills directory.</p>
         </div>
         <div class="how__step">
           <span class="how__num">02</span>
@@ -219,7 +219,7 @@
 import { forClaude } from "universal-agent-skills";
 
 const anthropic = new Anthropic();
-const { system } = forClaude("ux-expert-rakibulism");
+const { system } = forClaude("super-ui");
 
 const msg = await anthropic.messages.create({
   model: "claude-opus-4-7",
@@ -230,7 +230,7 @@ const msg = await anthropic.messages.create({
 <span class="k">import</span> { forClaude } <span class="k">from</span> <span class="s">"universal-agent-skills"</span>;
 
 <span class="k">const</span> anthropic = <span class="k">new</span> <span class="fn">Anthropic</span>();
-<span class="k">const</span> { system } = <span class="fn">forClaude</span>(<span class="s">"ux-expert-rakibulism"</span>);
+<span class="k">const</span> { system } = <span class="fn">forClaude</span>(<span class="s">"super-ui"</span>);
 
 <span class="k">const</span> msg = <span class="k">await</span> anthropic.messages.<span class="fn">create</span>({
   model: <span class="s">"claude-opus-4-7"</span>,
@@ -245,20 +245,20 @@ import { forOpenAI } from "universal-agent-skills";
 const openai = new OpenAI();
 const assistant = await openai.beta.assistants.create({
   model: "gpt-4o",
-  ...forOpenAI("ux-expert-rakibulism"),
+  ...forOpenAI("super-ui"),
 });'>Copy</button><code><span class="k">import</span> OpenAI <span class="k">from</span> <span class="s">"openai"</span>;
 <span class="k">import</span> { forOpenAI } <span class="k">from</span> <span class="s">"universal-agent-skills"</span>;
 
 <span class="k">const</span> openai = <span class="k">new</span> <span class="fn">OpenAI</span>();
 <span class="k">const</span> assistant = <span class="k">await</span> openai.beta.assistants.<span class="fn">create</span>({
   model: <span class="s">"gpt-4o"</span>,
-  ...<span class="fn">forOpenAI</span>(<span class="s">"ux-expert-rakibulism"</span>),
+  ...<span class="fn">forOpenAI</span>(<span class="s">"super-ui"</span>),
 });</code></pre>
 
           <pre class="code-panel" data-panel="langchain"><button class="copy-btn copy-btn--code" data-copy-text='import { PromptTemplate } from "@langchain/core/prompts";
 import { forLangChain } from "universal-agent-skills";
 
-const skill = forLangChain("ux-expert-rakibulism");
+const skill = forLangChain("super-ui");
 const prompt = PromptTemplate.fromTemplate(skill.template);
 const formatted = await prompt.format({
   design: "...",
@@ -266,7 +266,7 @@ const formatted = await prompt.format({
 });'>Copy</button><code><span class="k">import</span> { PromptTemplate } <span class="k">from</span> <span class="s">"@langchain/core/prompts"</span>;
 <span class="k">import</span> { forLangChain } <span class="k">from</span> <span class="s">"universal-agent-skills"</span>;
 
-<span class="k">const</span> skill = <span class="fn">forLangChain</span>(<span class="s">"ux-expert-rakibulism"</span>);
+<span class="k">const</span> skill = <span class="fn">forLangChain</span>(<span class="s">"super-ui"</span>);
 <span class="k">const</span> prompt = PromptTemplate.<span class="fn">fromTemplate</span>(skill.template);
 <span class="k">const</span> formatted = <span class="k">await</span> prompt.<span class="fn">format</span>({
   design: <span class="s">"..."</span>,
@@ -283,7 +283,7 @@ from crewai import Agent
 agent = Agent(
     role="UX Reviewer",
     goal="Review UI screens in the rakibulism voice",
-    backstory=open("node_modules/universal-agent-skills/skills/ux-expert-rakibulism/SKILL.md").read(),
+    backstory=open("node_modules/universal-agent-skills/skills/super-ui/SKILL.md").read(),
 )'>Copy</button><code><span class="c"># The markdown skills are framework-neutral.</span>
 <span class="c"># After npm install, read the file directly:</span>
 <span class="c">#   node_modules/universal-agent-skills/skills/&lt;name&gt;/SKILL.md</span>
@@ -294,7 +294,7 @@ agent = Agent(
 agent = <span class="fn">Agent</span>(
     role=<span class="s">"UX Reviewer"</span>,
     goal=<span class="s">"Review UI screens in the rakibulism voice"</span>,
-    backstory=<span class="fn">open</span>(<span class="s">"…/skills/ux-expert-rakibulism/SKILL.md"</span>).<span class="fn">read</span>(),
+    backstory=<span class="fn">open</span>(<span class="s">"…/skills/super-ui/SKILL.md"</span>).<span class="fn">read</span>(),
 )</code></pre>
 
           <pre class="code-panel" data-panel="autogen"><button class="copy-btn copy-btn--code" data-copy-text='# Generate a JSON catalog from Node, hand it to Python:
@@ -307,8 +307,8 @@ from autogen import AssistantAgent
 skills = {s["name"]: s for s in json.load(open("skills.json"))}
 
 agent = AssistantAgent(
-    name="ux-expert-rakibulism",
-    system_message=skills["ux-expert-rakibulism"]["instructions"],
+    name="super-ui",
+    system_message=skills["super-ui"]["instructions"],
 )'>Copy</button><code><span class="c"># Generate a JSON catalog from Node, hand it to Python:</span>
 <span class="c">#   node -e "import('universal-agent-skills').then(...)"</span>
 
@@ -318,8 +318,8 @@ agent = AssistantAgent(
 skills = { s[<span class="s">"name"</span>]: s <span class="k">for</span> s <span class="k">in</span> json.<span class="fn">load</span>(<span class="fn">open</span>(<span class="s">"skills.json"</span>)) }
 
 agent = <span class="fn">AssistantAgent</span>(
-    name=<span class="s">"ux-expert-rakibulism"</span>,
-    system_message=skills[<span class="s">"ux-expert-rakibulism"</span>][<span class="s">"instructions"</span>],
+    name=<span class="s">"super-ui"</span>,
+    system_message=skills[<span class="s">"super-ui"</span>][<span class="s">"instructions"</span>],
 )</code></pre>
         </div>
       </div>
