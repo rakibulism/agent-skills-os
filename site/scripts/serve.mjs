@@ -21,6 +21,9 @@ const types = {
 // Mirrors the middleware matcher: pages and /api, not _next or files with an extension.
 const middlewareRuns = (path) => !path.startsWith('/_next/') && !/\.[A-Za-z0-9]+$/.test(path);
 
+const DESCRIBEDBY = '<https://skills.rakibulism.space/llms.txt>; rel="describedby"';
+const mergeLink = (link) => (link ? `${link}, ${DESCRIBEDBY}` : DESCRIBEDBY);
+
 async function resolve(urlPath) {
   const clean = normalize(decodeURIComponent(urlPath.split('?')[0])).replace(/^(\.\.[/\\])+/, '');
   for (const candidate of [clean, `${clean}.html`, join(clean, 'index.html')]) {
@@ -38,7 +41,8 @@ createServer(async (req, res) => {
 
     if (middlewareRuns(pathname)) {
       const early = await route(request, fetch);
-      if (early) return send(res, early);
+      // vercel.json adds the llms.txt link to page responses, middleware ones included.
+      if (early) return send(res, early, pathname.startsWith('/api') ? {} : { Link: mergeLink(early.headers.get('link')) });
     }
     const api = apiHandler(pathname, { indexUrl: `http://localhost:${port}/search-index.json` });
     if (api) return send(res, await api(request));
@@ -50,7 +54,7 @@ createServer(async (req, res) => {
     res.writeHead(notFound ? 404 : 200, {
       'Content-Type': types[extname(file)] ?? 'application/octet-stream',
       'X-Content-Type-Options': 'nosniff',
-      ...(page ? { Vary: 'Accept', Link: '<https://skills.rakibulism.space/llms.txt>; rel="describedby"' } : {}),
+      ...(page ? { Vary: 'Accept', Link: DESCRIBEDBY } : {}),
     });
     res.end(req.method === 'HEAD' ? undefined : body);
   } catch (e) {

@@ -1,6 +1,7 @@
 // Markdown content negotiation, Markdown 404s and /api routing (server/agent-routing.mjs,
 // run on Vercel by ../../middleware.js).
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
 import { isKnownApi, markdownPath, negotiate, parseAccept, route } from '../server/agent-routing.mjs';
 
@@ -64,6 +65,18 @@ test('Accept: text/markdown on the homepage returns Markdown with Vary: Accept',
   assert.match(res.headers.get('vary'), /\bAccept\b/);
   assert.equal(await res.text(), MD_FILES['/index.md']);
   assert.deepEqual(f.calls, ['/index.md']);
+});
+
+test('Markdown responses link their .md URL but leave the llms.txt link to vercel.json', async () => {
+  // vercel.json adds rel="describedby" to every page response; repeating it here sent it twice.
+  const ok = await route(req('/docs', 'text/markdown'), fakeFetch());
+  assert.equal(ok.headers.get('link'), `<${ORIGIN}/docs.md>; rel="alternate"; type="text/markdown"`);
+  const missing = await route(req('/nope', 'text/markdown'), fakeFetch());
+  assert.equal(missing.headers.get('link'), null);
+  const vercel = JSON.parse(readFileSync(new URL('../../vercel.json', import.meta.url), 'utf8'));
+  const pageRule = vercel.headers.find((h) => h.headers.some((x) => x.key === 'Link'));
+  assert.ok(pageRule, 'vercel.json still sets the describedby link');
+  assert.match(pageRule.headers.find((x) => x.key === 'Link').value, /llms\.txt>; rel="describedby"/);
 });
 
 test('HTML requests pass through untouched (the static page has Vary: Accept from vercel.json)', async () => {
