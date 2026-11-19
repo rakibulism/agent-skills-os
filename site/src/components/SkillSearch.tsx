@@ -13,6 +13,17 @@ import { Icon } from './Icon';
 
 type Scored = { skill: SkillSummary; score: number };
 
+/** Cycled in the empty bar so people see it answers questions, not only names. */
+const HINTS: { ask: boolean; text: string }[] = [
+  { ask: false, text: 'Search skills by name or task' },
+  { ask: true, text: 'how do I install with pnpm?' },
+  { ask: true, text: 'which skill reviews accessibility?' },
+  { ask: true, text: 'how do I use a skill with LangChain?' },
+];
+
+/** Example questions under the bar; one click asks the AI. */
+const TRY = ['How do I install with pnpm?', 'Which skill reviews accessibility?', 'Use a skill with LangChain'];
+
 // Words that carry no meaning in a search, so "how do I use super-ui?" still finds super-ui.
 const STOP = new Set(
   'a an and are can could do does for from get help helps how i in is it me my of on or show skill skills the this to use using want what when where which who why will with you your'.split(' '),
@@ -113,6 +124,21 @@ export function SkillSearch({
   const [ai, setAi] = useState<AiState | null>(null);
   const abortRef = useRef<AbortController | null>(null);
 
+  const [focused, setFocused] = useState(false);
+  const [askMode, setAskMode] = useState(false);
+  const [hint, setHint] = useState(0);
+  useEffect(() => {
+    if (query || focused || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const t = setInterval(() => setHint((i) => (i + 1) % HINTS.length), 3200);
+    return () => clearInterval(t);
+  }, [query, focused]);
+
+  function startAsking() {
+    if (query.trim()) { runAsk(query); return; }
+    setAskMode(true);
+    inputRef.current?.focus();
+  }
+
   useEffect(() => {
     if (floating && query && document.activeElement === inputRef.current) bringIntoView(panelRef.current);
     // Only when the query changes; scrolling must not fight the reader otherwise.
@@ -198,7 +224,7 @@ export function SkillSearch({
     } else if (e.key === 'Enter' && query.trim()) {
       e.preventDefault();
       // Questions go to the AI; names and keywords open the top match.
-      if (e.metaKey || e.ctrlKey || looksLikeQuestion(query) || !results[0]) runAsk(query);
+      if (e.metaKey || e.ctrlKey || askMode || looksLikeQuestion(query) || !results[0]) runAsk(query);
       else router.push(`/skills/${results[0].skill.slug}`);
     } else if (e.key === 'Escape') {
       if (ai) closeAi();
@@ -223,8 +249,9 @@ export function SkillSearch({
       <div ref={dockRef} {...stylex.props(s.dock)}>
       <div {...stylex.props(floating && s.floating)}>
       <div role="search" {...stylex.props(s.box, floating && s.boxFloating)}>
-        <Icon name="search" size={22} style={{ color: colors.ink3 }} />
-        <label htmlFor="skill-search" {...stylex.props(s.srOnly)}>Search skills</label>
+        <Icon name="aiSearch" size={22} style={{ color: colors.ink3 }} />
+        <label htmlFor="skill-search" {...stylex.props(s.srOnly)}>Search skills or ask AI a question</label>
+        <span {...stylex.props(s.field)}>
         <input
           ref={inputRef}
           id="skill-search"
@@ -232,7 +259,8 @@ export function SkillSearch({
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={onInputKey}
-          placeholder="Search skills or ask a question"
+          onFocus={() => setFocused(true)}
+          onBlur={() => { setFocused(false); setAskMode(false); }}
           autoComplete="off"
           autoCorrect="off"
           autoCapitalize="off"
@@ -242,6 +270,18 @@ export function SkillSearch({
           aria-describedby="skill-count"
           {...stylex.props(s.input)}
         />
+        {!query && (
+          <span aria-hidden key={focused ? (askMode ? 'ask' : 'focus') : hint} {...stylex.props(s.hint2)}>
+            {focused ? (
+              askMode ? 'Type a question, then press Enter' : 'Search skills or ask a question'
+            ) : HINTS[hint].ask ? (
+              <><span {...stylex.props(s.hintAsk)}>Ask AI</span> {HINTS[hint].text}</>
+            ) : (
+              HINTS[hint].text
+            )}
+          </span>
+        )}
+        </span>
         {query ? (
           <>
             <button type="button" onClick={() => { setQuery(''); inputRef.current?.focus(); }} aria-label="Clear search" {...stylex.props(s.clear)}>
@@ -253,11 +293,26 @@ export function SkillSearch({
             </button>
           </>
         ) : (
-          <kbd aria-hidden {...stylex.props(s.kbd)}>/</kbd>
+          <>
+            <kbd aria-hidden {...stylex.props(s.kbd)}>/</kbd>
+            <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={startAsking} aria-label="Ask AI a question" {...stylex.props(s.askBtn)}>
+              <Icon name="ai" size={16} />
+              <span {...stylex.props(s.askLabel)}>Ask AI</span>
+            </button>
+          </>
         )}
       </div>
       </div>
 
+      </div>
+
+      <div role="group" aria-label="Example questions" {...stylex.props(s.try)}>
+        <span {...stylex.props(s.tryLabel)}>Try asking</span>
+        {TRY.map((q) => (
+          <button key={q} type="button" onClick={() => { setQuery(q); runAsk(q); }} {...stylex.props(s.tryChip)}>
+            <Icon name="ai" size={13} style={{ color: colors.accentInk }} /> {q}
+          </button>
+        ))}
       </div>
 
       <div ref={aiRef}>
@@ -359,6 +414,11 @@ export function SkillSearch({
 }
 
 const HOVER = '@media (hover: hover)';
+
+const hintIn = stylex.keyframes({
+  from: { opacity: 0, transform: 'translateY(6px)' },
+  to: { opacity: 1, transform: 'none' },
+});
 
 const dockIn = stylex.keyframes({
   from: { opacity: 0, transform: 'translate(-50%, 16px)' },
@@ -474,6 +534,59 @@ const s = stylex.create({
   askText: { flexGrow: 1, minWidth: 0, fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
   askQuery: { fontWeight: 400, color: colors.ink2 },
   askKbd: { minWidth: 34, paddingInline: 6 },
+  field: { position: 'relative', display: 'flex', alignItems: 'center', flexGrow: 1, minWidth: 0, height: '100%' },
+  hint2: {
+    position: 'absolute',
+    inset: 0,
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8,
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+    textOverflow: 'ellipsis',
+    pointerEvents: 'none',
+    fontSize: { default: 17, '@media (min-width: 720px)': 19 },
+    color: colors.ink3,
+    animationName: hintIn,
+    animationDuration: '420ms',
+    animationTimingFunction: 'ease-out',
+  },
+  hintAsk: {
+    flexShrink: 0,
+    paddingBlock: 2,
+    paddingInline: 8,
+    fontSize: 13,
+    fontWeight: 600,
+    color: colors.accentInk,
+    backgroundColor: colors.selection,
+    borderRadius: 6,
+  },
+  try: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 8,
+    marginTop: 14,
+  },
+  tryLabel: { fontFamily: fonts.mono, fontSize: 12, color: colors.ink3, marginRight: 2 },
+  tryChip: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: 6,
+    minHeight: 32,
+    paddingInline: 12,
+    fontSize: 13,
+    fontWeight: 500,
+    color: { default: colors.ink2, ':hover': colors.ink },
+    backgroundColor: { default: colors.surface, ':hover': colors.sunk },
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: colors.line,
+    borderRadius: radii.pill,
+    transitionProperty: 'background-color, color',
+    transitionDuration: motion.fast,
+  },
   dock: { minHeight: { default: 56, '@media (min-width: 720px)': 64 } },
   floating: {
     position: 'fixed',

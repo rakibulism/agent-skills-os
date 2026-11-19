@@ -1,5 +1,6 @@
 import { HugeiconsIcon } from '@hugeicons/react';
 import {
+  AiSearchIcon,
   Alert02Icon,
   ArrowLeft01Icon,
   ArrowRight01Icon,
@@ -52,6 +53,7 @@ const icons = {
   add: PlusSignIcon,
   people: UserGroupIcon,
   ai: SparklesIcon,
+  aiSearch: AiSearchIcon,
   retry: RefreshIcon,
 } as const;
 
