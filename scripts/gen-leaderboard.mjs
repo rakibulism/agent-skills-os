@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Regenerates the SKILLS LEADERBOARD table + category tabs in site/index.html
+// Regenerates the skills list (between the skills:start / skills:end markers) in site/index.html
 // from the actual skills/ directory, so the site never drifts from the repo.
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
@@ -95,6 +95,7 @@ for (const dir of dirs) {
     dir,
     description,
     tags,
+    version: fm.version || "",
     cat: categorize(dir, tags),
   });
 }
@@ -106,63 +107,27 @@ skills.sort((a, b) => {
   return a.dir.localeCompare(b.dir);
 });
 
-const counts = Object.fromEntries(CATEGORIES.map((c) => [c.key, 0]));
-for (const s of skills) counts[s.cat]++;
-
-const rows = [];
-let rank = 0;
-let lastCat = null;
-for (const s of skills) {
-  rank++;
-  if (s.cat !== lastCat) {
-    const catInfo = CATEGORIES.find((c) => c.key === s.cat);
-    rows.push(`          <!-- ${catInfo.label} -->`);
-    lastCat = s.cat;
-  }
+const cards = skills.map((s) => {
   const catInfo = CATEGORIES.find((c) => c.key === s.cat);
-  const search = [s.dir, ...s.tags, s.description]
-    .join(" ")
-    .toLowerCase()
-    .replace(/[^a-z0-9\s-]/g, "");
-  const shortDesc = s.description.length > 160 ? s.description.slice(0, 157) + "..." : s.description;
-  rows.push(
-    `          <tr class="lb-row" data-cat="${s.cat}" data-search="${escapeHtml(search)}">
-            <td class="lb-rank">${rank}</td>
-            <td class="lb-skill">
-              <a href="https://github.com/rakibulism/agent-skills-os/tree/main/skills/${s.dir}" target="_blank" rel="noopener">
-                <span class="lb-name">${escapeHtml(s.dir)}</span> <span class="lb-repo">rakibulism/agent-skills-os</span>
-              </a>
-              <span class="lb-desc">${escapeHtml(shortDesc)}</span>
-            </td>
-            <td class="lb-cat-col"><span class="cat-badge ${catInfo.css}">${catInfo.badge}</span></td>
-          </tr>`
-  );
-}
-
-const tabsHtml = [
-  `        <button class="lb-tab is-active" role="tab" data-cat="all">All <span class="lb-tab__n">(${skills.length})</span></button>`,
-  ...CATEGORIES.filter((c) => counts[c.key] > 0).map(
-    (c) =>
-      `        <button class="lb-tab" role="tab" data-cat="${c.key}">${c.label} <span class="lb-tab__n">(${counts[c.key]})</span></button>`
-  ),
-].join("\n");
+  const version = s.version ? `\n              <span class="skill__ver">v${escapeHtml(s.version)}</span>` : "";
+  return `          <li class="skill">
+            <div class="skill__head">
+              <a class="skill__name" href="https://github.com/rakibulism/agent-skills-os/tree/main/skills/${s.dir}" target="_blank" rel="noopener">${escapeHtml(s.dir)}</a>
+              <span class="tag">${catInfo.label}</span>${version}
+            </div>
+            <p class="skill__desc">${escapeHtml(s.description)}</p>
+          </li>`;
+});
 
 let html = readFileSync(INDEX_HTML, "utf8");
 
-html = html.replace(
-  /(<div class="lb-tabs" role="tablist">\n)([\s\S]*?)(\n      <\/div>)/,
-  `$1${tabsHtml}$3`
-);
-
-const emptyRow = `          <tr id="lb-empty" class="lb-empty" hidden>
-            <td colspan="3">No skills match your search.</td>
-          </tr>`;
-
-html = html.replace(
-  /(<tbody id="lb-body">\n)([\s\S]*?)(\n        <\/tbody>)/,
-  `$1${rows.join("\n")}\n\n${emptyRow}$3`
-);
+const listRe = /(<!-- skills:start -->\n)[\s\S]*?(\n\s*<!-- skills:end -->)/;
+if (!listRe.test(html)) {
+  console.error(`Couldn't find the skills:start / skills:end markers in ${INDEX_HTML}`);
+  process.exit(1);
+}
+html = html.replace(listRe, `$1${cards.join("\n")}$2`);
+html = html.replace(/(<span data-skill-count>)\d+(<\/span>)/, `$1${skills.length}$2`);
 
 writeFileSync(INDEX_HTML, html, "utf8");
-console.log(`Wrote ${skills.length} skills across ${CATEGORIES.filter((c) => counts[c.key] > 0).length} categories to ${INDEX_HTML}`);
-console.log(counts);
+console.log(`Wrote ${skills.length} skill${skills.length === 1 ? "" : "s"} to ${INDEX_HTML}`);
