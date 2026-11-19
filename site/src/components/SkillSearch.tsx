@@ -72,6 +72,20 @@ export function SkillSearch({
   const ownInputRef = useRef<HTMLInputElement>(null);
   const inputRef = outerInputRef ?? ownInputRef;
   const listRef = useRef<HTMLDivElement>(null);
+
+  // The search bar floats once it reaches the header; a 1px sentinel above it tells us when.
+  const sentinelRef = useRef<HTMLDivElement>(null);
+  const [stuck, setStuck] = useState(false);
+  useEffect(() => {
+    const el = sentinelRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([e]) => setStuck(!e.isIntersecting && e.boundingClientRect.top < 80),
+      { rootMargin: '-72px 0px 0px 0px' },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
   const [ai, setAi] = useState<AiState | null>(null);
   const abortRef = useRef<AbortController | null>(null);
 
@@ -175,7 +189,9 @@ export function SkillSearch({
 
   return (
     <div>
-      <div role="search" {...stylex.props(s.box)}>
+      <div ref={sentinelRef} aria-hidden {...stylex.props(s.sentinel)} />
+      <div {...stylex.props(s.sticky, stuck && s.stickyStuck)}>
+      <div role="search" {...stylex.props(s.box, stuck && s.boxStuck)}>
         <Icon name="search" size={22} style={{ color: colors.ink3 }} />
         <label htmlFor="skill-search" {...stylex.props(s.srOnly)}>Search skills</label>
         <input
@@ -209,7 +225,12 @@ export function SkillSearch({
           <kbd aria-hidden {...stylex.props(s.kbd)}>/</kbd>
         )}
       </div>
+      </div>
 
+      {ai && <AiAnswer state={ai} skills={skills} onAsk={(q) => { setQuery(q); runAsk(q); }} onClose={closeAi} />}
+
+      <section aria-label="Skills" {...stylex.props(s.panel)}>
+      <div {...stylex.props(s.panelHead)}>
       <div role="group" aria-label="Filter by category" {...stylex.props(s.chips)}>
         {[['all', skills.length] as const, ...categories].map(([cat, n]) => {
           const on = category === cat;
@@ -222,14 +243,13 @@ export function SkillSearch({
         })}
       </div>
 
-      {ai && <AiAnswer state={ai} skills={skills} onAsk={(q) => { setQuery(q); runAsk(q); }} onClose={closeAi} />}
-
       <p id="skill-count" aria-live="polite" {...stylex.props(s.count)}>
         {query || category !== 'all' ? `${countLabel} found` : countLabel}
         <span {...stylex.props(s.hint)}>Enter opens the top match · ⌘Enter asks AI</span>
       </p>
+      </div>
 
-      <div ref={listRef} onKeyDown={onListKey}>
+      <div ref={listRef} onKeyDown={onListKey} {...stylex.props(s.panelBody)}>
       {query.trim() && ai?.question !== query.trim() && (
         <button type="button" data-result onClick={() => runAsk(query)} {...stylex.props(s.askRow)}>
           <span {...stylex.props(s.askIcon)}><Icon name="ai" size={16} /></span>
@@ -298,6 +318,7 @@ export function SkillSearch({
           <span {...stylex.props(s.moreCount)}>Showing {visible.length} of {results.length}</span>
         </div>
       )}
+      </section>
     </div>
   );
 }
@@ -394,7 +415,7 @@ const s = stylex.create({
     textAlign: 'left',
     fontSize: 15,
     color: colors.ink,
-    backgroundColor: { default: 'transparent', ':hover': colors.surface, ':focus-visible': colors.surface },
+    backgroundColor: { default: 'transparent', ':hover': colors.sunk, ':focus-visible': colors.sunk },
     borderWidth: 0,
     borderRadius: radii.md,
     transitionProperty: 'background-color',
@@ -413,8 +434,53 @@ const s = stylex.create({
   askText: { flexGrow: 1, minWidth: 0, fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
   askQuery: { fontWeight: 400, color: colors.ink2 },
   askKbd: { minWidth: 34, paddingInline: 6 },
-  chips: { display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 8, marginTop: 16 },
+  sentinel: { height: 1 },
+  sticky: {
+    position: 'sticky',
+    top: 'calc(60px + 10px)',
+    zIndex: 10,
+    borderRadius: 14,
+    transitionProperty: 'box-shadow',
+    transitionDuration: motion.base,
+  },
+  stickyStuck: { boxShadow: '0 16px 36px -14px rgba(0,0,0,0.35)' },
+  boxStuck: {
+    height: { default: 52, '@media (min-width: 720px)': 56 },
+    borderColor: { default: colors.line2, ':focus-within': colors.ink },
+  },
+  panel: {
+    marginTop: 20,
+    textAlign: 'left',
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: colors.line,
+    borderRadius: 16,
+    boxShadow: colors.shadow,
+    overflow: 'hidden',
+  },
+  panelHead: {
+    display: 'grid',
+    gap: 14,
+    paddingTop: 16,
+    paddingInline: { default: 16, '@media (min-width: 720px)': 20 },
+    backgroundColor: colors.sunk,
+    borderBottomWidth: 1,
+    borderBottomStyle: 'solid',
+    borderBottomColor: colors.line,
+  },
+  panelBody: { paddingInline: { default: 16, '@media (min-width: 720px)': 20 }, paddingBlock: 4 },
+  chips: {
+    display: 'flex',
+    flexWrap: { default: 'nowrap', '@media (min-width: 720px)': 'wrap' },
+    gap: 8,
+    overflowX: 'auto',
+    scrollbarWidth: 'none',
+    marginInline: { default: -16, '@media (min-width: 720px)': 0 },
+    paddingInline: { default: 16, '@media (min-width: 720px)': 0 },
+  },
   chip: {
+    flexShrink: 0,
     display: 'inline-flex',
     alignItems: 'center',
     gap: 8,
@@ -438,18 +504,18 @@ const s = stylex.create({
     display: 'flex',
     justifyContent: 'space-between',
     gap: 16,
-    marginTop: 28,
-    paddingBottom: 10,
+    paddingBottom: 12,
     fontFamily: fonts.mono,
     fontSize: 12,
     color: colors.ink3,
-    borderBottomWidth: 1,
-    borderBottomStyle: 'solid',
-    borderBottomColor: colors.line,
   },
   hint: { display: { default: 'none', [HOVER]: 'inline' } },
   list: { display: 'grid', textAlign: 'left' },
-  item: { borderBottomWidth: 1, borderBottomStyle: 'solid', borderBottomColor: colors.line },
+  item: {
+    borderBottomWidth: 1,
+    borderBottomStyle: 'solid',
+    borderBottomColor: { default: colors.line, ':last-child': 'transparent' },
+  },
   row: {
     display: 'flex',
     alignItems: 'center',
@@ -458,7 +524,7 @@ const s = stylex.create({
     paddingInline: 12,
     marginInline: -12,
     borderRadius: radii.md,
-    backgroundColor: { default: 'transparent', ':hover': colors.surface, ':focus-visible': colors.surface },
+    backgroundColor: { default: 'transparent', ':hover': colors.sunk, ':focus-visible': colors.sunk },
     transitionProperty: 'background-color',
     transitionDuration: motion.fast,
   },
@@ -488,7 +554,19 @@ const s = stylex.create({
     borderColor: colors.accent,
     borderRadius: radii.pill,
   },
-  more: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', gap: 8, marginTop: 20 },
+  more: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    paddingBlock: 16,
+    paddingInline: 16,
+    backgroundColor: colors.sunk,
+    borderTopWidth: 1,
+    borderTopStyle: 'solid',
+    borderTopColor: colors.line,
+  },
   moreCount: { width: '100%', textAlign: 'center', fontFamily: fonts.mono, fontSize: 12, color: colors.ink3 },
   desc: { fontSize: 15, lineHeight: 1.5, color: colors.ink2 },
   chev: { color: colors.ink3, display: 'inline-flex' },
