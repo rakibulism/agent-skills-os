@@ -20,7 +20,10 @@
     "LICENSE"
   ],
   "scripts": {
-    "export": "node scripts/export-skill.js"
+    "export": "node scripts/export-skill.js",
+    "site:dev": "npm run dev --prefix site",
+    "site:build": "npm run build --prefix site",
+    "site:preview": "npm run preview --prefix site"
   },
   "keywords": [
     "ai",
