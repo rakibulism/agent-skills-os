@@ -1,6 +1,6 @@
 import * as stylex from '@stylexjs/stylex';
 import Link from 'next/link';
-import { SITE } from '@/lib/site';
+import { SITE, TRUST_PAGES } from '@/lib/site';
 import { ui } from '@/styles/shared';
 import { colors, fonts, radii } from '@/styles/tokens.stylex';
 import { CopyButton } from './CopyButton';
@@ -108,6 +108,12 @@ export function SiteFooter() {
           MIT License · Built by{' '}
           <a href={SITE.authorUrl} target="_blank" rel="noopener" {...stylex.props(s.metaLink)}>{SITE.author}</a>
         </span>
+        <nav aria-label="About and tools" {...stylex.props(s.metaNav)}>
+          {[...TRUST_PAGES, { href: '/docs/api', label: 'API' }, { href: '/docs/cli', label: 'CLI' }].map((p) => (
+            <Link key={p.href} href={p.href} {...stylex.props(s.metaLink)}>{p.label}</Link>
+          ))}
+          <a href="/llms.txt" {...stylex.props(s.metaLink)}>llms.txt</a>
+        </nav>
         <span>© {year} Agent Skills OS</span>
       </div>
     </footer>
@@ -314,6 +320,7 @@ const s = stylex.create({
     fontSize: 12,
     color: colors.ink3,
   },
+  metaNav: { display: 'flex', flexWrap: 'wrap', columnGap: 14, rowGap: 6 },
   metaLink: {
     color: { default: colors.ink2, ':hover': colors.ink },
     textDecorationLine: 'underline',

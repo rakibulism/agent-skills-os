@@ -7,16 +7,17 @@ import { Icon } from '@/components/Icon';
 import { Install } from '@/components/Install';
 import { PageHead, Section } from '@/components/Section';
 import { Tabs } from '@/components/Tabs';
+import { pageMetadata } from '@/lib/doc';
 import { SECTIONS } from '@/lib/site';
 import { API, RULES, TEMPLATE_FILE, USAGE } from '@/lib/snippets';
 import { ui } from '@/styles/shared';
 import { colors, fonts, radii } from '@/styles/tokens.stylex';
 
-export const metadata: Metadata = {
-  title: 'Docs',
-  description: 'How universal-agent-skills turns one SKILL.md into the shape each agent runtime expects: adapters, usage for every framework, and the full API.',
-  alternates: { canonical: '/docs' },
-};
+export const metadata: Metadata = pageMetadata(
+  '/docs',
+  'Docs',
+  'How universal-agent-skills turns one SKILL.md into the shape each agent runtime expects: adapters, usage for every framework, and the full API.',
+);
 
 const LG = '@media (min-width: 880px)';
 
@@ -35,6 +36,8 @@ export default function Docs() {
           {SECTIONS.map((sec) => (
             <a key={sec.id} href={`#${sec.id}`} {...stylex.props(s.tocLink)}>{sec.label}</a>
           ))}
+          <Link href="/docs/api" {...stylex.props(s.tocLink)}>HTTP API</Link>
+          <Link href="/docs/cli" {...stylex.props(s.tocLink)}>CLI</Link>
         </nav>
       </PageHead>
 

@@ -1,5 +1,6 @@
 import * as stylex from '@stylexjs/stylex';
 import type { Metadata } from 'next';
+import { pageMetadata } from '@/lib/doc';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { CodePane } from '@/components/CodePane';
@@ -24,12 +25,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const skill = getSkill((await params).name);
   if (!skill) return {};
-  return {
-    title: skill.name,
-    description: skill.description,
-    alternates: { canonical: `/skills/${skill.slug}` },
-    openGraph: { title: `${skill.name} · ${SITE.name}`, description: skill.description, url: `/skills/${skill.slug}` },
-  };
+  return pageMetadata(`/skills/${skill.slug}`, `${skill.name} skill`, skill.description);
 }
 
 const LG = '@media (min-width: 960px)';

@@ -1,9 +1,13 @@
 import * as stylex from '@stylexjs/stylex';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { BrandLogo } from '@/components/BrandLogo';
 import { Icon } from '@/components/Icon';
 import { HeroLibrary } from '@/components/HeroLibrary';
+import { Inline } from '@/components/Inline';
 import { InstallTable } from '@/components/InstallTable';
+import { HOW, KEYWORDS, homeJsonLd } from '@/content/home';
+import { pageMetadata } from '@/lib/doc';
 import { SITE, TARGETS } from '@/lib/site';
 import { getSkills, toSummary } from '@/lib/skills';
 import { ui } from '@/styles/shared';
@@ -12,17 +16,9 @@ import { colors, fonts, motion, radii } from '@/styles/tokens.stylex';
 const MD = '@media (min-width: 720px)';
 const LG = '@media (min-width: 960px)';
 
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'WebSite',
-  name: SITE.name,
-  url: `${SITE.url}/`,
-  description: SITE.description,
-  potentialAction: {
-    '@type': 'SearchAction',
-    target: `${SITE.url}/?q={search_term_string}`,
-    'query-input': 'required name=search_term_string',
-  },
+export const metadata: Metadata = {
+  ...pageMetadata('/', SITE.title, SITE.description),
+  keywords: [...KEYWORDS],
 };
 
 const NEXT: { href: string; title: string; text: string; external?: boolean }[] = [
@@ -49,6 +45,36 @@ export default function Home() {
           </HeroLibrary>
           <div {...stylex.props(s.install)}>
             <InstallTable />
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="how-title" {...stylex.props(s.next)}>
+        <div {...stylex.props(ui.wrap, s.nextGrid)}>
+          <div {...stylex.props(s.nextHead)}>
+            <p {...stylex.props(s.kicker)}>{HOW.kicker}</p>
+            <h2 id="how-title" {...stylex.props(s.h2)}>{HOW.title}</h2>
+            <p {...stylex.props(s.nextNote)}>{HOW.note}</p>
+          </div>
+
+          <div {...stylex.props(s.how)}>
+            <ol {...stylex.props(s.index)}>
+              {HOW.steps.map((step, i) => (
+                <li key={step.title} {...stylex.props(s.item, s.howItem)}>
+                  <span {...stylex.props(s.num)}>{String(i + 1).padStart(2, '0')}</span>
+                  <div {...stylex.props(s.rowText)}>
+                    <h3 {...stylex.props(s.howTitle)}>{step.title}</h3>
+                    <p {...stylex.props(s.howText)}><Inline text={step.text} /></p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+            <div {...stylex.props(s.when)}>
+              <h3 {...stylex.props(s.whenTitle)}>{HOW.whenTitle}</h3>
+              <ul {...stylex.props(s.whenList)}>
+                {HOW.when.map((w) => <li key={w} {...stylex.props(s.whenItem)}>{w}</li>)}
+              </ul>
+            </div>
           </div>
         </div>
       </section>
@@ -99,7 +125,7 @@ export default function Home() {
         </div>
       </section>
 
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(homeJsonLd()).replace(/</g, '\\u003c') }} />
     </>
   );
 }
@@ -181,6 +207,19 @@ const s = stylex.create({
     transitionTimingFunction: motion.ease,
     transform: { default: 'none', ':is(a:hover *)': 'translateX(4px)' },
   },
+  how: { display: 'grid', gap: { default: 32, [MD]: 44 } },
+  howItem: {
+    display: 'grid',
+    gridTemplateColumns: { default: '36px minmax(0, 1fr)', [MD]: '56px minmax(0, 1fr)' },
+    columnGap: 16,
+    paddingBlock: { default: 20, [MD]: 26 },
+  },
+  howTitle: { fontSize: { default: 22, [MD]: 26 }, lineHeight: 1.15, fontWeight: 600, letterSpacing: '-0.025em' },
+  howText: { maxWidth: '62ch', fontSize: { default: 15, [MD]: 16 }, lineHeight: 1.6, color: colors.ink2 },
+  when: { display: 'grid', gap: 12, paddingLeft: { default: 0, [MD]: 72 } },
+  whenTitle: { fontFamily: fonts.mono, fontSize: 12, fontWeight: 400, color: colors.ink3 },
+  whenList: { display: 'grid', gap: 10, paddingLeft: 18, listStyleType: 'square', fontSize: { default: 15, [MD]: 16 }, lineHeight: 1.55, color: colors.ink2 },
+  whenItem: { paddingLeft: 4, '::marker': { color: colors.accent } },
   works: { display: 'grid', gap: 16, marginTop: { default: 56, [MD]: 88 } },
   worksGrid: {
     display: 'grid',

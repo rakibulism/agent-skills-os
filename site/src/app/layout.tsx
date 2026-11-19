@@ -4,6 +4,7 @@ import * as stylex from '@stylexjs/stylex';
 import { SiteFooter } from '@/components/SiteFooter';
 import { SiteHeader } from '@/components/SiteHeader';
 import { Toaster } from '@/components/Toaster';
+import { OG_IMAGE } from '@/lib/doc';
 import { SITE } from '@/lib/site';
 import { BRAND_HEX } from '@/styles/brand';
 import { colors, fonts } from '@/styles/tokens.stylex';
@@ -21,7 +22,6 @@ export const metadata: Metadata = {
   authors: [{ name: SITE.author, url: SITE.authorUrl }],
   creator: SITE.author,
   keywords: ['AI agents', 'agent skills', 'Claude', 'OpenAI', 'LangChain', 'CrewAI', 'AutoGen', 'Cursor', 'AGENTS.md', 'system prompt'],
-  alternates: { canonical: '/' },
   manifest: '/site.webmanifest',
   icons: {
     icon: [
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     siteName: SITE.name,
     title: { default: SITE.title, template: `%s · ${SITE.name}` },
     description: SITE.shortDescription,
-    images: [{ url: '/og.png', width: 1200, height: 630, alt: `${SITE.name}: find a skill, load it into any agent. ${SITE.install}` }],
+    images: [OG_IMAGE],
   },
   twitter: {
     card: 'summary_large_image',
