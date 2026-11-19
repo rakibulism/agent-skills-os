@@ -85,6 +85,8 @@ const pullLean = stylex.keyframes({
 const s = stylex.create({
   wrap: { display: 'grid', justifyItems: 'center', gap: 14 },
   button: {
+    // The shelf is ~324px wide; shrink it on the smallest phones so it never forces a scroll.
+    zoom: { default: 1, '@media (max-width: 359px)': 0.86 },
     position: 'relative',
     display: 'grid',
     justifyItems: 'center',

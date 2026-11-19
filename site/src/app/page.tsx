@@ -37,9 +37,7 @@ export default function Home() {
       <section aria-labelledby="hero-title" {...stylex.props(s.hero)}>
         <div {...stylex.props(ui.wrap)}>
           <HeroLibrary skills={skills}>
-            <h1 id="hero-title" {...stylex.props(s.h1)}>
-              Find a skill.<br />Load it into any agent.
-            </h1>
+            <h1 id="hero-title" {...stylex.props(s.h1)}>Universal agent skills</h1>
             <p {...stylex.props(s.lede)}>
               An open library of agent skills, one Markdown file each. Ready for Claude, OpenAI, LangChain, CrewAI,
               AutoGen, Cursor and every AGENTS.md tool.
@@ -96,11 +94,12 @@ export default function Home() {
 const s = stylex.create({
   hero: { paddingTop: { default: 24, [MD]: 48 }, paddingBottom: { default: 56, [MD]: 96 } },
   h1: {
-    fontSize: 'clamp(38px, 7vw, 76px)',
+    // Scales with the viewport so it stays on one line down to a 320px phone.
+    fontSize: 'clamp(26px, 9.4vw, 76px)',
     lineHeight: 1.0,
     fontWeight: 600,
     letterSpacing: '-0.04em',
-    textWrap: 'balance',
+    whiteSpace: 'nowrap',
   },
   lede: {
     maxWidth: '46ch',

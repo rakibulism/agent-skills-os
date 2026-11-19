@@ -51,7 +51,8 @@ export function HeroLibrary({ skills, children }: { skills: SkillSummary[]; chil
 }
 
 const s = stylex.create({
-  hero: { display: 'grid', justifyItems: 'center', textAlign: 'center' },
+  // minmax(0, 1fr) keeps wide children (like the tag row) from stretching the hero past the screen.
+  hero: { display: 'grid', gridTemplateColumns: 'minmax(0, 1fr)', justifyItems: 'center', textAlign: 'center' },
   copy: { display: 'grid', justifyItems: 'center', gap: 16, marginTop: { default: 28, '@media (min-width: 720px)': 36 } },
   search: { width: '100%', maxWidth: 680, marginTop: { default: 28, '@media (min-width: 720px)': 36 } },
 });
