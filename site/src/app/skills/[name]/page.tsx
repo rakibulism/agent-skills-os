@@ -53,6 +53,11 @@ export default async function SkillPage({ params }: Params) {
           <span {...stylex.props(s.tag)}>{skill.category}</span>
           {skill.version && <span {...stylex.props(s.ver)}>v{skill.version}</span>}
         </div>
+        {skill.demo && (
+          <p {...stylex.props(s.demoNote)}>
+            <strong>Demo skill.</strong> An example that shows how the library looks with many skills. It isn&apos;t in the npm package, so the code below won&apos;t load it.
+          </p>
+        )}
         <p {...stylex.props(s.lede)}>{skill.description}</p>
         <div {...stylex.props(s.actions)}>
           <a href={skill.sourceUrl} target="_blank" rel="noopener" {...stylex.props(ui.btn, ui.btnPrimary)}>
@@ -190,6 +195,17 @@ const s = stylex.create({
     borderRadius: radii.pill,
   },
   ver: { fontFamily: fonts.mono, fontSize: 13, color: colors.ink3 },
+  demoNote: {
+    maxWidth: '64ch',
+    paddingBlock: 10,
+    paddingInline: 14,
+    fontSize: 14,
+    color: colors.ink2,
+    borderWidth: 1,
+    borderStyle: 'dashed',
+    borderColor: colors.accent,
+    borderRadius: radii.md,
+  },
   lede: { maxWidth: '64ch', fontSize: { default: 17, '@media (min-width: 720px)': 19 }, lineHeight: 1.55, color: colors.ink2 },
   actions: { display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 4 },
   layout: {

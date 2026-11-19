@@ -15,7 +15,7 @@ type Scored = { skill: SkillSummary; score: number };
 
 // Words that carry no meaning in a search, so "how do I use super-ui?" still finds super-ui.
 const STOP = new Set(
-  'a an and are can could do does for from get help how i in is it me my of on or show the this to use using want what when where which who why will with you your'.split(' '),
+  'a an and are can could do does for from get help helps how i in is it me my of on or show skill skills the this to use using want what when where which who why will with you your'.split(' '),
 );
 
 export function terms(query: string) {
@@ -24,20 +24,24 @@ export function terms(query: string) {
 
 function search(skills: SkillSummary[], query: string, category: string): Scored[] {
   const tokens = terms(query);
+  // Short queries must match every word; longer, question-like ones need about half.
+  const need = tokens.length <= 2 ? tokens.length : Math.ceil(tokens.length / 2);
   const out: Scored[] = [];
   for (const skill of skills) {
     if (category !== 'all' && skill.category !== category) continue;
     const name = skill.name.toLowerCase();
     const hay = [name, skill.description.toLowerCase(), skill.category.toLowerCase(), ...skill.tags].join(' ');
     let score = 0;
-    let ok = true;
+    let matched = 0;
     for (const t of tokens) {
-      if (!hay.includes(t)) { ok = false; break; }
+      if (!hay.includes(t)) continue;
+      matched++;
       score += name.startsWith(t) ? 4 : name.includes(t) ? 3 : skill.tags.some((tag) => tag.startsWith(t)) ? 2 : 1;
     }
-    if (ok) out.push({ skill, score });
+    if (matched >= need) out.push({ skill, score: score + matched * 10 });
   }
-  return out.sort((a, b) => b.score - a.score || a.skill.name.localeCompare(b.skill.name));
+  // Best match first; on ties, real skills before demos, then by name.
+  return out.sort((a, b) => b.score - a.score || Number(a.skill.demo) - Number(b.skill.demo) || a.skill.name.localeCompare(b.skill.name));
 }
 
 /** Wraps every query token found in `text` in <mark>. */
@@ -101,6 +105,13 @@ export function SkillSearch({
   }, [skills]);
 
   const results = useMemo(() => search(skills, query, category), [skills, query, category]);
+
+  // Show a page of results at a time; a new search starts from the top again.
+  const PAGE = 12;
+  const [shown, setShown] = useState(PAGE);
+  useEffect(() => setShown(PAGE), [query, category]);
+  const visible = results.slice(0, shown);
+  const remaining = results.length - visible.length;
 
   // Restore ?q= and ?category= so a search can be shared or survive a back navigation.
   useEffect(() => {
@@ -230,13 +241,14 @@ export function SkillSearch({
       )}
       {results.length > 0 ? (
         <ul id="skill-results" {...stylex.props(s.list)}>
-          {results.map(({ skill }) => (
+          {visible.map(({ skill }) => (
             <li key={skill.slug} {...stylex.props(s.item)}>
               <Link href={`/skills/${skill.slug}`} data-result {...stylex.props(s.row)}>
                 <span {...stylex.props(s.rowMain)}>
                   <span {...stylex.props(s.rowHead)}>
                     <span {...stylex.props(s.name)}><Highlight text={skill.name} query={query} /></span>
                     <span {...stylex.props(s.tag)}>{skill.category}</span>
+                    {skill.demo && <span {...stylex.props(s.demo)}>Demo</span>}
                     {skill.version && <span {...stylex.props(s.ver)}>v{skill.version}</span>}
                   </span>
                   <span {...stylex.props(s.desc)}><Highlight text={skill.description} query={query} /></span>
@@ -274,6 +286,18 @@ export function SkillSearch({
         </div>
       )}
       </div>
+
+      {remaining > 0 && (
+        <div {...stylex.props(s.more)}>
+          <button type="button" onClick={() => setShown((n) => n + PAGE)} {...stylex.props(s.btn)}>
+            Show {Math.min(PAGE, remaining)} more
+          </button>
+          <button type="button" onClick={() => setShown(results.length)} {...stylex.props(s.btn, s.btnGhost)}>
+            Show all {results.length}
+          </button>
+          <span {...stylex.props(s.moreCount)}>Showing {visible.length} of {results.length}</span>
+        </div>
+      )}
     </div>
   );
 }
@@ -453,6 +477,19 @@ const s = stylex.create({
     borderRadius: radii.pill,
   },
   ver: { fontFamily: fonts.mono, fontSize: 12, color: colors.ink3 },
+  demo: {
+    fontSize: 11,
+    fontWeight: 500,
+    paddingBlock: 1,
+    paddingInline: 7,
+    color: colors.accentInk,
+    borderWidth: 1,
+    borderStyle: 'dashed',
+    borderColor: colors.accent,
+    borderRadius: radii.pill,
+  },
+  more: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', gap: 8, marginTop: 20 },
+  moreCount: { width: '100%', textAlign: 'center', fontFamily: fonts.mono, fontSize: 12, color: colors.ink3 },
   desc: { fontSize: 15, lineHeight: 1.5, color: colors.ink2 },
   chev: { color: colors.ink3, display: 'inline-flex' },
   mark: { color: 'inherit', backgroundColor: colors.selection, borderRadius: 3, paddingInline: 1 },

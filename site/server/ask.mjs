@@ -57,7 +57,7 @@ export function rank(skills, query, limit = 6) {
 
 function systemPrompt(skills, total) {
   const catalog = skills
-    .map((s) => `- slug: ${s.slug}\n  description: ${s.description}\n  category: ${s.category}; tags: ${(s.tags ?? []).join(', ')}\n  excerpt: ${(s.excerpt ?? '').replace(/\s+/g, ' ').slice(0, 600)}`)
+    .map((s) => `- slug: ${s.slug}${s.demo ? ' (demo example, not in the npm package)' : ''}\n  description: ${s.description}\n  category: ${s.category}; tags: ${(s.tags ?? []).join(', ')}\n  excerpt: ${(s.excerpt ?? '').replace(/\s+/g, ' ').slice(0, 600)}`)
     .join('\n');
   return `You are the assistant on the Agent Skills OS website, a library of AI agent skills published as the npm package "universal-agent-skills".
 
@@ -82,11 +82,36 @@ Card is one of:
 Rules:
 - "answer": at most 70 words, plain sentences, no Markdown, no code, no commands. The cards carry the commands and code; refer to them ("the card below").
 - Say only what the facts above, the skill descriptions and the cards support. Never invent functions, options or features a skill or the package doesn't have; when unsure, describe what the card shows.
-- Only name skills from the list above. If none fits, say so plainly and suggest requesting or contributing one.
+- Only name skills from the list above. If you recommend a demo example, say it's a demo. If none fits, say so plainly and suggest requesting or contributing one.
 - Add an install card whenever the user asks how to install or get started; use the package manager they mention, else npm.
 - Add a usage card when they ask how to use a skill with a framework, even if that skill's instructions are still a placeholder: the loading code is the same for every skill. "python" covers CrewAI and AutoGen; "files" covers Cursor and AGENTS.md tools.
 - At most 3 cards and 3 followups. Followups are short questions the user might ask next, under 8 words each.
 - If the question is unrelated to agent skills or this library, answer briefly that you only help with this library, with no cards.`;
+}
+
+/**
+ * For replies that aren't valid JSON. Some models write prose with card objects inline,
+ * others stop mid-JSON. Pull out what we can; never show raw JSON to the reader.
+ */
+function salvage(raw) {
+  const cardRe = /\{[^{}]*"type"\s*:\s*"(?:skill|install|usage)"[^{}]*\}/g;
+  const cards = [];
+  for (const m of raw.matchAll(cardRe)) {
+    try { cards.push(JSON.parse(m[0])); } catch {}
+  }
+  const quoted = raw.match(/"answer"\s*:\s*"((?:\\.|[^"\\])*)/);
+  if (quoted) {
+    let answer = '';
+    try { answer = JSON.parse(`"${quoted[1].replace(/\\$/, '')}"`); } catch {}
+    return { answer, cards, followups: [] };
+  }
+  if (raw.trim().startsWith('{') && !cards.length) return { answer: '', cards: [], followups: [] };
+  const first = raw.search(cardRe);
+  const lastEnd = [...raw.matchAll(cardRe)].reduce((end, m) => m.index + m[0].length, -1);
+  const answer = (first >= 0 ? raw.slice(0, first) : raw).replace(/[{}[\]"]/g, '').trim();
+  const tail = lastEnd >= 0 ? raw.slice(lastEnd) : '';
+  const followups = tail.split(/(?<=\?)\s+/).map((t) => t.trim()).filter((t) => t.endsWith('?') && t.length < 90);
+  return { answer, cards, followups };
 }
 
 function clean(raw, skills) {
@@ -95,11 +120,7 @@ function clean(raw, skills) {
     const text = raw.trim().replace(/^```(?:json)?\s*/i, '').replace(/```$/, '');
     data = JSON.parse(text.slice(text.indexOf('{'), text.lastIndexOf('}') + 1));
   } catch {
-    // Cut-off JSON: keep the answer text if it got that far, never show raw JSON.
-    const m = raw.match(/"answer"\s*:\s*"((?:\\.|[^"\\])*)/);
-    if (m) return { answer: JSON.parse(`"${m[1].replace(/\\$/, '')}"`).slice(0, 700), cards: [], followups: [] };
-    if (raw.trim().startsWith('{')) return { answer: '', cards: [], followups: [] };
-    return { answer: raw.trim().slice(0, 600), cards: [], followups: [] };
+    data = salvage(raw);
   }
   const slugs = new Set(skills.map((s) => s.slug));
   const cards = (Array.isArray(data.cards) ? data.cards : [])
