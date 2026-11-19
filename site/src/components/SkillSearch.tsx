@@ -33,15 +33,14 @@ export function terms(query: string) {
   return query.toLowerCase().split(/[^a-z0-9.+#-]+/).map((t) => t.replace(/^[.-]+|[.-]+$/g, '')).filter((t) => t && !STOP.has(t));
 }
 
-function search(skills: SkillSummary[], query: string, category: string): Scored[] {
+function search(skills: SkillSummary[], query: string): Scored[] {
   const tokens = terms(query);
   // Short queries must match every word; longer, question-like ones need about half.
   const need = tokens.length <= 2 ? tokens.length : Math.ceil(tokens.length / 2);
   const out: Scored[] = [];
   for (const skill of skills) {
-    if (category !== 'all' && skill.category !== category) continue;
     const name = skill.name.toLowerCase();
-    const hay = [name, skill.description.toLowerCase(), skill.category.toLowerCase(), ...skill.tags].join(' ');
+    const hay = [name, skill.description.toLowerCase(), ...skill.tags].join(' ');
     let score = 0;
     let matched = 0;
     for (const t of tokens) {
@@ -78,7 +77,6 @@ export function SkillSearch({
   const [innerQuery, setInnerQuery] = useState('');
   const query = controlledQuery ?? innerQuery;
   const setQuery = onQueryChange ?? setInnerQuery;
-  const [category, setCategory] = useState('all');
   const ownInputRef = useRef<HTMLInputElement>(null);
   const inputRef = outerInputRef ?? ownInputRef;
   const listRef = useRef<HTMLDivElement>(null);
@@ -168,49 +166,29 @@ export function SkillSearch({
     inputRef.current?.focus();
   }
 
-  const categories = useMemo(() => {
-    const counts = new Map<string, number>();
-    for (const sk of skills) counts.set(sk.category, (counts.get(sk.category) ?? 0) + 1);
-    return [...counts.entries()].sort((a, b) => a[0].localeCompare(b[0]));
-  }, [skills]);
-
-  const results = useMemo(() => search(skills, query, category), [skills, query, category]);
-
-  // Library-style call numbers: category code + position in that category, e.g. DES.001.
-  // Built from the full list so a skill keeps its number whatever the filter.
-  const callNo = useMemo(() => {
-    const byCat = new Map<string, SkillSummary[]>();
-    for (const sk of skills) byCat.set(sk.category, [...(byCat.get(sk.category) ?? []), sk]);
-    const out = new Map<string, { code: string; num: string }>();
-    for (const [cat, list] of byCat) {
-      const code = cat.replace(/[^A-Za-z]/g, '').slice(0, 3).toUpperCase();
-      [...list].sort((a, b) => a.name.localeCompare(b.name)).forEach((sk, i) => out.set(sk.slug, { code, num: String(i + 1).padStart(3, '0') }));
-    }
-    return out;
-  }, [skills]);
+  const results = useMemo(() => search(skills, query), [skills, query]);
 
   // Show a page of results at a time; a new search starts from the top again.
   const PAGE = 12;
   const [shown, setShown] = useState(PAGE);
-  useEffect(() => setShown(PAGE), [query, category]);
+  useEffect(() => setShown(PAGE), [query]);
   const visible = results.slice(0, shown);
   const remaining = results.length - visible.length;
 
-  // Restore ?q= and ?category= so a search can be shared or survive a back navigation.
+  // Restore ?q= so a search can be shared or survive a back navigation.
   useEffect(() => {
     const p = new URLSearchParams(window.location.search);
     if (p.get('q')) setQuery(p.get('q')!);
-    if (p.get('category')) setCategory(p.get('category')!);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     const p = new URLSearchParams(window.location.search);
     if (query) p.set('q', query); else p.delete('q');
-    if (category !== 'all') p.set('category', category); else p.delete('category');
+    p.delete('category');
     const qs = p.toString();
     window.history.replaceState(window.history.state, '', qs ? `?${qs}` : window.location.pathname);
-  }, [query, category]);
+  }, [query]);
 
   // "/" or Cmd/Ctrl+K focuses the search from anywhere on the page.
   useEffect(() => {
@@ -332,23 +310,10 @@ export function SkillSearch({
       </div>
 
       <section ref={panelRef} aria-label="Skills catalog" {...stylex.props(s.catalog)}>
-      {/* Category filters as index tabs on the catalog drawer. */}
-      <div role="group" aria-label="Filter by category" {...stylex.props(s.chips)}>
-        {[['all', skills.length] as const, ...categories].map(([cat, n]) => {
-          const on = category === cat;
-          return (
-            <button key={cat} type="button" aria-pressed={on} onClick={() => setCategory(cat)} {...stylex.props(s.chip, on && s.chipOn)}>
-              {cat === 'all' ? 'All' : cat}
-              <span {...stylex.props(s.chipN, on && s.chipNOn)}>{n}</span>
-            </button>
-          );
-        })}
-      </div>
-
       <div {...stylex.props(s.panel)}>
       <div {...stylex.props(s.panelHead)}>
       <p id="skill-count" aria-live="polite" {...stylex.props(s.count)}>
-        <span><span {...stylex.props(s.countLabel)}>Catalog</span> · {query || category !== 'all' ? `${countLabel} found` : countLabel}</span>
+        <span><span {...stylex.props(s.countLabel)}>Catalog</span> · {query ? `${countLabel} found` : countLabel}</span>
         <span {...stylex.props(s.hint)}>Enter opens the top match · ⌘Enter asks AI</span>
       </p>
       </div>
@@ -368,18 +333,12 @@ export function SkillSearch({
           {visible.map(({ skill }) => (
             <li key={skill.slug} {...stylex.props(s.item)}>
               <Link href={`/skills/${skill.slug}`} data-result {...stylex.props(s.row)}>
-                <span aria-hidden {...stylex.props(s.call)}>
-                  <span {...stylex.props(s.callCode)}>{callNo.get(skill.slug)?.code}</span>
-                  <span {...stylex.props(s.callNum)}>.{callNo.get(skill.slug)?.num}</span>
-                </span>
                 <span {...stylex.props(s.rowMain)}>
                   <span {...stylex.props(s.name)}><Highlight text={skill.name} query={query} /></span>
                   <span {...stylex.props(s.desc)}><Highlight text={skill.description} query={query} /></span>
                   <span {...stylex.props(s.meta)}>
-                    <span {...stylex.props(s.metaCall)}>{callNo.get(skill.slug)?.code}.{callNo.get(skill.slug)?.num} · </span>
-                    {skill.category}
-                    {skill.version && <> · v{skill.version}</>}
-                    {skill.tags.length > 0 && <> · {skill.tags.map((t) => `#${t}`).join(' ')}</>}
+                    {skill.version && <>v{skill.version}</>}
+                    {skill.tags.length > 0 && <>{skill.version ? ' · ' : ''}{skill.tags.map((t) => `#${t}`).join(' ')}</>}
                   </span>
                 </span>
                 <span {...stylex.props(s.chev)}><Icon name="next" size={20} /></span>
@@ -391,12 +350,12 @@ export function SkillSearch({
         <div id="skill-results" {...stylex.props(s.empty)}>
           <span {...stylex.props(s.emptyIcon)}><Icon name="library" size={26} /></span>
           <p {...stylex.props(s.emptyTitle)}>
-            {query ? <>No skills match “{query}”.</> : 'No skills in this category yet.'}
+            {query ? <>No skills match “{query}”.</> : 'No skills yet.'}
           </p>
           <p {...stylex.props(s.emptyText)}>The library grows with contributions. Ask for this skill, or write it yourself.</p>
           <div {...stylex.props(s.emptyActions)}>
             <a
-              href={`${SITE.newIssue}?title=${encodeURIComponent(`Skill request: ${query || category}`)}`}
+              href={`${SITE.newIssue}?title=${encodeURIComponent(`Skill request: ${query}`)}`}
               target="_blank"
               rel="noopener"
               {...stylex.props(s.btn)}
@@ -406,9 +365,9 @@ export function SkillSearch({
             <Link href="/contribute" {...stylex.props(s.btn, s.btnPrimary)}>
               <Icon name="add" size={16} /> Contribute a skill
             </Link>
-            {(query || category !== 'all') && (
-              <button type="button" onClick={() => { setQuery(''); setCategory('all'); }} {...stylex.props(s.btn, s.btnGhost)}>
-                Clear filters
+            {query && (
+              <button type="button" onClick={() => setQuery('')} {...stylex.props(s.btn, s.btnGhost)}>
+                Clear search
               </button>
             )}
           </div>
@@ -434,7 +393,6 @@ export function SkillSearch({
 }
 
 const HOVER = '@media (hover: hover)';
-const WIDE = '@media (min-width: 880px)';
 
 const hintIn = stylex.keyframes({
   from: { opacity: 0, transform: 'translateY(6px)' },
@@ -629,17 +587,9 @@ const s = stylex.create({
       ':focus-within': `0 18px 40px -12px rgba(0,0,0,0.38), 0 0 0 4px ${colors.selection}`,
     },
   },
-  // Wide screens: categories stack down the left as index tabs and the catalog widens
-  // past the search bar so they don't squeeze the entries. Phones keep tabs along the top.
   catalog: {
     marginTop: { default: 36, '@media (min-width: 720px)': 48 },
     textAlign: 'left',
-    display: { default: 'block', [WIDE]: 'grid' },
-    gridTemplateColumns: { default: null, [WIDE]: '200px minmax(0, 1fr)' },
-    alignItems: 'stretch',
-    width: { default: 'auto', [WIDE]: 'min(1040px, calc(100vw - 64px))' },
-    marginLeft: { default: 0, [WIDE]: '50%' },
-    transform: { default: null, [WIDE]: 'translateX(-50%)' },
   },
   panel: {
     position: 'relative',
@@ -649,7 +599,6 @@ const s = stylex.create({
     borderStyle: 'solid',
     borderColor: colors.line2,
     borderRadius: 14,
-    borderTopLeftRadius: { default: 0, '@media (min-width: 720px)': 14 },
     boxShadow: colors.shadow,
     overflow: 'hidden',
   },
@@ -664,66 +613,6 @@ const s = stylex.create({
     paddingRight: 0,
   },
   panelBody: { paddingInline: { default: 16, '@media (min-width: 720px)': 22 }, paddingBlock: 4 },
-  // Index tabs: on the drawer's top edge (phones) or down its left side (wide screens).
-  // The active one joins the drawer.
-  chips: {
-    position: 'relative',
-    zIndex: 1,
-    display: 'flex',
-    flexDirection: { default: 'row', [WIDE]: 'column' },
-    alignItems: { default: 'flex-end', [WIDE]: 'stretch' },
-    gap: 4,
-    marginBottom: { default: -1, [WIDE]: 0 },
-    marginRight: { default: 0, [WIDE]: -1 },
-    paddingLeft: { default: 0, '@media (min-width: 720px)': 18, [WIDE]: 0 },
-    paddingTop: { default: 0, [WIDE]: 18 },
-    overflowX: { default: 'auto', [WIDE]: 'visible' },
-    scrollbarWidth: 'none',
-  },
-  chip: {
-    flexShrink: 0,
-    display: 'inline-flex',
-    alignItems: 'center',
-    justifyContent: { default: 'flex-start', [WIDE]: 'space-between' },
-    gap: 8,
-    height: { default: 34, [WIDE]: 38 },
-    marginRight: { default: 0, [WIDE]: 1 },
-    paddingInline: 14,
-    fontFamily: fonts.mono,
-    fontSize: 12,
-    fontWeight: 500,
-    letterSpacing: '0.06em',
-    textTransform: 'uppercase',
-    whiteSpace: 'nowrap',
-    textAlign: 'left',
-    color: { default: colors.ink3, ':hover': colors.ink },
-    backgroundColor: { default: colors.sunk, ':hover': colors.line },
-    borderWidth: 1,
-    borderStyle: 'solid',
-    borderColor: colors.line2,
-    borderBottomColor: { default: 'transparent', [WIDE]: colors.line2 },
-    borderRightWidth: { default: 1, [WIDE]: 0 },
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: { default: 8, [WIDE]: 0 },
-    borderBottomLeftRadius: { default: 0, [WIDE]: 8 },
-    transitionProperty: 'color, background-color, height',
-    transitionDuration: motion.fast,
-  },
-  chipOn: {
-    height: { default: 40, [WIDE]: 44 },
-    marginRight: 0,
-    color: colors.ink,
-    backgroundColor: { default: colors.surface, ':hover': colors.surface },
-    borderTopWidth: { default: 3, [WIDE]: 1 },
-    borderTopColor: { default: colors.accent, [WIDE]: colors.line2 },
-    borderLeftWidth: { default: 1, [WIDE]: 3 },
-    borderLeftColor: { default: colors.line2, [WIDE]: colors.accent },
-    borderBottomColor: { default: colors.surface, [WIDE]: colors.line2 },
-    borderRightWidth: 1,
-    borderRightColor: { default: colors.line2, [WIDE]: colors.surface },
-  },
-  chipN: { fontSize: 11, color: colors.ink3, fontVariantNumeric: 'tabular-nums' },
-  chipNOn: { color: colors.accentInk },
   count: {
     display: 'flex',
     justifyContent: 'space-between',
@@ -743,7 +632,7 @@ const s = stylex.create({
   },
   row: {
     display: 'grid',
-    gridTemplateColumns: { default: 'minmax(0, 1fr) auto', '@media (min-width: 720px)': '84px minmax(0, 1fr) auto' },
+    gridTemplateColumns: 'minmax(0, 1fr) auto',
     alignItems: 'center',
     columnGap: { default: 12, '@media (min-width: 720px)': 20 },
     paddingBlock: { default: 18, '@media (min-width: 720px)': 22 },
@@ -755,20 +644,9 @@ const s = stylex.create({
     transitionDuration: motion.fast,
   },
   // The call number, like the label on a book's spine.
-  call: {
-    display: { default: 'none', '@media (min-width: 720px)': 'grid' },
-    alignSelf: 'start',
-    justifyItems: 'start',
-    paddingTop: 3,
-    fontFamily: fonts.mono,
-    lineHeight: 1.25,
-  },
-  callCode: { fontSize: 15, fontWeight: 600, letterSpacing: '0.04em', color: colors.accentInk },
-  callNum: { fontSize: 12, color: colors.ink3, fontVariantNumeric: 'tabular-nums' },
   rowMain: { display: 'grid', gap: 6, minWidth: 0 },
   name: { fontFamily: fonts.mono, fontSize: { default: 16, '@media (min-width: 720px)': 18 }, fontWeight: 500, color: colors.ink },
   meta: { fontFamily: fonts.mono, fontSize: 12, color: colors.ink3, overflowWrap: 'anywhere' },
-  metaCall: { display: { default: 'inline', '@media (min-width: 720px)': 'none' }, color: colors.accentInk, fontWeight: 600 },
 
   more: {
     display: 'flex',

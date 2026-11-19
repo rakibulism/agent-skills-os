@@ -50,7 +50,6 @@ export default async function SkillPage({ params }: Params) {
       <header {...stylex.props(s.head)}>
         <div {...stylex.props(s.titleRow)}>
           <h1 {...stylex.props(s.h1)}>{skill.name}</h1>
-          <span {...stylex.props(s.tag)}>{skill.category}</span>
           {skill.version && <span {...stylex.props(s.ver)}>v{skill.version}</span>}
         </div>
         <p {...stylex.props(s.lede)}>{skill.description}</p>
@@ -102,7 +101,6 @@ export default async function SkillPage({ params }: Params) {
 
           <dl {...stylex.props(s.card, s.details)}>
             <p {...stylex.props(s.cardTitle)}>Details</p>
-            <div {...stylex.props(s.dRow)}><dt {...stylex.props(s.dt)}>Category</dt><dd>{skill.category}</dd></div>
             {skill.version && <div {...stylex.props(s.dRow)}><dt {...stylex.props(s.dt)}>Version</dt><dd {...stylex.props(s.mono)}>{skill.version}</dd></div>}
             {skill.tags.length > 0 && (
               <div {...stylex.props(s.dRow)}>
@@ -177,17 +175,6 @@ const s = stylex.create({
     fontWeight: 500,
     letterSpacing: '-0.03em',
     overflowWrap: 'anywhere',
-  },
-  tag: {
-    fontSize: 13,
-    paddingBlock: 2,
-    paddingInline: 10,
-    color: colors.ink2,
-    backgroundColor: colors.sunk,
-    borderWidth: 1,
-    borderStyle: 'solid',
-    borderColor: colors.line,
-    borderRadius: radii.pill,
   },
   ver: { fontFamily: fonts.mono, fontSize: 13, color: colors.ink3 },
 

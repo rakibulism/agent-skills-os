@@ -40,7 +40,7 @@ export function rank(skills, query, limit = 6) {
   const tokens = query.toLowerCase().split(/[^a-z0-9-]+/).filter((t) => t.length > 1);
   const scored = skills.map((s) => {
     const name = s.name.toLowerCase();
-    const hay = [name, s.description, s.category, ...(s.tags ?? []), s.excerpt ?? ''].join(' ').toLowerCase();
+    const hay = [name, s.description, ...(s.tags ?? []), s.excerpt ?? ''].join(' ').toLowerCase();
     let score = 0;
     for (const t of tokens) {
       if (name.includes(t)) score += 4;
@@ -57,7 +57,7 @@ export function rank(skills, query, limit = 6) {
 
 function systemPrompt(skills, total) {
   const catalog = skills
-    .map((s) => `- slug: ${s.slug}\n  description: ${s.description}\n  category: ${s.category}; tags: ${(s.tags ?? []).join(', ')}\n  excerpt: ${(s.excerpt ?? '').replace(/\s+/g, ' ').slice(0, 600)}`)
+    .map((s) => `- slug: ${s.slug}\n  description: ${s.description}\n  tags: ${(s.tags ?? []).join(', ')}\n  excerpt: ${(s.excerpt ?? '').replace(/\s+/g, ' ').slice(0, 600)}`)
     .join('\n');
   return `You are the assistant on the Agent Skills OS website, a library of AI agent skills published as the npm package "universal-agent-skills".
 
