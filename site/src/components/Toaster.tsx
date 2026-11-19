@@ -17,8 +17,9 @@ export function Toaster() {
       duration={2000}
       visibleToasts={3}
       gap={8}
-      offset={{ bottom: 24 }}
-      mobileOffset={{ bottom: 'calc(16px + env(safe-area-inset-bottom))' }}
+      // --toast-bottom is raised while the search bar floats at the bottom of the home page.
+      offset={{ bottom: 'var(--toast-bottom, 24px)' }}
+      mobileOffset={{ bottom: 'calc(var(--toast-bottom, 16px) + env(safe-area-inset-bottom))' }}
       icons={{
         success: <Icon name="check" size={16} strokeWidth={2} style={{ color: colors.accent }} />,
         error: <Icon name="alert" size={16} style={{ color: colors.accent }} />,

@@ -73,21 +73,51 @@ export function SkillSearch({
   const inputRef = outerInputRef ?? ownInputRef;
   const listRef = useRef<HTMLDivElement>(null);
 
-  // The search bar floats once it reaches the header; a 1px sentinel above it tells us when.
-  const sentinelRef = useRef<HTMLDivElement>(null);
-  const [stuck, setStuck] = useState(false);
+  // Once its spot in the hero scrolls away under the header, the search bar docks to the
+  // bottom of the screen; scrolling back up returns it. The dock keeps its space in the hero.
+  const dockRef = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLElement>(null);
+  const aiRef = useRef<HTMLDivElement>(null);
+  const [floating, setFloating] = useState(false);
   useEffect(() => {
-    const el = sentinelRef.current;
+    const el = dockRef.current;
     if (!el) return;
     const io = new IntersectionObserver(
-      ([e]) => setStuck(!e.isIntersecting && e.boundingClientRect.top < 80),
-      { rootMargin: '-72px 0px 0px 0px' },
+      ([e]) => setFloating(!e.isIntersecting && e.boundingClientRect.top < 60),
+      { rootMargin: '-60px 0px 0px 0px' },
     );
     io.observe(el);
     return () => io.disconnect();
   }, []);
+
+  // Make room for the floating bar: lift toasts above it and pad the end of the page.
+  useEffect(() => {
+    const root = document.documentElement;
+    root.style.setProperty('--toast-bottom', floating ? '96px' : '');
+    document.body.style.paddingBottom = floating ? '88px' : '';
+    return () => {
+      root.style.removeProperty('--toast-bottom');
+      document.body.style.paddingBottom = '';
+    };
+  }, [floating]);
+
+  /** Scrolls so `el` sits just under the header, keeping the hero dock hidden. */
+  function bringIntoView(el: HTMLElement | null) {
+    if (!el) return;
+    const top = el.getBoundingClientRect().top;
+    if (top >= 70 && top <= window.innerHeight * 0.5) return;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({ top: window.scrollY + top - 76, behavior: reduce ? 'auto' : 'smooth' });
+  }
+
   const [ai, setAi] = useState<AiState | null>(null);
   const abortRef = useRef<AbortController | null>(null);
+
+  useEffect(() => {
+    if (floating && query && document.activeElement === inputRef.current) bringIntoView(panelRef.current);
+    // Only when the query changes; scrolling must not fight the reader otherwise.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query]);
 
   useEffect(() => () => abortRef.current?.abort(), []);
 
@@ -98,6 +128,7 @@ export function SkillSearch({
     const ctrl = new AbortController();
     abortRef.current = ctrl;
     setAi({ status: 'loading', question: q });
+    if (floating) requestAnimationFrame(() => bringIntoView(aiRef.current));
     ask(q, ctrl.signal).then(
       (data) => setAi({ status: 'done', question: q, data }),
       (err: Error) => {
@@ -189,9 +220,9 @@ export function SkillSearch({
 
   return (
     <div>
-      <div ref={sentinelRef} aria-hidden {...stylex.props(s.sentinel)} />
-      <div {...stylex.props(s.sticky, stuck && s.stickyStuck)}>
-      <div role="search" {...stylex.props(s.box, stuck && s.boxStuck)}>
+      <div ref={dockRef} {...stylex.props(s.dock)}>
+      <div {...stylex.props(floating && s.floating)}>
+      <div role="search" {...stylex.props(s.box, floating && s.boxFloating)}>
         <Icon name="search" size={22} style={{ color: colors.ink3 }} />
         <label htmlFor="skill-search" {...stylex.props(s.srOnly)}>Search skills</label>
         <input
@@ -227,9 +258,13 @@ export function SkillSearch({
       </div>
       </div>
 
-      {ai && <AiAnswer state={ai} skills={skills} onAsk={(q) => { setQuery(q); runAsk(q); }} onClose={closeAi} />}
+      </div>
 
-      <section aria-label="Skills" {...stylex.props(s.panel)}>
+      <div ref={aiRef}>
+        {ai && <AiAnswer state={ai} skills={skills} onAsk={(q) => { setQuery(q); runAsk(q); }} onClose={closeAi} />}
+      </div>
+
+      <section ref={panelRef} aria-label="Skills" {...stylex.props(s.panel)}>
       <div {...stylex.props(s.panelHead)}>
       <div role="group" aria-label="Filter by category" {...stylex.props(s.chips)}>
         {[['all', skills.length] as const, ...categories].map(([cat, n]) => {
@@ -324,6 +359,11 @@ export function SkillSearch({
 }
 
 const HOVER = '@media (hover: hover)';
+
+const dockIn = stylex.keyframes({
+  from: { opacity: 0, transform: 'translate(-50%, 16px)' },
+  to: { opacity: 1, transform: 'translate(-50%, 0)' },
+});
 
 const s = stylex.create({
   srOnly: { position: 'absolute', width: 1, height: 1, overflow: 'hidden', clipPath: 'inset(50%)', whiteSpace: 'nowrap' },
@@ -434,19 +474,25 @@ const s = stylex.create({
   askText: { flexGrow: 1, minWidth: 0, fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
   askQuery: { fontWeight: 400, color: colors.ink2 },
   askKbd: { minWidth: 34, paddingInline: 6 },
-  sentinel: { height: 1 },
-  sticky: {
-    position: 'sticky',
-    top: 'calc(60px + 10px)',
-    zIndex: 10,
-    borderRadius: 14,
-    transitionProperty: 'box-shadow',
-    transitionDuration: motion.base,
+  dock: { minHeight: { default: 56, '@media (min-width: 720px)': 64 } },
+  floating: {
+    position: 'fixed',
+    left: '50%',
+    bottom: 'calc(16px + env(safe-area-inset-bottom))',
+    zIndex: 30,
+    width: 'min(680px, calc(100vw - 32px))',
+    transform: 'translateX(-50%)',
+    animationName: dockIn,
+    animationDuration: '260ms',
+    animationTimingFunction: 'cubic-bezier(0.2, 0, 0, 1)',
   },
-  stickyStuck: { boxShadow: '0 16px 36px -14px rgba(0,0,0,0.35)' },
-  boxStuck: {
-    height: { default: 52, '@media (min-width: 720px)': 56 },
+  boxFloating: {
+    height: 56,
     borderColor: { default: colors.line2, ':focus-within': colors.ink },
+    boxShadow: {
+      default: '0 18px 40px -12px rgba(0,0,0,0.38), 0 2px 6px rgba(0,0,0,0.08)',
+      ':focus-within': `0 18px 40px -12px rgba(0,0,0,0.38), 0 0 0 4px ${colors.selection}`,
+    },
   },
   panel: {
     marginTop: 20,
