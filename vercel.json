@@ -51,6 +51,24 @@
       ]
     },
     {
+      "source": "/:path((?!index\\.md$).+)\\.md",
+      "headers": [
+        {
+          "key": "Link",
+          "value": "<https://skills.rakibulism.space/:path>; rel=\"canonical\""
+        }
+      ]
+    },
+    {
+      "source": "/index.md",
+      "headers": [
+        {
+          "key": "Link",
+          "value": "<https://skills.rakibulism.space/>; rel=\"canonical\""
+        }
+      ]
+    },
+    {
       "source": "/(llms\\.txt|openapi\\.json|search-index\\.json|sitemap\\.xml|robots\\.txt)",
       "headers": [
         {

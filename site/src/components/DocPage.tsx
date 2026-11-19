@@ -1,4 +1,5 @@
 import * as stylex from '@stylexjs/stylex';
+import { BreadcrumbJsonLd } from '@/components/Breadcrumbs';
 import { CodePane } from '@/components/CodePane';
 import { Inline } from '@/components/Inline';
 import { PageHead, Section } from '@/components/Section';
@@ -33,8 +34,11 @@ function BlockView({ b }: { b: Block }) {
 
 /** An inner page built from a Doc (lib/doc.ts); its Markdown twin comes from the same data. */
 export function DocPage({ doc }: { doc: Doc }) {
+  const name = doc.kicker.split(' · ').pop() ?? doc.title;
+  const trail = doc.path.startsWith('/docs/') ? [{ name: 'Docs', path: '/docs' }, { name, path: doc.path }] : [{ name, path: doc.path }];
   return (
     <>
+      <BreadcrumbJsonLd trail={trail} />
       <PageHead kicker={doc.kicker} title={doc.title} lede={<Inline text={doc.lede} />}>
         {doc.note && <p {...stylex.props(s.note)}>{doc.note}</p>}
       </PageHead>

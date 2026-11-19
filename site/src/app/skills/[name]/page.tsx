@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { pageMetadata } from '@/lib/doc';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { BreadcrumbJsonLd } from '@/components/Breadcrumbs';
 import { CodePane } from '@/components/CodePane';
 import { CopyButton } from '@/components/CopyButton';
 import { Icon } from '@/components/Icon';
@@ -39,6 +40,7 @@ export default async function SkillPage({ params }: Params) {
 
   return (
     <div {...stylex.props(ui.wrap, s.page)}>
+      <BreadcrumbJsonLd trail={[{ name: skill.name, path: `/skills/${skill.slug}` }]} />
       <Link href="/" {...stylex.props(s.back)}>
         <Icon name="back" size={16} /> All skills
       </Link>

@@ -1,6 +1,7 @@
 import * as stylex from '@stylexjs/stylex';
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { BreadcrumbJsonLd } from '@/components/Breadcrumbs';
 import { CodePane } from '@/components/CodePane';
 import { Icon } from '@/components/Icon';
 import { PageHead, Section } from '@/components/Section';
@@ -24,6 +25,7 @@ export default async function Contribute() {
 
   return (
     <>
+      <BreadcrumbJsonLd trail={[{ name: 'Contribute', path: '/contribute' }]} />
       <PageHead
         kicker="Contribute"
         title="Add a skill to the library."
