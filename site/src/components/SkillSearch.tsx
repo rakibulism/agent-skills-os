@@ -4,15 +4,26 @@ import * as stylex from '@stylexjs/stylex';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type ReactNode } from 'react';
+import { ask, looksLikeQuestion } from '@/lib/ask';
 import type { SkillSummary } from '@/lib/skills';
 import { SITE } from '@/lib/site';
 import { colors, fonts, motion, radii } from '@/styles/tokens.stylex';
+import { AiAnswer, type AiState } from './AiAnswer';
 import { Icon } from './Icon';
 
 type Scored = { skill: SkillSummary; score: number };
 
+// Words that carry no meaning in a search, so "how do I use super-ui?" still finds super-ui.
+const STOP = new Set(
+  'a an and are can could do does for from get help how i in is it me my of on or show the this to use using want what when where which who why will with you your'.split(' '),
+);
+
+export function terms(query: string) {
+  return query.toLowerCase().split(/[^a-z0-9.+#-]+/).map((t) => t.replace(/^[.-]+|[.-]+$/g, '')).filter((t) => t && !STOP.has(t));
+}
+
 function search(skills: SkillSummary[], query: string, category: string): Scored[] {
-  const tokens = query.toLowerCase().split(/\s+/).filter(Boolean);
+  const tokens = terms(query);
   const out: Scored[] = [];
   for (const skill of skills) {
     if (category !== 'all' && skill.category !== category) continue;
@@ -31,7 +42,7 @@ function search(skills: SkillSummary[], query: string, category: string): Scored
 
 /** Wraps every query token found in `text` in <mark>. */
 function Highlight({ text, query }: { text: string; query: string }) {
-  const tokens = query.toLowerCase().split(/\s+/).filter(Boolean);
+  const tokens = terms(query);
   if (!tokens.length) return <>{text}</>;
   const re = new RegExp(`(${tokens.map((t) => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})`, 'gi');
   const parts: ReactNode[] = text.split(re).map((part, i) =>
@@ -56,7 +67,32 @@ export function SkillSearch({
   const [category, setCategory] = useState('all');
   const ownInputRef = useRef<HTMLInputElement>(null);
   const inputRef = outerInputRef ?? ownInputRef;
-  const listRef = useRef<HTMLUListElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+  const [ai, setAi] = useState<AiState | null>(null);
+  const abortRef = useRef<AbortController | null>(null);
+
+  useEffect(() => () => abortRef.current?.abort(), []);
+
+  function runAsk(question: string) {
+    const q = question.trim();
+    if (!q) return;
+    abortRef.current?.abort();
+    const ctrl = new AbortController();
+    abortRef.current = ctrl;
+    setAi({ status: 'loading', question: q });
+    ask(q, ctrl.signal).then(
+      (data) => setAi({ status: 'done', question: q, data }),
+      (err: Error) => {
+        if (err.name !== 'AbortError') setAi({ status: 'error', question: q, message: err.message });
+      },
+    );
+  }
+
+  function closeAi() {
+    abortRef.current?.abort();
+    setAi(null);
+    inputRef.current?.focus();
+  }
 
   const categories = useMemo(() => {
     const counts = new Map<string, number>();
@@ -97,23 +133,27 @@ export function SkillSearch({
     return () => window.removeEventListener('keydown', onKey);
   }, [inputRef]);
 
-  const links = () => Array.from(listRef.current?.querySelectorAll<HTMLAnchorElement>('a[data-result]') ?? []);
+  const links = () => Array.from(listRef.current?.querySelectorAll<HTMLElement>('[data-result]') ?? []);
 
   function onInputKey(e: KeyboardEvent<HTMLInputElement>) {
     if (e.key === 'ArrowDown') {
       e.preventDefault();
       links()[0]?.focus();
-    } else if (e.key === 'Enter' && results[0]) {
+    } else if (e.key === 'Enter' && query.trim()) {
       e.preventDefault();
-      router.push(`/skills/${results[0].skill.slug}`);
+      // Questions go to the AI; names and keywords open the top match.
+      if (e.metaKey || e.ctrlKey || looksLikeQuestion(query) || !results[0]) runAsk(query);
+      else router.push(`/skills/${results[0].skill.slug}`);
     } else if (e.key === 'Escape') {
-      if (query) setQuery(''); else inputRef.current?.blur();
+      if (ai) closeAi();
+      else if (query) setQuery('');
+      else inputRef.current?.blur();
     }
   }
 
-  function onListKey(e: KeyboardEvent<HTMLUListElement>) {
+  function onListKey(e: KeyboardEvent<HTMLDivElement>) {
     const all = links();
-    const i = all.indexOf(document.activeElement as HTMLAnchorElement);
+    const i = all.indexOf(document.activeElement as HTMLElement);
     if (i < 0) return;
     if (e.key === 'ArrowDown') { e.preventDefault(); all[Math.min(i + 1, all.length - 1)]?.focus(); }
     if (e.key === 'ArrowUp') { e.preventDefault(); (i === 0 ? inputRef.current : all[i - 1])?.focus(); }
@@ -134,7 +174,7 @@ export function SkillSearch({
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={onInputKey}
-          placeholder="Search skills by name, task or tag"
+          placeholder="Search skills or ask a question"
           autoComplete="off"
           autoCorrect="off"
           autoCapitalize="off"
@@ -145,9 +185,15 @@ export function SkillSearch({
           {...stylex.props(s.input)}
         />
         {query ? (
-          <button type="button" onClick={() => { setQuery(''); inputRef.current?.focus(); }} aria-label="Clear search" {...stylex.props(s.clear)}>
-            <Icon name="close" size={16} />
-          </button>
+          <>
+            <button type="button" onClick={() => { setQuery(''); inputRef.current?.focus(); }} aria-label="Clear search" {...stylex.props(s.clear)}>
+              <Icon name="close" size={16} />
+            </button>
+            <button type="button" onClick={() => runAsk(query)} aria-label="Ask AI" {...stylex.props(s.askBtn)}>
+              <Icon name="ai" size={16} />
+              <span {...stylex.props(s.askLabel)}>Ask AI</span>
+            </button>
+          </>
         ) : (
           <kbd aria-hidden {...stylex.props(s.kbd)}>/</kbd>
         )}
@@ -165,13 +211,25 @@ export function SkillSearch({
         })}
       </div>
 
+      {ai && <AiAnswer state={ai} skills={skills} onAsk={(q) => { setQuery(q); runAsk(q); }} onClose={closeAi} />}
+
       <p id="skill-count" aria-live="polite" {...stylex.props(s.count)}>
         {query || category !== 'all' ? `${countLabel} found` : countLabel}
-        <span {...stylex.props(s.hint)}>Enter opens the first match · ↑↓ to move</span>
+        <span {...stylex.props(s.hint)}>Enter opens the top match · ⌘Enter asks AI</span>
       </p>
 
+      <div ref={listRef} onKeyDown={onListKey}>
+      {query.trim() && ai?.question !== query.trim() && (
+        <button type="button" data-result onClick={() => runAsk(query)} {...stylex.props(s.askRow)}>
+          <span {...stylex.props(s.askIcon)}><Icon name="ai" size={16} /></span>
+          <span {...stylex.props(s.askText)}>
+            Ask AI <span {...stylex.props(s.askQuery)}>“{query.trim()}”</span>
+          </span>
+          <kbd aria-hidden {...stylex.props(s.kbd, s.askKbd)}>{looksLikeQuestion(query) ? '↵' : '⌘↵'}</kbd>
+        </button>
+      )}
       {results.length > 0 ? (
-        <ul id="skill-results" ref={listRef} onKeyDown={onListKey} {...stylex.props(s.list)}>
+        <ul id="skill-results" {...stylex.props(s.list)}>
           {results.map(({ skill }) => (
             <li key={skill.slug} {...stylex.props(s.item)}>
               <Link href={`/skills/${skill.slug}`} data-result {...stylex.props(s.row)}>
@@ -188,7 +246,7 @@ export function SkillSearch({
             </li>
           ))}
         </ul>
-      ) : (
+      ) : ai && ai.question === query.trim() ? null : (
         <div id="skill-results" {...stylex.props(s.empty)}>
           <span {...stylex.props(s.emptyIcon)}><Icon name="library" size={26} /></span>
           <p {...stylex.props(s.emptyTitle)}>
@@ -215,6 +273,7 @@ export function SkillSearch({
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }
@@ -281,6 +340,55 @@ const s = stylex.create({
     borderWidth: 0,
     borderRadius: radii.pill,
   },
+  askBtn: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: 6,
+    flexShrink: 0,
+    height: 36,
+    paddingInline: { default: 10, '@media (min-width: 480px)': 12 },
+    fontSize: 14,
+    fontWeight: 500,
+    color: colors.bg,
+    backgroundColor: { default: colors.ink, ':hover': colors.ink2 },
+    borderWidth: 0,
+    borderRadius: 10,
+    transitionProperty: 'background-color, transform',
+    transitionDuration: motion.fast,
+    transform: { default: null, ':active': 'scale(0.97)' },
+  },
+  askLabel: { display: { default: 'none', '@media (min-width: 480px)': 'inline' } },
+  askRow: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 12,
+    width: 'calc(100% + 24px)',
+    marginInline: -12,
+    marginTop: 8,
+    paddingBlock: 14,
+    paddingInline: 12,
+    textAlign: 'left',
+    fontSize: 15,
+    color: colors.ink,
+    backgroundColor: { default: 'transparent', ':hover': colors.surface, ':focus-visible': colors.surface },
+    borderWidth: 0,
+    borderRadius: radii.md,
+    transitionProperty: 'background-color',
+    transitionDuration: motion.fast,
+  },
+  askIcon: {
+    display: 'inline-grid',
+    placeItems: 'center',
+    flexShrink: 0,
+    width: 30,
+    height: 30,
+    color: colors.accentInk,
+    backgroundColor: colors.sunk,
+    borderRadius: 8,
+  },
+  askText: { flexGrow: 1, minWidth: 0, fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
+  askQuery: { fontWeight: 400, color: colors.ink2 },
+  askKbd: { minWidth: 34, paddingInline: 6 },
   chips: { display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 8, marginTop: 16 },
   chip: {
     display: 'inline-flex',

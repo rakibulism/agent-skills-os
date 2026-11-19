@@ -12,3 +12,7 @@ node_modules/
 
 # local-only smoke test, not tracked in the public repo
 test/
+
+# secrets
+.env*
+!.env.example

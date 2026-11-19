@@ -15,10 +15,10 @@ const MANAGERS = [
 const IMPORT = `import { forClaude } from "${SITE.pkg}"`;
 
 /** Package-manager switch over a compact table: install, import, source. */
-export function InstallTable() {
+export function InstallTable({ initial, bare = false }: { initial?: string; bare?: boolean } = {}) {
   return (
-    <div {...stylex.props(s.wrap)}>
-      <Tabs label="Package manager" items={MANAGERS.map(({ id, label }) => ({ id, label }))} center>
+    <div {...stylex.props(s.wrap, bare && s.bare)}>
+      <Tabs label="Package manager" items={MANAGERS.map(({ id, label }) => ({ id, label }))} center={!bare} initial={initial}>
         {MANAGERS.map((m) => (
           <div key={m.id} {...stylex.props(s.table)}>
             <div {...stylex.props(s.row)}>
@@ -52,6 +52,7 @@ export function InstallTable() {
 
 const s = stylex.create({
   wrap: { width: '100%', maxWidth: 680, marginInline: 'auto' },
+  bare: { maxWidth: 'none' },
   table: {
     textAlign: 'left',
     backgroundColor: colors.surface,

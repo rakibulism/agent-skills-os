@@ -4,13 +4,34 @@
     {
       "name": "site",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "--prefix", "site"],
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--prefix",
+        "site"
+      ],
       "port": 3310
     },
     {
       "name": "site-preview",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "serve", "--prefix", "site"],
+      "runtimeArgs": [
+        "run",
+        "serve",
+        "--prefix",
+        "site"
+      ],
+      "port": 3311
+    },
+    {
+      "name": "site-preview-fake",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "serve:fake",
+        "--prefix",
+        "site"
+      ],
       "port": 3311
     }
   ]

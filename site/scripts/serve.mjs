@@ -3,6 +3,9 @@ import { createServer } from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
 import { extname, join, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { loadEnv, nodeToAsk } from './local-api.mjs';
+
+loadEnv();
 
 const root = fileURLToPath(new URL('../out/', import.meta.url));
 const port = Number(process.env.PORT) || 3311;
@@ -23,6 +26,10 @@ async function resolve(urlPath) {
 }
 
 createServer(async (req, res) => {
+  if (req.url?.startsWith('/api/ask')) {
+    await nodeToAsk(req, res).catch((e) => { console.error(e); res.writeHead(500).end(); });
+    return;
+  }
   const file = (await resolve(req.url || '/')) ?? join(root, '404.html');
   try {
     const body = await readFile(file);
@@ -32,4 +39,4 @@ createServer(async (req, res) => {
   } catch {
     res.writeHead(404).end('Not found');
   }
-}).listen(port, () => console.log(`Serving out/ at http://localhost:${port}`));
+}).listen(port, () => console.log(`Serving out/ and /api/ask at http://localhost:${port}`));

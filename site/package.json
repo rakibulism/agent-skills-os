@@ -8,13 +8,15 @@
     "node": ">=20.9"
   },
   "scripts": {
-    "dev": "next dev -p 3310",
+    "dev": "node scripts/dev.mjs",
     "build": "next build",
     "preview": "next build && node scripts/serve.mjs",
     "serve": "node scripts/serve.mjs",
     "typecheck": "tsc --noEmit",
     "check": "tsc --noEmit && node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/check-adapters.mjs && next build",
-    "check:adapters": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/check-adapters.mjs"
+    "check:adapters": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/check-adapters.mjs",
+    "dev:fake": "ASK_FAKE=1 node scripts/dev.mjs",
+    "serve:fake": "ASK_FAKE=1 node scripts/serve.mjs"
   },
   "dependencies": {
     "@hugeicons/core-free-icons": "^4.4.0",

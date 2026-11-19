@@ -64,10 +64,10 @@ export function TabList({
 
 /** Tabs whose panels are server-rendered children, one per item, in order. */
 export function Tabs({
-  label, items, children, center = false,
-}: { label: string; items: readonly Item[]; children: ReactNode; center?: boolean }) {
+  label, items, children, center = false, initial,
+}: { label: string; items: readonly Item[]; children: ReactNode; center?: boolean; initial?: string }) {
   const idBase = useId().replace(/:/g, '');
-  const [value, setValue] = useState(items[0].id);
+  const [value, setValue] = useState(initial && items.some((it) => it.id === initial) ? initial : items[0].id);
   const panels = Children.toArray(children);
   const active = Math.max(0, items.findIndex((it) => it.id === value));
   return (

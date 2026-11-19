@@ -18,6 +18,8 @@ import {
   NpmIcon,
   PackageIcon,
   PlusSignIcon,
+  RefreshIcon,
+  SparklesIcon,
   Search01Icon,
   TerminalIcon,
   Tick02Icon,
@@ -49,6 +51,8 @@ const icons = {
   package: PackageIcon,
   add: PlusSignIcon,
   people: UserGroupIcon,
+  ai: SparklesIcon,
+  retry: RefreshIcon,
 } as const;
 
 export type IconName = keyof typeof icons;

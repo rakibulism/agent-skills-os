@@ -11,12 +11,22 @@ Pages: `/` (skill search), `/skills/<name>` (one per skill), `/docs`, `/contribu
 ```bash
 cd site
 npm install
-npm run dev       # hot-reloading dev server on http://localhost:3310
-npm run preview   # production build, then serves out/ on http://localhost:3311
+npm run dev       # hot-reloading dev server on http://localhost:3310 (Ask AI endpoint on 3312)
+npm run preview   # production build, then serves out/ and /api/ask on http://localhost:3311
 npm run check     # typecheck, adapter check, production build
 ```
 
 From the repo root, `npm run site:dev`, `npm run site:build` and `npm run site:preview` do the same.
+
+## Ask AI
+
+The search box also answers questions. Questions go to `/api/ask`, a Vercel Function (`../api/ask.mjs`) that calls a model through [OpenRouter](https://openrouter.ai). The handler is in `server/ask.mjs`.
+
+- It's grounded: the endpoint ranks skills with the same search the site uses, gives the model only the top matches, and makes it reply in a fixed JSON shape that picks cards by id. The site renders every install command and code block from its own data, so the model never writes them.
+- Setup: copy `.env.example` to `.env.local` and set `OPENROUTER_API_KEY` (and optionally `OPENROUTER_MODEL`, default `openrouter/auto`). Add the same variables to the Vercel project. Never commit `.env.local`.
+- Without a key the endpoint answers "not set up" and keyword search keeps working.
+- `npm run dev:fake` and `npm run serve:fake` use a stand-in model, to try the UI without a key.
+- Limits: 300-character questions, 600-token answers, 12 questions per minute per visitor on each server instance.
 
 ## How it fits together
 
