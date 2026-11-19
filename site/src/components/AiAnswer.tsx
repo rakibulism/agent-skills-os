@@ -142,7 +142,7 @@ const spin = stylex.keyframes({ to: { transform: 'rotate(360deg)' } });
 
 const s = stylex.create({
   panel: {
-    marginTop: 20,
+    marginTop: { default: 28, '@media (min-width: 720px)': 36 },
     padding: { default: 16, '@media (min-width: 720px)': 20 },
     textAlign: 'left',
     backgroundColor: colors.surface,
