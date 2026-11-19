@@ -57,6 +57,7 @@ const formatted = await prompt.format({
 | Skill | What it does |
 |---|---|
 | `ux-expert-rakibulism` | Reviews UI screens in "rakibulism" voice — direct, client-facing, promise-list-style feedback |
+| `super-ui` | Placeholder — not written yet |
 
 Every skill follows the same authoring principles: lead with the spine, prioritize findings, prefer concrete output formats, name what to avoid. Larger skills also bundle a `references/` directory of deeper material the body points to.
 
