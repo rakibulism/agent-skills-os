@@ -14,10 +14,25 @@
 </style></head>
 <body><div class="c">
   <div class="top">
-    <svg width="40" height="40" viewBox="0 0 32 32"><rect x="2" y="2" width="12.5" height="12.5" rx="2.5" fill="#17171a"/><rect x="17.5" y="2" width="12.5" height="12.5" rx="2.5" fill="#e04a2a"/><rect x="2" y="17.5" width="12.5" height="12.5" rx="2.5" fill="#17171a"/><rect x="17.5" y="17.5" width="12.5" height="12.5" rx="2.5" fill="#17171a"/></svg>
+    <svg width="44" height="44" viewBox="0 0 32 32"><defs>
+    <mask id="og" maskUnits="userSpaceOnUse" x="0" y="0" width="32" height="32">
+      <rect width="32" height="32" fill="#fff"/>
+      <rect x="2" y="12" width="6" height="1.6" fill="#000"/><rect x="2" y="22.5" width="6" height="1.6" fill="#000"/>
+      <rect x="9" y="8" width="6" height="1.6" fill="#000"/>
+      <rect x="16" y="22.5" width="5" height="1.6" fill="#000"/>
+      <rect x="25.56" y="11.5" width="5.4" height="1.6" fill="#000" transform="rotate(-15 25.56 27)"/>
+    </mask>
+  </defs>
+  <g mask="url(#og)">
+    <rect class="t" x="2" y="8" width="6" height="19" rx="1.4" fill="#17171a"/>
+    <rect class="t" x="9" y="4" width="6" height="23" rx="1.4" fill="#17171a"/>
+    <rect class="t" x="16" y="10" width="5" height="17" rx="1.4" fill="#17171a"/>
+    <rect x="25.56" y="8" width="5.4" height="19" rx="1.4" fill="#e04a2a" transform="rotate(-15 25.56 27)"/>
+  </g>
+  <rect class="t" x="1" y="28.2" width="30" height="2.2" rx="1.1" fill="#17171a"/></svg>
     <span>Agent Skills</span><span class="os">OS</span>
   </div>
-  <h1>Write a skill once.<br>Load it into any agent.</h1>
+  <h1>Find a skill.<br>Load it into any agent.</h1>
   <div class="bot">
     <div class="cmd"><span>$</span>npm install universal-agent-skills</div>
     <div class="t">Claude · OpenAI · LangChain · Cursor</div>

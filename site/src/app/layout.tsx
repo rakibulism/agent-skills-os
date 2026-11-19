@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from 'next';
 import { IBM_Plex_Mono, IBM_Plex_Sans } from 'next/font/google';
 import * as stylex from '@stylexjs/stylex';
+import { SiteFooter } from '@/components/SiteFooter';
+import { SiteHeader } from '@/components/SiteHeader';
 import { Toaster } from '@/components/Toaster';
 import { SITE } from '@/lib/site';
 import { BRAND_HEX } from '@/styles/brand';
@@ -13,7 +15,7 @@ const mono = IBM_Plex_Mono({ subsets: ['latin'], weight: ['400', '500'], variabl
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
-  title: SITE.title,
+  title: { default: SITE.title, template: `%s · ${SITE.name}` },
   description: SITE.description,
   applicationName: SITE.name,
   authors: [{ name: SITE.author, url: SITE.authorUrl }],
@@ -32,14 +34,14 @@ export const metadata: Metadata = {
     type: 'website',
     url: '/',
     siteName: SITE.name,
-    title: SITE.title,
+    title: { default: SITE.title, template: `%s · ${SITE.name}` },
     description: SITE.shortDescription,
-    images: [{ url: '/og.png', width: 1200, height: 630, alt: `${SITE.name}: write a skill once, load it into any agent. ${SITE.install}` }],
+    images: [{ url: '/og.png', width: 1200, height: 630, alt: `${SITE.name}: find a skill, load it into any agent. ${SITE.install}` }],
   },
   twitter: {
     card: 'summary_large_image',
     creator: SITE.twitter,
-    title: SITE.title,
+    title: { default: SITE.title, template: `%s · ${SITE.name}` },
     description: SITE.shortDescription,
     images: ['/og.png'],
   },
@@ -60,7 +62,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${sans.variable} ${mono.variable}`}>
       <body {...stylex.props(s.body)}>
-        {children}
+        <a href="#main" {...stylex.props(s.skip)}>Skip to content</a>
+        <SiteHeader />
+        <main id="main" {...stylex.props(s.main)}>{children}</main>
+        <SiteFooter />
         <Toaster />
       </body>
     </html>
@@ -69,9 +74,24 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
 const s = stylex.create({
   body: {
+    display: 'flex',
+    flexDirection: 'column',
     minHeight: '100dvh',
     backgroundColor: colors.bg,
     color: colors.ink,
     fontFamily: fonts.sans,
+  },
+  main: { flexGrow: 1 },
+  skip: {
+    position: 'absolute',
+    left: 12,
+    top: { default: -48, ':focus': 12 },
+    zIndex: 100,
+    paddingBlock: 8,
+    paddingInline: 12,
+    fontSize: 14,
+    color: colors.bg,
+    backgroundColor: colors.ink,
+    borderRadius: 6,
   },
 });

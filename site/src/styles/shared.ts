@@ -1,5 +1,5 @@
 import * as stylex from '@stylexjs/stylex';
-import { colors, fonts, layout, radii } from './tokens.stylex';
+import { colors, fonts, layout, motion, radii } from './tokens.stylex';
 
 /* Styles shared by several components: the page wrapper, panes and code blocks. */
 export const ui = stylex.create({
@@ -71,6 +71,30 @@ export const ui = stylex.create({
     borderStyle: 'solid',
     borderColor: colors.line2,
     borderRadius: radii.pill,
+  },
+  btn: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    minHeight: 42,
+    paddingInline: 16,
+    fontSize: 15,
+    fontWeight: 500,
+    color: colors.ink,
+    backgroundColor: { default: colors.surface, ':hover': colors.sunk },
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: colors.line2,
+    borderRadius: radii.sm,
+    transitionProperty: 'background-color, transform',
+    transitionDuration: motion.fast,
+    transform: { default: null, ':active': 'scale(0.98)' },
+  },
+  btnPrimary: {
+    color: colors.bg,
+    backgroundColor: { default: colors.ink, ':hover': colors.ink2 },
+    borderColor: colors.ink,
   },
   srOnly: {
     position: 'absolute',

@@ -3,9 +3,9 @@ import { SITE } from '@/lib/site';
 import { colors, fonts, radii } from '@/styles/tokens.stylex';
 import { CopyButton } from './CopyButton';
 
-export function Install({ tone = 'solid' }: { tone?: 'solid' | 'quiet' }) {
+export function Install({ tone = 'solid', full = false }: { tone?: 'solid' | 'quiet'; full?: boolean }) {
   return (
-    <div {...stylex.props(s.box, tone === 'solid' ? s.solid : s.quiet)}>
+    <div {...stylex.props(s.box, tone === 'solid' ? s.solid : s.quiet, full && s.full)}>
       <code {...stylex.props(s.cmd)}>
         <span aria-hidden {...stylex.props(s.prompt)}>$</span>
         {SITE.install}
@@ -30,7 +30,9 @@ const s = stylex.create({
   },
   solid: { backgroundColor: colors.ink, color: colors.bg, borderColor: colors.ink, boxShadow: colors.shadow },
   quiet: { backgroundColor: colors.surface, color: colors.ink, borderColor: colors.line2 },
+  full: { display: 'flex', width: '100%' },
   cmd: {
+    flexGrow: 1,
     minWidth: 0,
     paddingBlock: 6,
     fontFamily: fonts.mono,

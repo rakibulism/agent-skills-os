@@ -144,3 +144,8 @@ export const RULES = [
   ['Name the failure modes.', 'A "what to avoid" section prevents the common mistakes.'],
   ['Be concrete.', 'One real example teaches more than a paragraph of advice.'],
 ] as const;
+
+/** Usage snippets with a specific skill's name filled in. */
+export function usageFor(name: string): Snippet[] {
+  return USAGE.map((u) => ({ ...u, code: u.code.replaceAll('super-ui', name) }));
+}

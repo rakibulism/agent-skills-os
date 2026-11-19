@@ -3,7 +3,7 @@
 import { Toaster as Sonner } from 'sonner';
 import type { CSSProperties } from 'react';
 import { colors, fonts } from '@/styles/tokens.stylex';
-import { CheckIcon } from './icons';
+import { Icon } from './Icon';
 
 /*
  * Sonner, skinned with the site tokens: an inverted pill at the bottom centre.
@@ -19,7 +19,10 @@ export function Toaster() {
       gap={8}
       offset={{ bottom: 24 }}
       mobileOffset={{ bottom: 'calc(16px + env(safe-area-inset-bottom))' }}
-      icons={{ success: <CheckIcon size={16} style={{ color: colors.accent }} /> }}
+      icons={{
+        success: <Icon name="check" size={16} strokeWidth={2} style={{ color: colors.accent }} />,
+        error: <Icon name="alert" size={16} style={{ color: colors.accent }} />,
+      }}
       style={
         {
           '--normal-bg': colors.ink,

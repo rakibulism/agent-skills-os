@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { copyText } from '@/lib/clipboard';
 import { colors, motion, radii } from '@/styles/tokens.stylex';
-import { CheckIcon, CopyIcon } from './icons';
+import { Icon } from './Icon';
 
 type Props = {
   text: string;
@@ -42,8 +42,8 @@ export function CopyButton({ text, what, tone = 'plain', size = 'md', compact = 
       {...stylex.props(s.btn, size === 'sm' && s.sm, tone === 'inverse' ? s.inverse : s.plain)}
     >
       <span {...stylex.props(s.icons)}>
-        <CopyIcon size={size === 'sm' ? 14 : 16} {...stylex.props(s.icon, copied && s.hidden)} />
-        <CheckIcon size={size === 'sm' ? 14 : 16} {...stylex.props(s.icon, s.check, !copied && s.hidden)} />
+        <span {...stylex.props(s.icon, copied && s.hidden)}><Icon name="copy" size={size === 'sm' ? 14 : 16} /></span>
+        <span {...stylex.props(s.icon, s.check, !copied && s.hidden)}><Icon name="check" size={size === 'sm' ? 14 : 16} strokeWidth={2} /></span>
       </span>
       {/* Both labels share one grid cell, so the button keeps the wider one's width. */}
       <span aria-hidden {...stylex.props(s.labels, compact && s.compactLabel)}>
@@ -86,6 +86,7 @@ const s = stylex.create({
   },
   icons: { position: 'relative', display: 'inline-grid', width: 16, height: 16, placeItems: 'center' },
   icon: {
+    display: 'inline-flex',
     gridArea: '1 / 1',
     transitionProperty: 'opacity, transform',
     transitionDuration: motion.base,
