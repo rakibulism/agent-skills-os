@@ -25,6 +25,7 @@ The search box also answers questions. Questions go to `/api/ask`, a Vercel Func
 - It's grounded: the endpoint ranks skills with the same search the site uses, gives the model only the top matches, and makes it reply in a fixed JSON shape that picks cards by id. The site renders every install command and code block from its own data, so the model never writes them.
 - Setup: copy `.env.example` to `.env.local` and set `OPENROUTER_API_KEY` (and optionally `OPENROUTER_MODEL`, default `openrouter/auto`). Add the same variables to the Vercel project. Never commit `.env.local`.
 - Without a key the endpoint answers "not set up" and keyword search keeps working.
+- Fallbacks for real models: if the main model fails (for example a paid model on an account with no credits), it retries on `OPENROUTER_FALLBACK_MODEL` (default `openrouter/free`). Reasoning is kept short and excluded, and an empty reply is retried once with a bigger budget, all inside a 27-second limit.
 - `npm run dev:fake` and `npm run serve:fake` use a stand-in model, to try the UI without a key.
 - Limits: 300-character questions, 600-token answers, 12 questions per minute per visitor on each server instance.
 

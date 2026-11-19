@@ -81,9 +81,10 @@ Card is one of:
 
 Rules:
 - "answer": at most 70 words, plain sentences, no Markdown, no code, no commands. The cards carry the commands and code; refer to them ("the card below").
+- Say only what the facts above, the skill descriptions and the cards support. Never invent functions, options or features a skill or the package doesn't have; when unsure, describe what the card shows.
 - Only name skills from the list above. If none fits, say so plainly and suggest requesting or contributing one.
 - Add an install card whenever the user asks how to install or get started; use the package manager they mention, else npm.
-- Add a usage card when they ask how to use a skill with a framework. "python" covers CrewAI and AutoGen; "files" covers Cursor and AGENTS.md tools.
+- Add a usage card when they ask how to use a skill with a framework, even if that skill's instructions are still a placeholder: the loading code is the same for every skill. "python" covers CrewAI and AutoGen; "files" covers Cursor and AGENTS.md tools.
 - At most 3 cards and 3 followups. Followups are short questions the user might ask next, under 8 words each.
 - If the question is unrelated to agent skills or this library, answer briefly that you only help with this library, with no cards.`;
 }
@@ -94,6 +95,10 @@ function clean(raw, skills) {
     const text = raw.trim().replace(/^```(?:json)?\s*/i, '').replace(/```$/, '');
     data = JSON.parse(text.slice(text.indexOf('{'), text.lastIndexOf('}') + 1));
   } catch {
+    // Cut-off JSON: keep the answer text if it got that far, never show raw JSON.
+    const m = raw.match(/"answer"\s*:\s*"((?:\\.|[^"\\])*)/);
+    if (m) return { answer: JSON.parse(`"${m[1].replace(/\\$/, '')}"`).slice(0, 700), cards: [], followups: [] };
+    if (raw.trim().startsWith('{')) return { answer: '', cards: [], followups: [] };
     return { answer: raw.trim().slice(0, 600), cards: [], followups: [] };
   }
   const slugs = new Set(skills.map((s) => s.slug));
@@ -109,6 +114,67 @@ function clean(raw, skills) {
   const followups = (Array.isArray(data.followups) ? data.followups : [])
     .filter((f) => typeof f === 'string' && f.trim()).map((f) => f.trim().slice(0, 80)).slice(0, 3);
   return { answer: String(data.answer ?? '').trim().slice(0, 700), cards, followups };
+}
+
+/** One chat call. `structured` asks for JSON mode; `budget` is max_tokens. */
+function chat(apiKey, model, messages, { structured, budget, deadline }) {
+  return fetch(OPENROUTER_URL, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
+      'HTTP-Referer': SITE_URL,
+      'X-Title': 'Agent Skills OS',
+    },
+    body: JSON.stringify({
+      model,
+      messages,
+      temperature: 0.2,
+      max_tokens: budget,
+      // Reasoning models otherwise spend the whole budget thinking and return nothing.
+      reasoning: { effort: 'low', exclude: true },
+      ...(structured ? { response_format: { type: 'json_object' } } : {}),
+    }),
+    signal: AbortSignal.timeout(Math.max(1000, deadline - Date.now())),
+  });
+}
+
+/**
+ * Calls OpenRouter with the fallbacks real models need:
+ * - JSON mode rejected (400): retry without it; the prompt still asks for JSON.
+ * - No credits for a paid model (402): retry on the free router.
+ * - Empty reply because reasoning used the budget: retry once with a bigger budget.
+ */
+async function callOpenRouter(apiKey, messages, modelOverride) {
+  const primary = modelOverride ?? process.env.OPENROUTER_MODEL ?? 'openrouter/auto';
+  const fallback = process.env.OPENROUTER_FALLBACK_MODEL ?? 'openrouter/free';
+  const models = primary === fallback ? [primary] : [primary, fallback];
+
+  // Stay inside the function's 30s limit however many retries happen.
+  const deadline = Date.now() + 27_000;
+  let lastStatus = 502;
+  for (const model of models) {
+    let structured = true;
+    for (const budget of [1200, 2400]) {
+      if (Date.now() > deadline - 2000) break;
+      let res = await chat(apiKey, model, messages, { structured, budget, deadline });
+      if (res.status === 400 && structured) {
+        structured = false;
+        res = await chat(apiKey, model, messages, { structured, budget, deadline });
+      }
+      if (!res.ok) {
+        lastStatus = res.status;
+        break; // 402 / 429 / 5xx: try the next model.
+      }
+      const data = await res.json().catch(() => null);
+      const content = data?.choices?.[0]?.message?.content ?? '';
+      if (content.trim()) return { content };
+      if (data?.choices?.[0]?.finish_reason !== 'length') break;
+    }
+  }
+  return lastStatus === 429
+    ? { status: 429, error: 'The AI is busy. Try again shortly.' }
+    : { status: 502, error: 'The AI is unavailable right now.' };
 }
 
 const json = (body, status = 200, headers = {}) =>
@@ -152,32 +218,9 @@ export async function handleAsk(request, opts = {}) {
     if (opts.complete) {
       raw = await opts.complete(messages);
     } else {
-      const model = opts.model ?? process.env.OPENROUTER_MODEL ?? 'openrouter/auto';
-      const call = (structured) => fetch(OPENROUTER_URL, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          'Content-Type': 'application/json',
-          'HTTP-Referer': SITE_URL,
-          'X-Title': 'Agent Skills OS',
-        },
-        body: JSON.stringify({
-          model,
-          messages,
-          temperature: 0.2,
-          max_tokens: 600,
-          ...(structured ? { response_format: { type: 'json_object' } } : {}),
-        }),
-        signal: AbortSignal.timeout(25_000),
-      });
-      let res = await call(true);
-      // Some models reject JSON mode; the prompt alone still asks for JSON, and clean() copes.
-      if (res.status === 400) res = await call(false);
-      if (!res.ok) {
-        const status = res.status === 429 ? 429 : 502;
-        return json({ error: status === 429 ? 'The AI is busy. Try again shortly.' : 'The AI is unavailable right now.' }, status);
-      }
-      raw = (await res.json())?.choices?.[0]?.message?.content ?? '';
+      const out = await callOpenRouter(apiKey, messages, opts.model);
+      if (out.error) return json({ error: out.error }, out.status);
+      raw = out.content;
     }
   } catch {
     return json({ error: 'The AI took too long to answer.' }, 504);
