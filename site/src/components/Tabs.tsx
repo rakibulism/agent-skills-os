@@ -63,13 +63,15 @@ export function TabList({
 }
 
 /** Tabs whose panels are server-rendered children, one per item, in order. */
-export function Tabs({ label, items, children }: { label: string; items: readonly Item[]; children: ReactNode }) {
+export function Tabs({
+  label, items, children, center = false,
+}: { label: string; items: readonly Item[]; children: ReactNode; center?: boolean }) {
   const idBase = useId().replace(/:/g, '');
   const [value, setValue] = useState(items[0].id);
   const panels = Children.toArray(children);
   const active = Math.max(0, items.findIndex((it) => it.id === value));
   return (
-    <div>
+    <div {...stylex.props(center && s.center)}>
       <TabList label={label} items={items} value={value} onChange={setValue} idBase={idBase} />
       <div role="tabpanel" id={`${idBase}-panel`} aria-labelledby={`${idBase}-tab-${value}`} {...stylex.props(s.panel)}>
         {panels.map((p, i) => (
@@ -119,5 +121,6 @@ const s = stylex.create({
     borderColor: colors.line2,
     boxShadow: '0 1px 2px rgba(0,0,0,0.06)',
   },
-  panel: { marginTop: 16 },
+  panel: { marginTop: 16, width: '100%' },
+  center: { display: 'grid', justifyItems: 'center' },
 });

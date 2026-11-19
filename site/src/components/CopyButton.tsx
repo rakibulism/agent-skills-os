@@ -15,9 +15,11 @@ type Props = {
   size?: 'sm' | 'md';
   /** Hide the "Copy" label on phones, keeping only the icon. */
   compact?: boolean;
+  /** Square icon button with no visible label. */
+  iconOnly?: boolean;
 };
 
-export function CopyButton({ text, what, tone = 'plain', size = 'md', compact = false }: Props) {
+export function CopyButton({ text, what, tone = 'plain', size = 'md', compact = false, iconOnly = false }: Props) {
   const [copied, setCopied] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   useEffect(() => () => clearTimeout(timer.current), []);
@@ -39,17 +41,17 @@ export function CopyButton({ text, what, tone = 'plain', size = 'md', compact = 
       type="button"
       onClick={onCopy}
       aria-label={`Copy ${what.toLowerCase()}`}
-      {...stylex.props(s.btn, size === 'sm' && s.sm, tone === 'inverse' ? s.inverse : s.plain)}
+      {...stylex.props(s.btn, size === 'sm' && s.sm, tone === 'inverse' ? s.inverse : s.plain, iconOnly && s.square)}
     >
       <span {...stylex.props(s.icons)}>
         <span {...stylex.props(s.icon, copied && s.hidden)}><Icon name="copy" size={size === 'sm' ? 14 : 16} /></span>
         <span {...stylex.props(s.icon, s.check, !copied && s.hidden)}><Icon name="check" size={size === 'sm' ? 14 : 16} strokeWidth={2} /></span>
       </span>
       {/* Both labels share one grid cell, so the button keeps the wider one's width. */}
-      <span aria-hidden {...stylex.props(s.labels, compact && s.compactLabel)}>
+      {!iconOnly && <span aria-hidden {...stylex.props(s.labels, compact && s.compactLabel)}>
         <span {...stylex.props(s.label, copied && s.labelOff)}>Copy</span>
         <span {...stylex.props(s.label, !copied && s.labelOff)}>Copied</span>
-      </span>
+      </span>}
     </button>
   );
 }
@@ -73,6 +75,7 @@ const s = stylex.create({
     transitionTimingFunction: motion.ease,
     transform: { default: null, ':active': 'scale(0.97)' },
   },
+  square: { width: 34, minHeight: 34, paddingInline: 0, justifyContent: 'center' },
   sm: { minHeight: 28, paddingInline: 10, fontSize: 12, gap: 5 },
   plain: {
     color: colors.ink2,

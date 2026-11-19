@@ -1,8 +1,8 @@
 import * as stylex from '@stylexjs/stylex';
 import Link from 'next/link';
 import { Icon, type IconName } from '@/components/Icon';
-import { Install } from '@/components/Install';
-import { SkillSearch } from '@/components/SkillSearch';
+import { HeroLibrary } from '@/components/HeroLibrary';
+import { InstallTable } from '@/components/InstallTable';
 import { SITE, TARGETS } from '@/lib/site';
 import { getSkills, toSummary } from '@/lib/skills';
 import { ui } from '@/styles/shared';
@@ -35,31 +35,25 @@ export default function Home() {
   return (
     <>
       <section aria-labelledby="hero-title" {...stylex.props(s.hero)}>
-        <div {...stylex.props(ui.wrap, s.heroInner)}>
-          <p {...stylex.props(s.eyebrow)}>
-            <span {...stylex.props(s.dot)} aria-hidden />
-            Open-source skills library · {skills.length} {skills.length === 1 ? 'skill' : 'skills'}
-          </p>
-          <h1 id="hero-title" {...stylex.props(s.h1)}>Find a skill for your agent.</h1>
-          <p {...stylex.props(s.lede)}>
-            Each skill is one Markdown file of carefully written instructions. Load it into Claude, OpenAI, LangChain,
-            CrewAI, AutoGen, Cursor or any AGENTS.md tool with one function call.
-          </p>
-          <div {...stylex.props(s.search)}>
-            <SkillSearch skills={skills} />
+        <div {...stylex.props(ui.wrap)}>
+          <HeroLibrary skills={skills}>
+            <h1 id="hero-title" {...stylex.props(s.h1)}>
+              Find a skill.<br />Load it into any agent.
+            </h1>
+            <p {...stylex.props(s.lede)}>
+              An open library of agent skills, one Markdown file each. Ready for Claude, OpenAI, LangChain, CrewAI,
+              AutoGen, Cursor and every AGENTS.md tool.
+            </p>
+          </HeroLibrary>
+          <div {...stylex.props(s.install)}>
+            <InstallTable />
           </div>
         </div>
       </section>
 
       <section aria-labelledby="start-title" {...stylex.props(s.start)}>
         <div {...stylex.props(ui.wrap)}>
-          <div {...stylex.props(s.installRow)}>
-            <div>
-              <h2 id="start-title" {...stylex.props(s.h2)}>Install once, use any skill.</h2>
-              <p {...stylex.props(s.sub)}>Node 18+, MIT licensed, no dependencies.</p>
-            </div>
-            <Install />
-          </div>
+          <h2 id="start-title" {...stylex.props(s.h2)}>Where to next</h2>
 
           <ul {...stylex.props(s.cards)}>
             {NEXT.map((c) => {
@@ -100,40 +94,22 @@ export default function Home() {
 }
 
 const s = stylex.create({
-  hero: { paddingTop: { default: 40, [MD]: 88 }, paddingBottom: { default: 56, [MD]: 88 } },
-  heroInner: { maxWidth: 'calc(880px + 64px)' },
-  eyebrow: {
-    display: 'inline-flex',
-    alignItems: 'center',
-    gap: 8,
-    marginBottom: 20,
-    paddingBlock: 4,
-    paddingInline: 10,
-    fontFamily: fonts.mono,
-    fontSize: 12,
-    color: colors.ink2,
-    borderWidth: 1,
-    borderStyle: 'solid',
-    borderColor: colors.line2,
-    borderRadius: radii.pill,
-  },
-  dot: { width: 6, height: 6, borderRadius: radii.pill, backgroundColor: colors.accent },
+  hero: { paddingTop: { default: 24, [MD]: 48 }, paddingBottom: { default: 56, [MD]: 96 } },
   h1: {
-    fontSize: 'clamp(36px, 6.6vw, 68px)',
-    lineHeight: 1.03,
+    fontSize: 'clamp(38px, 7vw, 76px)',
+    lineHeight: 1.0,
     fontWeight: 600,
-    letterSpacing: '-0.035em',
+    letterSpacing: '-0.04em',
     textWrap: 'balance',
   },
   lede: {
-    marginTop: 18,
-    maxWidth: '60ch',
+    maxWidth: '46ch',
     fontSize: { default: 17, [MD]: 19 },
-    lineHeight: 1.55,
+    lineHeight: 1.5,
     color: colors.ink2,
-    textWrap: 'pretty',
+    textWrap: 'balance',
   },
-  search: { marginTop: { default: 28, [MD]: 40 } },
+  install: { marginTop: { default: 40, [MD]: 56 } },
 
   start: {
     paddingBlock: { default: 56, [MD]: 88 },
@@ -142,19 +118,11 @@ const s = stylex.create({
     borderTopStyle: 'solid',
     borderTopColor: colors.line,
   },
-  installRow: {
-    display: 'grid',
-    gap: 20,
-    alignItems: 'center',
-    justifyItems: 'start',
-    gridTemplateColumns: { default: 'minmax(0, 1fr)', '@media (min-width: 880px)': 'minmax(0, 1fr) auto' },
-  },
   h2: { fontSize: 'clamp(26px, 3.6vw, 36px)', lineHeight: 1.1, fontWeight: 600, letterSpacing: '-0.03em' },
-  sub: { marginTop: 8, fontSize: 15, color: colors.ink3 },
   cards: {
     display: 'grid',
     gap: 12,
-    marginTop: { default: 32, [MD]: 48 },
+    marginTop: { default: 24, [MD]: 32 },
     gridTemplateColumns: { default: 'minmax(0, 1fr)', [MD]: 'repeat(3, minmax(0, 1fr))' },
   },
   card: {

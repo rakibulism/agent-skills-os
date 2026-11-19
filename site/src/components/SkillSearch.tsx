@@ -40,11 +40,22 @@ function Highlight({ text, query }: { text: string; query: string }) {
   return <>{parts}</>;
 }
 
-export function SkillSearch({ skills }: { skills: SkillSummary[] }) {
+export function SkillSearch({
+  skills, query: controlledQuery, onQueryChange, inputRef: outerInputRef,
+}: {
+  skills: SkillSummary[];
+  /** Pass both to control the query from outside, e.g. the shelf in the hero. */
+  query?: string;
+  onQueryChange?: (q: string) => void;
+  inputRef?: React.RefObject<HTMLInputElement | null>;
+}) {
   const router = useRouter();
-  const [query, setQuery] = useState('');
+  const [innerQuery, setInnerQuery] = useState('');
+  const query = controlledQuery ?? innerQuery;
+  const setQuery = onQueryChange ?? setInnerQuery;
   const [category, setCategory] = useState('all');
-  const inputRef = useRef<HTMLInputElement>(null);
+  const ownInputRef = useRef<HTMLInputElement>(null);
+  const inputRef = outerInputRef ?? ownInputRef;
   const listRef = useRef<HTMLUListElement>(null);
 
   const categories = useMemo(() => {
@@ -60,6 +71,7 @@ export function SkillSearch({ skills }: { skills: SkillSummary[] }) {
     const p = new URLSearchParams(window.location.search);
     if (p.get('q')) setQuery(p.get('q')!);
     if (p.get('category')) setCategory(p.get('category')!);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -83,7 +95,7 @@ export function SkillSearch({ skills }: { skills: SkillSummary[] }) {
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, []);
+  }, [inputRef]);
 
   const links = () => Array.from(listRef.current?.querySelectorAll<HTMLAnchorElement>('a[data-result]') ?? []);
 
@@ -269,7 +281,7 @@ const s = stylex.create({
     borderWidth: 0,
     borderRadius: radii.pill,
   },
-  chips: { display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 16 },
+  chips: { display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 8, marginTop: 16 },
   chip: {
     display: 'inline-flex',
     alignItems: 'center',
@@ -304,7 +316,7 @@ const s = stylex.create({
     borderBottomColor: colors.line,
   },
   hint: { display: { default: 'none', [HOVER]: 'inline' } },
-  list: { display: 'grid' },
+  list: { display: 'grid', textAlign: 'left' },
   item: { borderBottomWidth: 1, borderBottomStyle: 'solid', borderBottomColor: colors.line },
   row: {
     display: 'flex',
