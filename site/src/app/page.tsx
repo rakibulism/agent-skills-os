@@ -1,5 +1,6 @@
 import * as stylex from '@stylexjs/stylex';
 import Link from 'next/link';
+import { BrandLogo } from '@/components/BrandLogo';
 import { Icon } from '@/components/Icon';
 import { HeroLibrary } from '@/components/HeroLibrary';
 import { InstallTable } from '@/components/InstallTable';
@@ -88,7 +89,12 @@ export default function Home() {
         <div {...stylex.props(ui.wrap, s.works)}>
           <p {...stylex.props(s.kicker)}>Works with</p>
           <ul {...stylex.props(s.worksGrid)}>
-            {TARGETS.map((t) => <li key={t} {...stylex.props(s.worksCell)}>{t}</li>)}
+            {TARGETS.map((t) => (
+              <li key={t} {...stylex.props(s.worksCell)}>
+                <span {...stylex.props(s.worksLogo)}><BrandLogo name={t} /></span>
+                <span>{t}</span>
+              </li>
+            ))}
           </ul>
         </div>
       </section>
@@ -190,12 +196,18 @@ const s = stylex.create({
   },
   worksCell: {
     display: 'grid',
-    placeItems: 'center',
-    minHeight: { default: 64, [MD]: 76 },
+    justifyItems: 'center',
+    alignContent: 'center',
+    gap: { default: 10, [MD]: 12 },
+    minHeight: { default: 104, [MD]: 128 },
     paddingInline: 8,
+    paddingBlock: 16,
     textAlign: 'center',
     fontSize: { default: 13, [MD]: 14 },
-    color: colors.ink2,
+    color: { default: colors.ink2, ':hover': colors.ink },
     backgroundColor: colors.bg,
+    transitionProperty: 'color',
+    transitionDuration: motion.fast,
   },
+  worksLogo: { display: 'inline-flex', height: 28, alignItems: 'center', color: 'inherit', opacity: 0.9 },
 });
