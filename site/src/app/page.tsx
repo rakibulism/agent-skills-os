@@ -1,6 +1,6 @@
 import * as stylex from '@stylexjs/stylex';
 import Link from 'next/link';
-import { Icon, type IconName } from '@/components/Icon';
+import { Icon } from '@/components/Icon';
 import { HeroLibrary } from '@/components/HeroLibrary';
 import { InstallTable } from '@/components/InstallTable';
 import { SITE, TARGETS } from '@/lib/site';
@@ -9,6 +9,7 @@ import { ui } from '@/styles/shared';
 import { colors, fonts, motion, radii } from '@/styles/tokens.stylex';
 
 const MD = '@media (min-width: 720px)';
+const LG = '@media (min-width: 960px)';
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -23,10 +24,11 @@ const jsonLd = {
   },
 };
 
-const NEXT: { href: string; icon: IconName; title: string; text: string; external?: boolean }[] = [
-  { href: '/docs', icon: 'docs', title: 'Read the docs', text: 'Adapters, usage for each framework, and the full API.' },
-  { href: '/contribute', icon: 'fork', title: 'Contribute a skill', text: 'Fork the repo, add a folder, open a pull request.' },
-  { href: SITE.repo, icon: 'github', title: 'Browse the source', text: 'Every skill is a plain Markdown file on GitHub.', external: true },
+const NEXT: { href: string; title: string; text: string; external?: boolean }[] = [
+  { href: '/docs', title: 'Docs', text: 'Adapters, usage for every framework, and the full API.' },
+  { href: '/contribute', title: 'Contribute', text: 'Add a skill with one Markdown file and a pull request.' },
+  { href: SITE.repo, title: 'Source', text: 'Every SKILL.md, the loader and the issues, on GitHub.', external: true },
+  { href: SITE.npm, title: 'npm', text: `${SITE.pkg}, MIT, no dependencies.`, external: true },
 ];
 
 export default function Home() {
@@ -50,40 +52,44 @@ export default function Home() {
         </div>
       </section>
 
-      <section aria-labelledby="start-title" {...stylex.props(s.start)}>
-        <div {...stylex.props(ui.wrap)}>
-          <h2 id="start-title" {...stylex.props(s.h2)}>Where to next</h2>
+      <section aria-labelledby="next-title" {...stylex.props(s.next)}>
+        <div {...stylex.props(ui.wrap, s.nextGrid)}>
+          <div {...stylex.props(s.nextHead)}>
+            <p {...stylex.props(s.kicker)}>Next</p>
+            <h2 id="next-title" {...stylex.props(s.h2)}>Keep going</h2>
+            <p {...stylex.props(s.nextNote)}>Everything here is open source and MIT licensed.</p>
+          </div>
 
-          <ul {...stylex.props(s.cards)}>
-            {NEXT.map((c) => {
+          <ol {...stylex.props(s.index)}>
+            {NEXT.map((n, i) => {
               const inner = (
                 <>
-                  <span {...stylex.props(s.cardIcon)}><Icon name={c.icon} size={20} /></span>
-                  <span {...stylex.props(s.cardTitle)}>
-                    {c.title}
-                    <Icon name={c.external ? 'external' : 'next'} size={16} style={{ color: colors.ink3 }} />
+                  <span {...stylex.props(s.num)}>{String(i + 1).padStart(2, '0')}</span>
+                  <span {...stylex.props(s.rowText)}>
+                    <span {...stylex.props(s.rowTitle)}>{n.title}</span>
+                    <span {...stylex.props(s.rowDesc)}>{n.text}</span>
                   </span>
-                  <span {...stylex.props(s.cardText)}>{c.text}</span>
+                  <span {...stylex.props(s.arrow)}><Icon name={n.external ? 'external' : 'next'} size={22} /></span>
                 </>
               );
               return (
-                <li key={c.href}>
-                  {c.external ? (
-                    <a href={c.href} target="_blank" rel="noopener" {...stylex.props(s.card)}>{inner}</a>
+                <li key={n.href} {...stylex.props(s.item)}>
+                  {n.external ? (
+                    <a href={n.href} target="_blank" rel="noopener" {...stylex.props(s.row)}>{inner}</a>
                   ) : (
-                    <Link href={c.href} {...stylex.props(s.card)}>{inner}</Link>
+                    <Link href={n.href} {...stylex.props(s.row)}>{inner}</Link>
                   )}
                 </li>
               );
             })}
-          </ul>
+          </ol>
+        </div>
 
-          <div {...stylex.props(s.targets)}>
-            <p {...stylex.props(s.targetsLabel)}>Works with</p>
-            <ul {...stylex.props(s.targetsList)}>
-              {TARGETS.map((t) => <li key={t}>{t}</li>)}
-            </ul>
-          </div>
+        <div {...stylex.props(ui.wrap, s.works)}>
+          <p {...stylex.props(s.kicker)}>Works with</p>
+          <ul {...stylex.props(s.worksGrid)}>
+            {TARGETS.map((t) => <li key={t} {...stylex.props(s.worksCell)}>{t}</li>)}
+          </ul>
         </div>
       </section>
 
@@ -113,58 +119,83 @@ const s = stylex.create({
 
   install: { marginTop: { default: 40, [MD]: 56 } },
 
-  start: {
-    paddingBlock: { default: 56, [MD]: 88 },
-    backgroundColor: colors.sunk,
+  next: {
+    paddingTop: { default: 56, [MD]: 96 },
+    paddingBottom: { default: 56, [MD]: 88 },
     borderTopWidth: 1,
     borderTopStyle: 'solid',
     borderTopColor: colors.line,
   },
-  h2: { fontSize: 'clamp(26px, 3.6vw, 36px)', lineHeight: 1.1, fontWeight: 600, letterSpacing: '-0.03em' },
-  cards: {
+  nextGrid: {
     display: 'grid',
-    gap: 12,
-    marginTop: { default: 24, [MD]: 32 },
-    gridTemplateColumns: { default: 'minmax(0, 1fr)', [MD]: 'repeat(3, minmax(0, 1fr))' },
+    alignItems: 'start',
+    gap: { default: 28, [LG]: 64 },
+    gridTemplateColumns: { default: 'minmax(0, 1fr)', [LG]: 'minmax(0, 0.8fr) minmax(0, 1.6fr)' },
   },
-  card: {
+  nextHead: { display: 'grid', gap: 12, position: { default: 'static', [LG]: 'sticky' }, top: 96 },
+  kicker: { fontFamily: fonts.mono, fontSize: 12, color: colors.ink3 },
+  h2: { fontSize: 'clamp(30px, 4vw, 44px)', lineHeight: 1.05, fontWeight: 600, letterSpacing: '-0.035em' },
+  nextNote: { maxWidth: '30ch', fontSize: 15, color: colors.ink2 },
+  index: { display: 'grid' },
+  item: {
+    borderTopWidth: 1,
+    borderTopStyle: 'solid',
+    borderTopColor: colors.line,
+    borderBottomWidth: { default: 0, ':last-child': 1 },
+    borderBottomStyle: 'solid',
+    borderBottomColor: colors.line,
+  },
+  row: {
     display: 'grid',
-    alignContent: 'start',
-    gap: 8,
-    height: '100%',
-    padding: 20,
-    backgroundColor: colors.surface,
+    gridTemplateColumns: { default: '36px minmax(0, 1fr) auto', [MD]: '56px minmax(0, 1fr) auto' },
+    alignItems: 'center',
+    columnGap: 16,
+    paddingBlock: { default: 20, [MD]: 26 },
+    color: colors.ink,
+  },
+  num: { alignSelf: 'start', paddingTop: { default: 6, [MD]: 10 }, fontFamily: fonts.mono, fontSize: 12, color: colors.ink3, fontVariantNumeric: 'tabular-nums' },
+  rowText: { display: 'grid', gap: 4, minWidth: 0 },
+  rowTitle: {
+    fontSize: { default: 24, [MD]: 32 },
+    lineHeight: 1.1,
+    fontWeight: 600,
+    letterSpacing: '-0.03em',
+    transitionProperty: 'color, transform',
+    transitionDuration: motion.base,
+    transitionTimingFunction: motion.ease,
+    color: { default: colors.ink, ':is(a:hover *)': colors.accentInk },
+    transform: { default: 'none', ':is(a:hover *)': 'translateX(6px)' },
+  },
+  rowDesc: { fontSize: { default: 14, [MD]: 15 }, color: colors.ink2 },
+  arrow: {
+    display: 'inline-flex',
+    color: { default: colors.ink3, ':is(a:hover *)': colors.accentInk },
+    transitionProperty: 'color, transform',
+    transitionDuration: motion.base,
+    transitionTimingFunction: motion.ease,
+    transform: { default: 'none', ':is(a:hover *)': 'translateX(4px)' },
+  },
+  works: { display: 'grid', gap: 16, marginTop: { default: 56, [MD]: 88 } },
+  worksGrid: {
+    display: 'grid',
+    gridTemplateColumns: { default: 'repeat(3, minmax(0, 1fr))', [MD]: 'repeat(4, minmax(0, 1fr))', [LG]: 'repeat(6, minmax(0, 1fr))' },
+    // 1px gaps over a line-coloured background draw the grid's hairlines.
+    gap: 1,
+    backgroundColor: colors.line,
     borderWidth: 1,
     borderStyle: 'solid',
-    borderColor: { default: colors.line, ':hover': colors.line2 },
+    borderColor: colors.line,
     borderRadius: radii.md,
-    boxShadow: colors.shadow,
-    transitionProperty: 'border-color, transform',
-    transitionDuration: motion.fast,
-    transform: { default: null, ':hover': 'translateY(-1px)', ':active': 'translateY(0)' },
+    overflow: 'hidden',
   },
-  cardIcon: {
-    display: 'inline-grid',
-    placeItems: 'center',
-    width: 38,
-    height: 38,
-    marginBottom: 6,
-    color: colors.accentInk,
-    backgroundColor: colors.sunk,
-    borderRadius: 10,
-  },
-  cardTitle: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, fontSize: 16, fontWeight: 600 },
-  cardText: { fontSize: 14, lineHeight: 1.5, color: colors.ink2 },
-  targets: {
+  worksCell: {
     display: 'grid',
-    gap: 12,
-    gridTemplateColumns: { default: '1fr', [MD]: '120px 1fr' },
-    marginTop: { default: 40, [MD]: 56 },
-    paddingTop: 24,
-    borderTopWidth: 1,
-    borderTopStyle: 'solid',
-    borderTopColor: colors.line,
+    placeItems: 'center',
+    minHeight: { default: 64, [MD]: 76 },
+    paddingInline: 8,
+    textAlign: 'center',
+    fontSize: { default: 13, [MD]: 14 },
+    color: colors.ink2,
+    backgroundColor: colors.bg,
   },
-  targetsLabel: { fontFamily: fonts.mono, fontSize: 12, color: colors.ink3, paddingTop: 3 },
-  targetsList: { display: 'flex', flexWrap: 'wrap', columnGap: 22, rowGap: 6, fontSize: 15, color: colors.ink2 },
 });
