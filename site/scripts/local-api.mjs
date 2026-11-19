@@ -46,7 +46,10 @@ export async function toRequest(req) {
 
 /** Writes a Web Response to a Node response. */
 export async function send(res, response, extraHeaders = {}) {
-  res.writeHead(response.status, { ...Object.fromEntries(response.headers), ...extraHeaders });
+  // Merge through Headers so "Link" and "link" are one header, as on Vercel.
+  const headers = new Headers(response.headers);
+  for (const [k, v] of Object.entries(extraHeaders)) headers.set(k, v);
+  res.writeHead(response.status, Object.fromEntries(headers));
   res.end(Buffer.from(await response.arrayBuffer()));
 }
 

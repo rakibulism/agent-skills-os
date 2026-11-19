@@ -77,13 +77,14 @@ const API_INDEX = {
   ],
 };
 
+// The rel="describedby" link to llms.txt isn't set here: vercel.json adds it to every page
+// response, these included, so setting it here too would send it twice.
 function markdownHeaders(extra = {}) {
   return {
     'Content-Type': MARKDOWN,
     Vary: 'Accept',
     'Cache-Control': 'public, max-age=0, must-revalidate',
     'X-Content-Type-Options': 'nosniff',
-    Link: `<${SITE_URL}/llms.txt>; rel="describedby"`,
     ...extra,
   };
 }
@@ -159,7 +160,7 @@ export async function route(request, fetchImpl = fetch) {
     const body = await res.text();
     return new Response(method === 'HEAD' ? null : body, {
       status: 200,
-      headers: markdownHeaders({ Link: `<${SITE_URL}${md}>; rel="alternate"; type="text/markdown", <${SITE_URL}/llms.txt>; rel="describedby"` }),
+      headers: markdownHeaders({ Link: `<${SITE_URL}${md}>; rel="alternate"; type="text/markdown"` }),
     });
   }
   if (res && res.status === 404) {
