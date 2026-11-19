@@ -176,8 +176,6 @@ const fadeUp = stylex.keyframes({
 });
 const wordIn = stylex.keyframes({
   from: { opacity: 0, filter: 'blur(4px)' },
-  // Ending on `none` (not blur(0)) leaves no filter behind, so mention popovers aren't
-  // trapped under the words that follow them.
   to: { opacity: 1, filter: 'none' },
 });
 const pulse = stylex.keyframes({
@@ -245,7 +243,9 @@ const s = stylex.create({
     display: 'inline-block',
     animationName: wordIn,
     animationDuration: '360ms',
-    animationFillMode: 'both',
+    // `backwards` (not `both`): once a word has faded in, the animation lets go, leaving no
+    // filter behind. A leftover filter would trap mention popovers under later content.
+    animationFillMode: 'backwards',
     animationTimingFunction: 'ease-out',
   },
   cards: { display: 'grid', gap: 12 },
