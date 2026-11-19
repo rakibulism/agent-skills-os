@@ -2,6 +2,7 @@
 // Markdown twins, metadata, structured data, machine-readable files and how much of each
 // page is real content without JavaScript.
 import assert from 'node:assert/strict';
+import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -154,5 +155,45 @@ test('the icon sprite has every symbol the pages use', () => {
   const ids = new Set([...sprite.matchAll(/<symbol id="([^"]+)"/g)].map((m) => m[1]));
   for (const [file, path] of ALL) {
     for (const m of readFileSync(file, 'utf8').matchAll(/<use href="\/icons\.svg#([^"]+)"/g)) assert.ok(ids.has(m[1]), `${path} uses #${m[1]}`);
+  }
+});
+
+test('inner pages carry BreadcrumbList data ending at the page itself', () => {
+  for (const [file, path] of ALL) {
+    if (path === '/') continue;
+    const crumbs = jsonLd(readFileSync(file, 'utf8')).find((d) => d['@type'] === 'BreadcrumbList');
+    assert.ok(crumbs, `${path} has a BreadcrumbList`);
+    const items = crumbs.itemListElement;
+    assert.equal(items[0].item, `${SITE}/`, `${path} starts at home`);
+    assert.equal(items.at(-1).item, `${SITE}${path}`, `${path} ends at itself`);
+    items.forEach((it, i) => {
+      assert.equal(it.position, i + 1);
+      assert.ok(it.name);
+    });
+  }
+});
+
+test('sitemap lastmod comes from git, not the build clock', () => {
+  const xml = read('sitemap.xml');
+  const git = execFileSync('git', ['log', '-1', '--format=%cI', '--', 'skills/super-ui'], { cwd: join(OUT, '..', '..'), encoding: 'utf8' }).trim();
+  const entry = xml.match(/<loc>https:\/\/skills\.rakibulism\.space\/skills\/super-ui<\/loc>\s*<lastmod>([^<]+)<\/lastmod>/);
+  assert.ok(entry, 'skill entry has lastmod');
+  assert.equal(new Date(entry[1]).getTime(), new Date(git).getTime());
+});
+
+test('vercel.json gives every Markdown copy a canonical Link to its HTML page', () => {
+  const vercel = JSON.parse(readFileSync(join(OUT, '..', '..', 'vercel.json'), 'utf8'));
+  const rules = vercel.headers
+    .map((h) => ({ h, link: h.headers.find((x) => x.key === 'Link' && /rel="canonical"/.test(x.value)) }))
+    .filter((r) => r.link);
+  // path-to-regexp, as Vercel compiles these two sources.
+  const toRegex = (src) => new RegExp(`^${src.replace(':path(', '(').replace(/\\\\/g, '\\')}$`);
+  const mdFiles = ALL.map(([, path]) => (path === '/' ? '/index.md' : `${path}.md`));
+  for (const md of mdFiles) {
+    const hits = rules.filter((r) => toRegex(r.h.source).test(md));
+    assert.equal(hits.length, 1, `${md} matches exactly one canonical rule`);
+    const m = toRegex(hits[0].h.source).exec(md);
+    const href = hits[0].link.value.replace(':path', m[1] ?? '').match(/<([^>]+)>/)[1];
+    assert.equal(href, md === '/index.md' ? `${SITE}/` : `${SITE}${md.slice(0, -3)}`, md);
   }
 });

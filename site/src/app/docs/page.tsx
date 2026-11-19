@@ -2,6 +2,7 @@ import * as stylex from '@stylexjs/stylex';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { AdapterDemo } from '@/components/AdapterDemo';
+import { BreadcrumbJsonLd } from '@/components/Breadcrumbs';
 import { CodePane } from '@/components/CodePane';
 import { Icon } from '@/components/Icon';
 import { Install } from '@/components/Install';
@@ -24,6 +25,7 @@ const LG = '@media (min-width: 880px)';
 export default function Docs() {
   return (
     <>
+      <BreadcrumbJsonLd trail={[{ name: 'Docs', path: '/docs' }]} />
       <PageHead
         kicker="Docs"
         title="Write a skill once. Load it into any agent."

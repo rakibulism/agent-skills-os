@@ -55,6 +55,8 @@ createServer(async (req, res) => {
       'Content-Type': types[extname(file)] ?? 'application/octet-stream',
       'X-Content-Type-Options': 'nosniff',
       ...(page ? { Vary: 'Accept', Link: DESCRIBEDBY } : {}),
+      // As vercel.json: a Markdown copy names its HTML page as the canonical URL.
+      ...(file.endsWith('.md') ? { Link: `<https://skills.rakibulism.space${pathname === '/index.md' ? '/' : pathname.slice(0, -3)}>; rel="canonical"` } : {}),
     });
     res.end(req.method === 'HEAD' ? undefined : body);
   } catch (e) {
