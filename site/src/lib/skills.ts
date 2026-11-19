@@ -16,7 +16,6 @@ export type Skill = {
   description: string;
   version: string;
   tags: string[];
-  category: string;
   author: string | null;
   authorUrl: string | null;
   related: string[];
@@ -29,15 +28,9 @@ export type Skill = {
 };
 
 /** What the browser needs for search: no file bodies. */
-export type SkillSummary = Pick<Skill, 'slug' | 'name' | 'description' | 'version' | 'tags' | 'category'>;
+export type SkillSummary = Pick<Skill, 'slug' | 'name' | 'description' | 'version' | 'tags'>;
 
 const SKILLS_DIR = join(process.cwd(), '..', 'skills');
-const CATEGORY_BY_TAG: Record<string, string> = {
-  design: 'Design', ui: 'Design', ux: 'Design', accessibility: 'Design',
-  engineering: 'Engineering', testing: 'Engineering', 'code-review': 'Engineering',
-  security: 'Engineering', data: 'Data', product: 'Product',
-  writing: 'Writing', marketing: 'Marketing', seo: 'SEO', research: 'Research', productivity: 'Productivity',
-};
 
 const unquote = (v: string) => v.trim().replace(/^["']|["']$/g, '');
 const list = (v: string | undefined) =>
@@ -99,7 +92,6 @@ function readDir(dir: string): Skill[] {
       description: fm.description ?? '',
       version: fm.version ?? '',
       tags,
-      category: tags.map((t) => CATEGORY_BY_TAG[t]).find(Boolean) ?? 'General',
       author: fm.author || null,
       authorUrl: fm.author_url || null,
       related: list(fm.related),
@@ -125,5 +117,5 @@ export function getSkill(slug: string): Skill | undefined {
 }
 
 export function toSummary(s: Skill): SkillSummary {
-  return { slug: s.slug, name: s.name, description: s.description, version: s.version, tags: s.tags, category: s.category };
+  return { slug: s.slug, name: s.name, description: s.description, version: s.version, tags: s.tags };
 }

@@ -26,7 +26,7 @@ function actionsFor(m: MentionKind): { title: string; kicker: string; body?: str
     const n = m.skill.name;
     return {
       title: n,
-      kicker: `Skill · ${m.skill.category}`,
+      kicker: 'Skill',
       body: m.skill.description,
       actions: [
         { label: 'Copy name', icon: 'copy', copy: n, what: 'Skill name' },

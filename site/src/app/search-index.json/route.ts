@@ -10,7 +10,6 @@ export function GET() {
     description: s.description,
     version: s.version,
     tags: s.tags,
-    category: s.category,
     // The instructions, without frontmatter, trimmed: enough for the model to judge relevance.
     excerpt: s.raw.replace(/^---\n[\s\S]*?\n---\n?/, '').trim().slice(0, 1200),
   }));
