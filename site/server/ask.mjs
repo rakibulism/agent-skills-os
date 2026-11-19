@@ -134,7 +134,20 @@ function clean(raw, skills) {
       : { type: 'usage', framework: c.framework, skill: c.skill }));
   const followups = (Array.isArray(data.followups) ? data.followups : [])
     .filter((f) => typeof f === 'string' && f.trim()).map((f) => f.trim().slice(0, 80)).slice(0, 3);
-  return { answer: String(data.answer ?? '').trim().slice(0, 700), cards, followups };
+  const answer = String(data.answer ?? '').trim().slice(0, 700);
+
+  // Models often name a skill ("the card below…") and forget its card. Add a skill card
+  // for every listed skill the answer mentions by name, if there's room.
+  const has = (slug) => cards.some((c) => (c.type === 'skill' && c.slug === slug) || (c.type === 'usage' && c.skill === slug));
+  for (const sk of skills) {
+    if (cards.length >= 3) break;
+    // Only distinctive names (with a hyphen or digit), so a skill called "review" can't
+    // match the plain English word.
+    if (!/[-0-9]/.test(sk.slug)) continue;
+    const re = new RegExp(`(^|[^a-z0-9-])${sk.slug.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![a-z0-9-])`, 'i');
+    if (re.test(answer) && !has(sk.slug)) cards.push({ type: 'skill', slug: sk.slug });
+  }
+  return { answer, cards, followups };
 }
 
 /** One chat call. `structured` asks for JSON mode; `budget` is max_tokens. */
