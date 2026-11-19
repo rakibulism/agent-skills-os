@@ -4,11 +4,13 @@ import * as stylex from '@stylexjs/stylex';
 import Link from 'next/link';
 import type { AskAnswer, AskCard } from '@/lib/ask';
 import type { SkillSummary } from '@/lib/skills';
-import { usageFor } from '@/lib/snippets';
+import { SITE } from '@/lib/site';
+import { API, usageFor } from '@/lib/snippets';
 import { colors, fonts, motion, radii } from '@/styles/tokens.stylex';
 import { CodePane } from './CodePane';
 import { Icon } from './Icon';
 import { InstallTable } from './InstallTable';
+import { Mention, type MentionKind } from './Mention';
 
 export type AiState =
   | { status: 'loading'; question: string }
@@ -42,17 +44,59 @@ function Card({ card, skills }: { card: AskCard; skills: SkillSummary[] }) {
   return <CodePane file={snippet.file} code={snippet.code} lang={snippet.lang} what="Code" />;
 }
 
-/** Splits text into words that fade in one after another, like the answer is being spoken. */
-function Reveal({ text }: { text: string }) {
-  const words = text.split(/(\s+)/);
+const API_RETURNS: Record<string, string> = Object.fromEntries(
+  [...API.load, ...API.adapt].map(([sig, ret]) => [sig.replace(/\(.*$/, ''), ret]),
+);
+
+type Segment = { text: string; mention?: MentionKind };
+
+/** Finds skill names, the package name and API functions in the answer, longest first. */
+function segment(text: string, skills: SkillSummary[]): Segment[] {
+  const byName = new Map<string, SkillSummary>();
+  for (const sk of skills) { byName.set(sk.name.toLowerCase(), sk); byName.set(sk.slug.toLowerCase(), sk); }
+  const terms = [...new Set([...byName.keys(), SITE.pkg, ...Object.keys(API_RETURNS)])]
+    .filter((t) => t.length > 2)
+    .sort((a, b) => b.length - a.length)
+    .map((t) => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+  if (!terms.length) return [{ text }];
+  const re = new RegExp(`(^|[^A-Za-z0-9-])(${terms.join('|')})(\\(\\))?(?![A-Za-z0-9-])`, 'gi');
+  const out: Segment[] = [];
+  let last = 0;
+  for (const m of text.matchAll(re)) {
+    const start = m.index! + m[1].length;
+    const word = m[2];
+    const lower = word.toLowerCase();
+    let mention: MentionKind | undefined;
+    if (lower === SITE.pkg) mention = { kind: 'package' };
+    else if (API_RETURNS[word]) mention = { kind: 'api', fn: word, returns: API_RETURNS[word] };
+    else if (byName.has(lower)) mention = { kind: 'skill', skill: byName.get(lower)! };
+    if (!mention) continue;
+    if (start > last) out.push({ text: text.slice(last, start) });
+    out.push({ text: word + (m[3] ?? ''), mention });
+    last = start + word.length + (m[3]?.length ?? 0);
+  }
+  if (last < text.length) out.push({ text: text.slice(last) });
+  return out;
+}
+
+/** Words fade in one after another; mentions of skills, the package and API functions
+ *  become chips with a copy popover. */
+function Reveal({ text, skills }: { text: string; skills: SkillSummary[] }) {
   let n = 0;
+  const step = () => ({ animationDelay: `${Math.min(n++ * 22, 900)}ms` });
   return (
     <>
-      {words.map((w, i) => {
-        if (/^\s+$/.test(w)) return w;
-        const delay = Math.min(n++ * 22, 900);
-        return <span key={i} style={{ animationDelay: `${delay}ms` }} {...stylex.props(s.word)}>{w}</span>;
-      })}
+      {segment(text, skills).map((seg, i) =>
+        seg.mention ? (
+          <span key={i} style={step()} {...stylex.props(s.word)}>
+            <Mention mention={seg.mention}>{seg.text}</Mention>
+          </span>
+        ) : (
+          seg.text.split(/(\s+)/).map((w, j) =>
+            /^\s*$/.test(w) ? w : <span key={`${i}-${j}`} style={step()} {...stylex.props(s.word)}>{w}</span>,
+          )
+        ),
+      )}
     </>
   );
 }
@@ -98,7 +142,7 @@ export function AiAnswer({
 
         {state.status === 'done' && (
           <div key={state.question} {...stylex.props(s.body)}>
-            {state.data.answer && <p {...stylex.props(s.answer)}><Reveal text={state.data.answer} /></p>}
+            {state.data.answer && <p {...stylex.props(s.answer)}><Reveal text={state.data.answer} skills={skills} /></p>}
             {state.data.cards.length > 0 && (
               <div {...stylex.props(s.cards)}>
                 {state.data.cards.map((c, i) => (
@@ -132,7 +176,9 @@ const fadeUp = stylex.keyframes({
 });
 const wordIn = stylex.keyframes({
   from: { opacity: 0, filter: 'blur(4px)' },
-  to: { opacity: 1, filter: 'blur(0)' },
+  // Ending on `none` (not blur(0)) leaves no filter behind, so mention popovers aren't
+  // trapped under the words that follow them.
+  to: { opacity: 1, filter: 'none' },
 });
 const pulse = stylex.keyframes({
   '0%, 100%': { opacity: 0.45 },
